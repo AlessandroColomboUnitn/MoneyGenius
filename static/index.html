@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+
+<body>
+
+    <h1>MoneyGenius</h1>
+
+    <span>
+
+        <form action="api/v1/users" method="post" name="loginform" id="loginform">
+            <span>Logged User:</span>
+            <span id="loggedUser"></span>
+            <input name="email" placeholder="mario.rossi@unitn.com" id="loginEmail" />
+            <input name="pasword" placeholder="123" id="loginPassword" />
+            <button type="button" onclick="login()">LogIn</button>
+        </form>
+
+        <form action="api/v1/users" method="put" name="signupform" id="signupform">
+            <input name="email" placeholder="mario.rossi@unitn.com" id="signupEmail" />
+            <input name="password" placeholder="123" id="signupPassword" />
+            <button type="button" onclick="signup()">SignUp</button>
+        </form>
+
+    </span>
+    <script src="script.js"></script>
+
+</body>
