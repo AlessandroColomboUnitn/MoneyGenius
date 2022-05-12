@@ -2,8 +2,50 @@ const express = require('express');
 const router = express.Router();
 const Student = require('./models/user'); //get our user model
 
-router.get('/', async (req, res)=>{
+router.get('/me', async (req, res)=>{
+    if(!req.loggedUser) return;
+});
 
+router.get('', async (req, res) => {
+    let students;
+
+    if (req.query.email)
+        // https://mongoosejs.com/docs/api.html#model_Model.find
+        students = await Student.find({email: req.query.email}).exec();
+    else
+        students = await Student.find().exec();
+
+    students = students.map( (entry) => {
+        return {
+            self: '/api/v1/students/' + entry.id,
+            email: entry.email
+        }
+    });
+
+    res.status(200).json(students);
+});
+
+router.post('', async (req, res) => {
+    
+	let student = new Student({
+        email: req.body.email,
+        password: req.body.password
+    });
+
+    if (!student.email || typeof student.email != 'string' || !checkIfEmailInString(student.email)) {
+        res.status(400).json({ error: 'The field "email" must be a non-empty string, in email format' });
+        return;
+    }
+    
+	student = await student.save();
+    
+    let studentId = student.id;
+
+    /**
+     * Link to the newly created resource is returned in the Location header
+     * https://www.restapitutorial.com/lessons/httpmethods.html
+     */
+    res.location("/api/v1/students/" + studentId).status(201).send();
 });
 
 // https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
