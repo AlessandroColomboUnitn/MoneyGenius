@@ -42,18 +42,13 @@ function signup(){
     var email = document.getElementById("signupEmail");
     var password = document.getElementById("signupPassword");
 
-    fetch('../api/v1/authentications',{
-        method: 'PUT',
+    fetch('../api/v1/users',{
+        method: 'POST',
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify({email: email, password: password} )
     })
-    .then((resp) => resp.json)
-    .then(function(data){
-        loggedUser.token = data.token;
-        loggedUser.email = data.email;
-        loggedUser.id = data.id;
-        loggedUser.self = data.self;
-        document.getElementById("loggedUser").innerHTML = loggedUser.email;      
+    .then(function(){
+        document.getElementById("signupForm").hidden=true;     
     })
     .catch(error => console.log(error));
 }
