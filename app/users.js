@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const user = require('./models/user'); //get our user model
+const User = require('./models/user.js'); //get our user model
 
 router.get('/me', async (req, res)=>{
     if(!req.loggedUser) return;
@@ -28,19 +28,22 @@ router.get('', async (req, res) => {
 
 router.post('', async (req, res) => {
 
-    console.log("pane");
-    if (!user.email || typeof user.email != 'string' || !checkIfEmailInString(user.email)) {
+    
+    if (!req.body.email || typeof req.body.email != 'string' || !checkIfEmailInString(req.body.email)) {
+        console.log(req.body.email);
         res.status(400).json({ error: 'The field "email" must be a non-empty string, in email format' });
         return;
     }
     
-	let user = new User({
+    let user = new User({
         email: req.body.email,
         password: req.body.password
     });
-    
+
 	user = await user.save();
     
+    console.log("pane");
+
     let userId = user.id;
 
     /**
