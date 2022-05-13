@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <!-- script tag in the head executes before the body -->
+        <!-- when do i want the js to load -->
+        <script async>
+
+            //this function avoid that the browser stop parsing the html 
+            //its a condition not welcomed by users
+            document.addEventListener("DOMContentLoaded", function() {
+
+                // Get the modal
+                var modal = document.getElementById("myModal");
+
+                // Get the button that opens the modal
+                var btnSpesa = document.getElementById("btnSpesa");
+
+                // Get the <span> element that closes the modal
+                var span = document.getElementsByClassName("close")[0];
+
+                // When the user clicks on the button, open the modal
+                btnSpesa.onclick = function() {
+                    modal.style.display = "block";
+                }
+
+                // When the user clicks on <span> (x), close the modal
+                span.onclick = function() {
+                    modal.style.display = "none";
+                }
+
+                // When the user clicks anywhere outside of the modal, close it
+                window.onclick = function(event) {
+                    if (event.target == modal) {
+                        modal.style.display = "none";
+                    }
+                }
+            });
+
+            function schedaSpesa(){
+                //document.write("deve apparire una scheda pop-up");
+                
+            }
+
+        </script>
+
+        <style>
+            /* The Modal (background) */
+            .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            }
+            
+            /* Modal Content/Box */
+            .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+            }
+            
+            /* The Close Button */
+            .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            }
+            
+            .close:hover,
+            .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+            }
+        </style>
+
+    </head>
+    <body>
+        <h1>Money Genius</h1>
+
+        <div id="rendiconto">
+
+        </div>
+
+        <div id="spese">
+            <table>
+                
+            </table>
+        </div>
+
+        <button id="btnSpesa">Aggiungi Spesa</button>
+        
+        <!-- Modal code from w3schools -->
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+                
+                <!-- its the icon for closing the modal-->
+                <span class="close">&times;</span>
+                
+                <h3>Registra spesa: </h3>
+
+                <form>
+                    <table>
+                        <tr>
+                            <td>Nome:</td>
+                            <td><input type="text" name="name" id="name"></td>
+                        </tr>            
+                        <tr>
+                            <td>Prezzo:</td>
+                            <td><input type="text" name="amount" id="amount"></td>
+                        </tr>                      
+                        <tr>
+                            <td>Categoria:</td>
+                            <td><input type="text"></td>
+                        </tr>                        
+                        <tr>
+                            <td><input type="submit" name="Conferma"></td>
+                        </tr>
+                    </table>
+                    
+                </form>       
+            </div>
+  
+        </div>
+    </body>
+    
+</html>
