@@ -2,8 +2,13 @@
 
 <html>
     <head>
-        <!-- script tag in the head executes before the body -->
-        <!-- when do i want the js to load -->
+        <title>MoneyGenius</title>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Mattia Rampazzo">
+
+        <!-- js for the spending modal-->
         <script async>
 
             //this function avoid that the browser stop parsing the html 
@@ -11,16 +16,16 @@
             document.addEventListener("DOMContentLoaded", function() {
 
                 // Get the modal
-                var modal = document.getElementById("myModal");
+                var modal = document.getElementById("mdlSpending");
 
                 // Get the button that opens the modal
-                var btnSpesa = document.getElementById("btnSpesa");
+                var btnSpending = document.getElementById("btnSpending");
 
                 // Get the <span> element that closes the modal
                 var span = document.getElementsByClassName("close")[0];
 
                 // When the user clicks on the button, open the modal
-                btnSpesa.onclick = function() {
+                btnSpending.onclick = function() {
                     modal.style.display = "block";
                 }
 
@@ -36,14 +41,10 @@
                     }
                 }
             });
-
-            function schedaSpesa(){
-                //document.write("deve apparire una scheda pop-up");
-                
-            }
-
+       
         </script>
 
+        <!-- css for the spending modal -->
         <style>
             /* The Modal (background) */
             .modal {
@@ -85,24 +86,31 @@
         </style>
 
     </head>
+
     <body>
         <h1>Money Genius</h1>
 
-        <div id="rendiconto">
+        <!-- div containing the amount of money spent and the amount of budget left -->
+        <div id="budegetInfo">
 
         </div>
 
-        <div id="spese">
+        <!-- div containing a list of all the spending of the current month  -->
+        <!-- nota: qual'è la traduzione corretta di spesa/uscita? -->
+        <div id="spendingList">
             <table>
                 
             </table>
         </div>
 
-        <button id="btnSpesa">Aggiungi Spesa</button>
+        <!-- button that when clicked opens the outlay form-->
+        <button id="btnSpending">Aggiungi Spesa</button>
         
-        <!-- Modal code from w3schools -->
+
+        <!-- HTML, css and js for the modal taken from w3schools -->
+
         <!-- The Modal -->
-        <div id="myModal" class="modal">
+        <div id="mdlSpending" class="modal">
 
             <!-- Modal content -->
             <div class="modal-content">
@@ -110,7 +118,7 @@
                 <!-- its the icon for closing the modal-->
                 <span class="close">&times;</span>
                 
-                <h3>Registra spesa: </h3>
+                <h3>Registra spesa:</h3>
 
                 <form>
                     <table>
@@ -119,12 +127,16 @@
                             <td><input type="text" name="name" id="name"></td>
                         </tr>            
                         <tr>
-                            <td>Prezzo:</td>
+                            <td>Totale:</td>
                             <td><input type="text" name="amount" id="amount"></td>
                         </tr>                      
                         <tr>
                             <td>Categoria:</td>
-                            <td><input type="text"></td>
+                            <td><input type="text" name="category" id="category"></td>
+                        </tr>                        <tr>
+                        <tr>
+                            <td>Data:</td>
+                            <td><input type="text" name="date" id="date"></td>
                         </tr>                        
                         <tr>
                             <td><input type="submit" name="Conferma"></td>
@@ -132,9 +144,11 @@
                     </table>
                     
                 </form>       
+
             </div>
   
         </div>
+
     </body>
     
 </html>
