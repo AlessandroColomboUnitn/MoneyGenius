@@ -32,8 +32,7 @@ function login()
             loggedUser.self = data.self;
             // loggedUser.id = loggedUser.self.substring(loggedUser.self.lastIndexOf('/') + 1);
             document.getElementById("loggedUser").innerHTML = loggedUser.email;
-            document.getElementById("authEmail").clear();
-            document.getElementById("authPassword").clear();
+            document.getElementById("authform").reset();
             //console.log(data.id);
             //loadLendings();
             return;
@@ -69,8 +68,7 @@ function signup(){
         loggedUser.id = data.id;
         loggedUser.self = data.self;        
         document.getElementById("loggedUser").innerHTML = loggedUser.email;
-        document.getElementById("authEmail").clear();
-        document.getElementById("authPassword").clear();
+        document.getElementById("authform").reset();
         return;
     })
     .catch((error) => {
