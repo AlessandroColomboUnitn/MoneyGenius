@@ -9,16 +9,20 @@
     <h1>MoneyGenius</h1>
 
     <span>
-
         <form action="api/v1/users" method="post" name="authform" id="authform">
-            <span>Logged User:</span>
             <span id="loggedUser"></span>
-            <input name="email" placeholder="mario.rossi@unitn.com" id="authEmail" />
-            <input name="pasword" placeholder="123" id="authPassword" />
-            <button type="button" onclick="login()">accedi</button> <button type="button" onclick="signup()">registrati</button>
+            <nav>
+                <input name="email" placeholder="mario.rossi@unitn.com" id="authEmail" required="true" hidden="true"/>
+                <input name="pasword" placeholder="123" id="authPassword" required="true" hidden="true" />
+                <input name="username" placeholder="marco" id="authName" required="true" hidden="true" />
+            </nav>
+            <nav>
+                <button type="button" id="setLogin" onclick="displayLogin()">accedi</button>
+                <button type="button" id="setSignup" onclick="displaySignup()">registrati</button>
+                <button type="button" id="Login" onclick="login()" hidden="true">conferma</button> <button type="button" id="Signup" onclick="signup()" hidden="true">conferma</button>
+                <button type="button" id="back" onclick="resetForm()" hidden="true">indietro</button>
+            </nav>
         </form>
-
-
     </span>
     <script src="script.js"></script>
 

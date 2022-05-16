@@ -23,6 +23,7 @@ router.post('/login', async function(req, res) {
 	// if user is found and password is right create a token
 	var payload = {
 		email: user.email,
+		name: req.body.name,
 		id: user._id
 		// other data encrypted in the token	
 	}
@@ -36,6 +37,7 @@ router.post('/login', async function(req, res) {
 		message: 'Enjoy your token!',
 		token: token,
 		email: user.email,
+		name: user.name,
 		id: user._id,
 		self: "api/v1/" + user._id
 	});
@@ -48,8 +50,10 @@ router.post('/login', async function(req, res) {
 // ---------------------------------------------------------
 router.post('/signup', async function(req, res) {
 	
+	let email = req.body.email;
+	let name = req.body.name; 
 	
-    if(checkIfEmailInString(req.body.email)){
+    if(checkIfEmailInString(email) && name){
        
         let userExists = await User.exists({email: req.body.email}); //check if the email is already associated with an existing user
 
@@ -60,7 +64,8 @@ router.post('/signup', async function(req, res) {
             // build a new user object
 	        let user = new User({
                 email: req.body.email,
-                password: req.body.password
+                password: req.body.password,
+				name: req.body.name
             });
 
             user = await user.save(); //save user in DB
@@ -68,6 +73,7 @@ router.post('/signup', async function(req, res) {
             //create a token
 	        var payload = {
 		        email: user.email,
+				name: req.body.name,
 		        id: user._id	
 	        }      
 	        
@@ -82,12 +88,13 @@ router.post('/signup', async function(req, res) {
 		        token: token,
 		        email: user.email,
 		        id: user._id,
+				name: user.name,
 		        self: "api/v1/" + user._id
            });
         
         } else res.status(400).json({success: false, message: 'Registrazione fallita: e-mail già assegnata ad un altro utente'});
     
-    }else res.status(400).json({ success: false, message: 'Registrazione fallita: e-mail non valida'});
+    }else res.status(400).json({ success: false, message: 'Registrazione fallita: e-mail o username non validi'});
 });
 
 // source: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
