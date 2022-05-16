@@ -17,7 +17,7 @@ function login()
     var password = document.getElementById("authPassword").value;
     // console.log(email);
 
-    fetch('../api/v1/authentications', {
+    fetch('../api/v1/authentications/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify( { email: email, password: password } ),

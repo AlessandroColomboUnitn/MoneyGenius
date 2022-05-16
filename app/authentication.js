@@ -8,7 +8,7 @@ const user = require('./models/user');
 // Based on source: https://github.com/unitn-software-engineering/EasyLib/blob/master/app/authentications
 // route to authenticate and get a new token
 // ---------------------------------------------------------
-router.post('/signin', async function(req, res) {
+router.post('/login', async function(req, res) {
 	// find the user
 	let user = await User.findOne({
 		email: req.body.email
