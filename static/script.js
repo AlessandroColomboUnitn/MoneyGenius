@@ -25,15 +25,19 @@ function login()
     .then((resp) => resp.json()) // Transform the data into json
     .then(function(data){
         if(!data.success) throw data.message;
-        loggedUser.token = data.token;
-        loggedUser.email = data.email;
-        loggedUser.id = data.id;
-        loggedUser.self = data.self;
-        // loggedUser.id = loggedUser.self.substring(loggedUser.self.lastIndexOf('/') + 1);
-        document.getElementById("loggedUser").innerHTML = loggedUser.email;
-        //console.log(data.id);
-        //loadLendings();
-        return;
+        else{
+            loggedUser.token = data.token;
+            loggedUser.email = data.email;
+            loggedUser.id = data.id;
+            loggedUser.self = data.self;
+            // loggedUser.id = loggedUser.self.substring(loggedUser.self.lastIndexOf('/') + 1);
+            document.getElementById("loggedUser").innerHTML = loggedUser.email;
+            document.getElementById("authEmail").clear();
+            document.getElementById("authPassword").clear();
+            //console.log(data.id);
+            //loadLendings();
+            return;
+        }
     })
     .catch( 
         (error) => {
@@ -65,6 +69,8 @@ function signup(){
         loggedUser.id = data.id;
         loggedUser.self = data.self;        
         document.getElementById("loggedUser").innerHTML = loggedUser.email;
+        document.getElementById("authEmail").clear();
+        document.getElementById("authPassword").clear();
         return;
     })
     .catch((error) => {
