@@ -19,12 +19,17 @@ app.use('/api/v1/authentications/signup', authentication);
 /**
  * 
  */
+
+app.use(tokenChecker);
+
 app.use('/api/v1/users', users);
 
 /*If no routs applyies, 404 error*/
-app.use((req, res) =>{
+/*app.use((req, res) =>{
     req.statusCode(404);
     res.json({error: 'Not found'});
-});
+});*/
+
+
 
 module.exports = app;

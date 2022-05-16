@@ -60,6 +60,18 @@ function checkIfEmailInString(text) {
     return re.test(text);
 }
 
-
+router.post('/setBudget', async (req,res) => {
+    let budget = req.body.budget;
+    if (!isNaN(budget) && budget > 0) {
+        let email = req.body.email;
+        let user = await User.findOne({email: email});
+        user.budget = budget;
+        await user.save();
+        res.status(200).json({success: true});
+    }
+    else {
+        res.status(400).json({success: false, message: "input non valido"});
+    }
+} );
 
 module.exports = router;
