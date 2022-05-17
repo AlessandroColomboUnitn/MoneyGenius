@@ -8,24 +8,29 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="author" content="Mattia Rampazzo">
 
-        <!-- js for the spending modal-->
         <script async>
 
-            //this function avoid that the browser stop parsing the html 
-            //its a condition not welcomed by users
+            //once all the DOM is loaded
             document.addEventListener("DOMContentLoaded", function() {
 
+                loadExpensesList();
+
+                loadModal();
+
+            });
+
+            function loadModal(){
                 // Get the modal
-                var modal = document.getElementById("mdlSpending");
+                var modal = document.getElementById("mdlExpense");
 
                 // Get the button that opens the modal
-                var btnSpending = document.getElementById("btnSpending");
+                var btnOpenFormExpense = document.getElementById("btnOpenFormExpense");
 
                 // Get the <span> element that closes the modal
                 var span = document.getElementsByClassName("close")[0];
 
                 // When the user clicks on the button, open the modal
-                btnSpending.onclick = function() {
+                btnOpenFormExpense.onclick = function() {
                     modal.style.display = "block";
                 }
 
@@ -40,8 +45,43 @@
                         modal.style.display = "none";
                     }
                 }
-            });
+            }
        
+            function loadExpensesList(){
+                //ajax call to api
+                const xhttp = new XMLHttpRequest();
+
+                xhttp.open("GET", "/api/v1/users/123/expenses/", true);
+
+                xhttp.onload = function() {
+                    //document.getElementById("expensesList").innerHTML = this.responseText;
+                    
+                    var expensesList = document.getElementById("expensesList");
+                    var expensesTable = document.getElementById("expensesTable");
+
+                    //respone is an array of expenses
+                    const expenses = JSON.parse(this.responseText);
+
+                    expenses.forEach(expense => {
+                        //console.log(expense);
+                        
+                        let trExpense = document.createElement("tr");
+                        
+                        for (attribute in expense) {
+                            let td = document.createElement("td");
+                            td.innerHTML = expense [attribute];
+
+                            trExpense.appendChild(td);
+                        }
+
+                        expensesTable.appendChild(trExpense);
+                     });
+
+                }
+
+                xhttp.send();
+            }
+
         </script>
 
         <!-- css for the spending modal -->
@@ -97,20 +137,27 @@
 
         <!-- div containing a list of all the spending of the current month  -->
         <!-- nota: qual'è la traduzione corretta di spesa/uscita? -->
-        <div id="spendingList">
-            <table>
-                
+        <div id="expensesList">
+            <table id="expensesTable">
+                <tr>
+                    <th>Name</th>
+                    <th>CategoryId</th>
+                    <th>Amount</th>
+                    <th>Id</th>
+                </tr>
             </table>
         </div>
 
-        <!-- button that when clicked opens the outlay form-->
-        <button id="btnSpending">Aggiungi Spesa</button>
+        <br><br>
+
+        <!-- button that when clicked opens the expense form-->
+        <button id="btnOpenFormExpense">Aggiungi Spesa</button>
         
 
         <!-- HTML, css and js for the modal taken from w3schools -->
 
         <!-- The Modal -->
-        <div id="mdlSpending" class="modal">
+        <div id="mdlExpense" class="modal">
 
             <!-- Modal content -->
             <div class="modal-content">
@@ -120,7 +167,7 @@
                 
                 <h3>Registra spesa:</h3>
 
-                <form>
+                <form action="api/v1/users/123/expenses" method="post" name="expenseForm" id="expenseForm">
                     <table>
                         <tr>
                             <td>Nome:</td>
@@ -132,14 +179,14 @@
                         </tr>                      
                         <tr>
                             <td>Categoria:</td>
-                            <td><input type="text" name="category" id="category"></td>
-                        </tr>                        <tr>
+                            <td><input type="text" name="categoryId" id="categoryId"></td>
+                        </tr>
                         <tr>
                             <td>Data:</td>
                             <td><input type="text" name="date" id="date"></td>
                         </tr>                        
                         <tr>
-                            <td><input type="submit" name="Conferma"></td>
+                            <td><button id="btnAddExpense">Conferma</button></td>
                         </tr>
                     </table>
                     
