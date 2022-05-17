@@ -2,12 +2,15 @@ const express = require('express');
 const router = express.Router();
 const User = require('./models/user'); // get our mongoose model
 const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
-const user = require('./models/user');
+//const user = require('./models/user'); // a cosa serve, non è doppia?
 
 // ---------------------------------------------------------
 // Based on source: https://github.com/unitn-software-engineering/EasyLib/blob/master/app/authentications
 // route to authenticate and get a new token
 // ---------------------------------------------------------
+
+// link sopra non punta a risorsa voluta
+
 router.post('', async function(req, res) {
 	
 

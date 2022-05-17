@@ -68,10 +68,13 @@
                         let trExpense = document.createElement("tr");
                         
                         for (attribute in expense) {
-                            let td = document.createElement("td");
-                            td.innerHTML = expense [attribute];
+                            if(attribute!="_id"){
+                                let td = document.createElement("td");
+                                td.innerHTML = expense [attribute];
 
-                            trExpense.appendChild(td);
+                                trExpense.appendChild(td);
+                            }
+
                         }
 
                         expensesTable.appendChild(trExpense);
@@ -140,10 +143,10 @@
         <div id="expensesList">
             <table id="expensesTable">
                 <tr>
-                    <th>Name</th>
-                    <th>CategoryId</th>
-                    <th>Amount</th>
-                    <th>Id</th>
+                    <th>Nome</th>
+                    <th>Categoria</th>
+                    <th>Totale</th>
+                    <th>Data</th>
                 </tr>
             </table>
         </div>
@@ -162,7 +165,7 @@
             <!-- Modal content -->
             <div class="modal-content">
                 
-                <!-- its the icon for closing the modal-->
+                <!-- icon for closing the modal-->
                 <span class="close">&times;</span>
                 
                 <h3>Registra spesa:</h3>
@@ -171,19 +174,20 @@
                     <table>
                         <tr>
                             <td>Nome:</td>
-                            <td><input type="text" name="name" id="name"></td>
+                            <td><input type="text" name="name" id="name" required></td>
                         </tr>            
                         <tr>
                             <td>Totale:</td>
-                            <td><input type="text" name="amount" id="amount"></td>
-                        </tr>                      
+                            <td><input type="text" name="amount" id="amount" required></td>
+                        </tr>
+                        <!--now we have category as input text but it should be a droplist with values taken from the apis -->                      
                         <tr>
                             <td>Categoria:</td>
-                            <td><input type="text" name="categoryId" id="categoryId"></td>
+                            <td><input type="text" name="categoryId" id="categoryId" required></td>
                         </tr>
                         <tr>
                             <td>Data:</td>
-                            <td><input type="text" name="date" id="date"></td>
+                            <td><input type="text" name="date" id="date" required></td>
                         </tr>                        
                         <tr>
                             <td><button id="btnAddExpense">Conferma</button></td>
