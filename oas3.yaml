@@ -11,7 +11,7 @@ servers:
 paths:
   /authentications/{login}:
     post:
-      summary: Login to an existing user
+      summary: Authenticate an existing user
       description: Use the input parameters to authenticate an existing user.   
       requestBody:
         content:
@@ -51,6 +51,7 @@ paths:
                     example: true
                   token:
                     type: string
+                    example: eyJzdwIiOiIxMiMONTY30DkwIiwibmFtZSI6IkDvaG4
                     description: User's authentication token
                   message:
                     type: string
@@ -75,3 +76,74 @@ paths:
                     type: string
                     description: Error message
                     example: Autenticazione failed, invalid email or password
+
+  /authentications/{signup}:
+    post:
+      summary: Register a new user
+      description: Use the input parameters to register a new user.    
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "marco@unitn.it"
+                name:
+                  type: string
+                  example: "Marco"
+                password:
+                  type: string
+                  example: "123"
+      responses:
+        '200':
+          description: The logged user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    description: Registration mail of the new user
+                    example: marco@unit.it
+                  name:
+                    type: string
+                    description: Registration name of the new user
+                    example: marco
+                  id: 
+                    type: string
+                    description: Id associated with the new user
+                    example: marco's_id
+                  success:
+                    type: boolean
+                    description: Result of the registration process
+                    example: true
+                  token:
+                    type: string
+                    description: User's authentication token
+                    example: eyJzdwIiOiIxMiMONTY30DkwIiwibmFtZSI6IkDvaG4
+                  message:
+                    type: string
+                    description: A message for the user
+                    example: Enjoy your token! 
+                  self: 
+                    type: string
+                    description: Reference to the new user
+                    example: api/v1/marco's_id
+        '400':
+          description: Invalid parameters 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the registration process
+                    example: false
+                  message:
+                    type: string
+                    description: Error message
+                    example: Registration failed, invalid email or password
