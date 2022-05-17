@@ -1,5 +1,6 @@
-Before running:
-modify username and password of DB_URL in .env.example and rename it to .env.
+# Before running:
+- Copy the ".env.example" file into a new ".env" file
+- Modify username and password of DB_URL in the ".env" file.
 
-To run the app locally:
-npm run start_local
+# To run the app locally:
+- npm run start_local

@@ -111,3 +111,27 @@ function signup(){
         console.error(error);
     });
 }
+
+function setBudget(){
+    var budget = document.getElementById("budget").value;
+    fetch('../api/v1/users/setBudget', {
+        method: 'POST',
+        headers: {'Content-type': 'application/json'},
+        body: JSON.stringify({
+            email: loggedUser.email, 
+            token: loggedUser.token, 
+            budget: budget} )
+    })
+    .then((resp) => resp.json())
+    .then(function(data){ 
+        if(data.success){
+            window.alert("budget impostato con successo");
+        }
+        else {
+            throw data.message;
+        }
+    })
+    .catch(function(error){
+        window.alert("impossibile impostare il budget");
+    })
+}
