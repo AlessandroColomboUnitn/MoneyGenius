@@ -32,12 +32,16 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 */
  
 //Login and signup
-const authentication = require("./authentication")
+const authentication = require("./authentication");
 //Cheks validity of JWT
-const tokenChecker = require("./tokenChecker")
+const tokenChecker = require("./tokenChecker");
 
-const users = require('./users.js')
 
+const users = require('./users.js');
+
+const addExpense = require("./addExpense.js");
+
+//middleware for accessing request body
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
 
@@ -47,16 +51,25 @@ app.use('/', express.static('static'));
 /**
 * Authentication routing and middleware
 */
-app.use('/api/v1/authentications', authentication);
+app.use('/api/v1/authentications/login', authentication);
 app.use('/api/v1/authentications/signup', authentication);
 /**
  * 
  */
 app.use('/api/v1/users', users);
 
-/*If no routs applyies, 404 error*/
+
+
+app.use('/api/v1/users/*/expenses/', addExpense);
+
+
+
+
+
+
+/*If no routes applyies, 404 error*/
 app.use((req, res) =>{
-    req.statusCode(404);
+    res.status(404);
     res.json({error: 'Not found'});
 });
 
