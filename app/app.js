@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 
+/*
 //For API documentation
 const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
@@ -28,7 +29,8 @@ const options = {
 const swaggerSpec = swaggerJSDoc(options);
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
+*/
+ 
 //Login and signup
 const authentication = require("./authentication")
 //Cheks validity of JWT
