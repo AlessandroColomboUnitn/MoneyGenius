@@ -24,6 +24,12 @@
             </nav>
         </form>
     </span>
+
+    <form method="post" action="api/v1/users/setBudget" id="budgetform">
+        <label> Set Budget </label>
+        <input name="budget" id="budget"/>
+        <input type="button" value="submit", onclick="setBudget()"/>
+    </form>
     <script src="script.js"></script>
 
 </body>

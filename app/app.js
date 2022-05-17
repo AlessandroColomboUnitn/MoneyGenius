@@ -51,26 +51,24 @@ app.use('/', express.static('static'));
 /**
 * Authentication routing and middleware
 */
-app.use('/api/v1/authentications/login', authentication);
+app.use('/api/v1/authentications/', authentication);
 app.use('/api/v1/authentications/signup', authentication);
 /**
  * 
  */
+
+app.use(tokenChecker);
+
 app.use('/api/v1/users', users);
-
-
 
 app.use('/api/v1/users/*/expenses/', addExpense);
 
-
-
-
-
-
-/*If no routes applyies, 404 error*/
+/*If no routs applyies, 404 error*/
 app.use((req, res) =>{
-    res.status(404);
+    req.statusCode(404);
     res.json({error: 'Not found'});
 });
+
+
 
 module.exports = app;
