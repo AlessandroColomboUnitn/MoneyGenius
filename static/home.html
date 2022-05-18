@@ -137,6 +137,12 @@
         <div id="budegetInfo">
 
         </div>
+        
+        <form method="post" action="api/v1/users/setBudget" id="budgetform">
+            <b> Set Budget </b>
+            <input name="budget" id="budget"/>
+            <input type="button" value="submit", onclick="setBudget()"/>
+        </form>
 
         <!-- div containing a list of all the spending of the current month  -->
         <!-- nota: qual'è la traduzione corretta di spesa/uscita? -->

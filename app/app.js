@@ -63,6 +63,8 @@ app.use('/api/v1/users', users);
 
 app.use('/api/v1/users/*/expenses/', addExpense);
 
+app.use('/api/v1/viewBudget', viewBudget);
+
 /*If no routs applyies, 404 error*/
 app.use((req, res) =>{
     req.statusCode(404);
