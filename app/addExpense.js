@@ -4,49 +4,101 @@ const router = express.Router();
 const User = require('./models/user'); // get our mongoose model
 
 
-//API endpoint: api/v1/users/:id/expenses
 
 //API for recording an expense
+//API endpoint: api/v1/users/:id/expenses
 router.post('', async function(req, res){
 
-    //here i take the first user in the collection
-    var user = await User.findOne();
-    var expense={
-        name: req.body.name,
-        amount: req.body.amount,
-        categoryId: req.body.categoryId,
-        date: req.body.date
-    };
+    //get the value of the form submitted
+    let name = req.body.name;
+    let amount = req.body.amount;
+    let categoryId = req.body.categoryId;
+    let date = req.body.date;
+    
+    //check if the inputs are valid
+    if(validateInputs(name, amount, categoryId, date)){
+        //retrieve the user instance
+        let user = await User.findOne();
+        //here i should make some checks
 
-    user.expenses.push(expense);
+        //create the expense
+        let expense={
+            name: name,
+            amount: amount,
+            categoryId: categoryId,
+            date: date
+        };
 
-    await user.save();
+        //push on the array of expenses
+        user.expenses.push(expense);
 
+        //saving the changes on the db
+        await user.save()
+        //if the document is saved correctly
+        .then(updatedUser =>{
+            // updatedUser === user; //true
+            /*  
+                from the api slides:
+                The response of a POST request should provide an empty body
+                and an HTTP header'Location' with a link to the newly created resource. 
+            
 
- /*   
-    The response of a POST request should provide an empty body
-    and an HTTP header'Location' with a link to the newly created resource. 
- */
+                res.location("/api/v1/users/:id/expenses/:id").status(201).send();
+            */
+            res.status(200).json({success: true});
+        })
+        //if there is an error with the db
+        .catch(error => {
+            //write on console the error and send response with code and error message
+            console.log(error);
+            res.status(500).json({success: false, message: "Internal Server Error"});
+        });
 
-    //res.json({ user: 'tobi' });
-    //res.redirect(201, "/home.html");
-    //res.location("/api/v1/users/"+ id).status(201).send();
-    res.location("/home.html").status(201).send();
+    }else{
+        res.status(400).json({success: false, message: "Input non valido"});
+    }
     
 });
 
 
-//api for getting all the expenses of a user
+//API for retrieving all the expenses of a user
+//API endpoint: api/v1/users/:id/expenses
 router.get('', async function(req, res) {
 
-    // read users from mongodb and sensd back
-    const user = await User.findOne();
-    //console.log(user.expenses);
-    res.send(user.expenses);
+    //retrieve the user instance
+    let user = await User.findOne();
 
-    // read only the expenses of a user
+        
+        var expenses = user.expenses;
 
+        /*
+            here i should clear the date and maybe remove the id from the response
+            even sort them in order by the latest
+            filter them by max limit
+            show only last month? 
+        */
+        
+         res.send(expenses);
+
+    //})
+    /*
+    //if the user is not found
+    .catch(error => {
+        //write on console the error and send response with code and error message
+        console.log(error);
+        res.status(500).json({success: false, message: "Internal Server Error"});
+    });
+    */
 });
 
+
+function validateInputs(name, amount, categoryId, date){
+    return (
+        name!="" &&
+        (!isNaN(amount) && amount > 0) &&
+        categoryId !="" /*&&
+        date*/
+    );
+}
 
 module.exports = router;
