@@ -4,7 +4,8 @@
  var loggedUser = {};
 
 
- function displayLogin(){
+//displays login form after login selection
+function displayLogin(){
     document.getElementById("authEmail").hidden=false;
     document.getElementById("authPassword").hidden=false;
     document.getElementById("setLogin").hidden=true;
@@ -13,7 +14,8 @@
     document.getElementById("back").hidden=false;
  }
 
- function displaySignup(){
+//displays signup form after signup selection
+function displaySignup(){
     document.getElementById("authEmail").hidden=false;
     document.getElementById("authPassword").hidden=false;
     document.getElementById("authName").hidden=false;
@@ -33,6 +35,11 @@
     document.getElementById("Login").hidden=true;
     document.getElementById("back").hidden=true;
     document.getElementById("authform").reset();
+ }
+
+ function afterAuth(){
+    document.getElementById("loggedUser").innerHTML = loggedUser.name;
+    document.getElementById("budgetform").hidden = false;
  }
 
  /** 
@@ -64,8 +71,8 @@ function login()
             loggedUser.id = data.id;
             loggedUser.self = data.self;
             // loggedUser.id = loggedUser.self.substring(loggedUser.self.lastIndexOf('/') + 1);
-            document.getElementById("loggedUser").innerHTML = loggedUser.name;
             resetForm();
+            afterAuth();
             //console.log(data.id);
             //loadLendings();
             return;
@@ -102,8 +109,8 @@ function signup(){
         loggedUser.name = data.name;
         loggedUser.id = data.id;
         loggedUser.self = data.self;        
-        document.getElementById("loggedUser").innerHTML = loggedUser.name;
         resetForm();
+        afterAuth();
         return;
     })
     .catch((error) => {

@@ -19,6 +19,7 @@
 
             });
 
+            //code for the modal, code taken from w3schools.com
             function loadModal(){
                 // Get the modal
                 var modal = document.getElementById("mdlExpense");
@@ -47,6 +48,8 @@
                 }
             }
        
+            //send an ajax request to the api to retrieve the list of epenses
+            //if there arent any expenses do not show the table...
             function loadExpensesList(){
                 //ajax call to api
                 const xhttp = new XMLHttpRequest();
@@ -70,7 +73,12 @@
                         for (attribute in expense) {
                             if(attribute!="_id"){
                                 let td = document.createElement("td");
-                                td.innerHTML = expense [attribute];
+                                
+                                if(attribute=="date"){
+                                    td.innerHTML = clearDate( expense [attribute] );
+                                }else{
+                                    td.innerHTML = expense [attribute];
+                                }
 
                                 trExpense.appendChild(td);
                             }
@@ -85,9 +93,34 @@
                 xhttp.send();
             }
 
+            //checks the input of the expense form, called when the button is clicked
+            function validateInputs(){
+                return validateAmount();
+                //checkDate() date should not be int the future or before 2000 for examples
+            }
+
+            //if the amount is not a number or is less than zero send an alert
+            function validateAmount(){
+                //let v = document.forms["expenseForm"]["amount"].value;
+                let v = document.getElementById("amount").value;
+                
+                //if(isNaN(v) || v<=0){
+                if (v <= 0) {
+                    alert("Errore: inserito Totale negativo");
+                    return false;
+                }
+                
+                return true;
+            }
+            //even this properties can be obatained with the min attribute on the input tag
+        
+            function clearDate(date){
+                //split in two the string and return the first half
+                return date.split('T')[0];
+            }
         </script>
 
-        <!-- css for the spending modal -->
+        <!-- css for the modal -->
         <style>
             /* The Modal (background) */
             .modal {
@@ -135,7 +168,6 @@
 
         <!-- div containing the amount of money spent and the amount of budget left -->
         <div id="budegetInfo">
-
         </div>
         
         <form method="post" action="api/v1/users/setBudget" id="budgetform">
@@ -145,7 +177,6 @@
         </form>
 
         <!-- div containing a list of all the spending of the current month  -->
-        <!-- nota: qual'è la traduzione corretta di spesa/uscita? -->
         <div id="expensesList">
             <table id="expensesTable">
                 <tr>
@@ -162,9 +193,7 @@
         <!-- button that when clicked opens the expense form-->
         <button id="btnOpenFormExpense">Aggiungi Spesa</button>
         
-
         <!-- HTML, css and js for the modal taken from w3schools -->
-
         <!-- The Modal -->
         <div id="mdlExpense" class="modal">
 
@@ -175,8 +204,7 @@
                 <span class="close">&times;</span>
                 
                 <h3>Registra spesa:</h3>
-
-                <form action="api/v1/users/123/expenses" method="post" name="expenseForm" id="expenseForm">
+                <form action="api/v1/users/123/expenses" method="post" name="expenseForm" id="expenseForm" onsubmit="return validateInputs()">                    
                     <table>
                         <tr>
                             <td>Nome:</td>
@@ -184,19 +212,19 @@
                         </tr>            
                         <tr>
                             <td>Totale:</td>
-                            <td><input type="text" name="amount" id="amount" required></td>
+                            <td><input type="number" name="amount" id="amount" required></td>
                         </tr>
-                        <!--now we have category as input text but it should be a droplist with values taken from the apis -->                      
+                        <!-- category here is as an input text but it should be a droplist with values taken from the apis -->                      
                         <tr>
                             <td>Categoria:</td>
                             <td><input type="text" name="categoryId" id="categoryId" required></td>
                         </tr>
                         <tr>
                             <td>Data:</td>
-                            <td><input type="text" name="date" id="date" required></td>
+                            <td><input type="date" name="date" id="date" required></td>
                         </tr>                        
                         <tr>
-                            <td><button id="btnAddExpense">Conferma</button></td>
+                            <td><input type="submit" value="Conferma" id="btnAddExpense"></td>
                         </tr>
                     </table>
                     

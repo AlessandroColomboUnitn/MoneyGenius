@@ -49,7 +49,6 @@ router.post('/login', async function(req, res) {
 //  Route to register a new user and get a new token.
 // ---------------------------------------------------------
 router.post('/signup', async function(req, res) {
-	
 	let email = req.body.email;
 	let name = req.body.name; 
 	
