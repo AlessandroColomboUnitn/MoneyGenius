@@ -13,7 +13,7 @@
             <span id="loggedUser"></span>
             <nav>
                 <input name="email" placeholder="mario.rossi@unitn.com" id="authEmail" required="true" hidden="true"/>
-                <input name="pasword" placeholder="123" id="authPassword" required="true" hidden="true" />
+                <input name="pasword" placeholder="123" id="authPassword" required="true" type="password" hidden="true" />
                 <input name="username" placeholder="marco" id="authName" required="true" hidden="true" />
             </nav>
             <nav>
@@ -25,7 +25,7 @@
         </form>
     </span>
 
-    <form method="post" action="api/v1/users/setBudget" id="budgetform">
+    <form method="post" action="api/v1/users/setBudget" id="budgetform" hidden="true">
         <label> Set Budget </label>
         <input name="budget" id="budget"/>
         <input type="button" value="submit", onclick="setBudget()"/>
