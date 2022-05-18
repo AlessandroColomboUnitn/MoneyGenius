@@ -41,6 +41,8 @@ const users = require('./users.js');
 
 const addExpense = require("./addExpense.js");
 
+const categories = require("./categories");
+
 //middleware for accessing request body
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
@@ -59,6 +61,8 @@ app.use('/api/v1/authentications', authentication);
 app.use(tokenChecker);
 
 app.use('/api/v1/users', users);
+
+app.use('/api/v1/users/:id/categories', categories)
 
 app.use('/api/v1/users/*/expenses/', addExpense);
 
