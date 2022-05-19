@@ -17,9 +17,15 @@ router.post('', async function(req, res){
     
     //check if the inputs are valid
     if(validateInputs(name, amount, categoryId, date)){
+
+        //get the user id
+        let id = req.body.name;
+        console.log(id);
+
         //retrieve the user instance
-        let user = await User.findOne();
-        //here i should make some checks
+        let user = await User.findOne({
+            _id: id
+        });
 
         //create the expense
         let expense={
@@ -65,20 +71,24 @@ router.post('', async function(req, res){
 //API endpoint: api/v1/users/:id/expenses
 router.get('', async function(req, res) {
 
+    let id = req.query.id;
+
     //retrieve the user instance
-    let user = await User.findOne();
+    let user = await User.findOne({
+		_id: req.query.id
+	});
 
         
-        var expenses = user.expenses;
+    var expenses = user.expenses;
 
-        /*
-            here i should clear the date and maybe remove the id from the response
-            even sort them in order by the latest
-            filter them by max limit
-            show only last month? 
-        */
-        
-         res.send(expenses);
+    /*
+        here i should clear the date and maybe remove the id from the response
+        even sort them in order by the latest
+        filter them by max limit
+        show only last month? 
+    */
+    
+        res.send(expenses);
 
     //})
     /*
