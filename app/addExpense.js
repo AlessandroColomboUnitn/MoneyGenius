@@ -19,7 +19,7 @@ router.post('', async function(req, res){
     if(validateInputs(name, amount, categoryId, date)){
 
         //get the user id
-        let id = req.body.name;
+        let id = req.body.id;
         console.log(id);
 
         //retrieve the user instance
