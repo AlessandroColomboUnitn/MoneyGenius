@@ -40,6 +40,7 @@ function displaySignup(){
  function afterAuth(){
     document.getElementById("loggedUser").innerHTML = loggedUser.name;
     document.getElementById("budgetform").hidden = false;
+    document.getElementById("viewBudgetLabel").hidden = false;
  }
 
  /** 
@@ -140,5 +141,29 @@ function setBudget(){
     })
     .catch(function(error){
         window.alert("impossibile impostare il budget");
+    })
+}
+
+
+function viewBudget(){
+    fetch('../api/v1/viewBudget', {
+        method: 'GET',
+        headers: {'Content-type': 'application/json'},
+        body: JSON.stringify({
+            email: loggedUser.email, 
+            token: loggedUser.token} )
+    })
+    .then((resp) => resp.json())
+    .then(function(data){ 
+        if(data.success){
+            document.getElementById(data.budget_spent).innerHTML = budgetSpentView;
+            window.alert("budget mostrato");
+        }
+        else {
+            throw data.message;
+        }
+    })
+    .catch(function(error){
+        window.alert("impossibile visualizzare il budget");
     })
 }
