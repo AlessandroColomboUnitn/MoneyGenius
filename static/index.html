@@ -82,7 +82,7 @@
                 
                 <h3>Registra spesa:</h3>
 
-                <form method="post" name="expenseForm" id="expenseForm" onsubmit="return addExpense()">                    
+                <form method="post" name="expenseForm" id="expenseForm">                    
                     
                     <table>
                         <tr>
@@ -103,7 +103,7 @@
                             <td><input type="date" name="date" id="date" required></td>
                         </tr>                        
                         <tr>
-                            <td><input type="submit" value="Conferma" id="btnAddExpense"></td>
+                            <td><input type="button" value="Conferma" id="btnAddExpense" onclick="addExpense();"></td>
                         </tr>
                     </table>     
                 
