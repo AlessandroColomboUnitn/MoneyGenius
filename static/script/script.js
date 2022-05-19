@@ -98,9 +98,16 @@ function afterAuth(){
     document.getElementById("divAuthentication").hidden = true;
     document.getElementById("divExpense").hidden = false;
     document.getElementById("divBudget").hidden = false;
-
+    document.getElementById("viewBudgetLabel").hidden = false;
+    
     //loads the expenses
     loadExpensesList();
+    viewBudget();
+
+}
+
+function afterSetBudget(){
+    viewBudget();
 }
 
 
@@ -195,6 +202,8 @@ function setBudget(){
     .then(function(data){ 
         if(data.success){
             window.alert("budget impostato con successo");
+            afterSetBudget();
+            viewBudget();
         }
         else {
             throw data.message;
@@ -296,17 +305,16 @@ function addExpense(){
 }
 
 function viewBudget(){
-    fetch('../api/v1/viewBudget', {
-        method: 'GET',
-        headers: {'Content-type': 'application/json'},
-        body: JSON.stringify({
-            email: loggedUser.email, 
-            token: loggedUser.token} )
-    })
+    
+    var url = new URL("http://localhost:8080/api/v1/user/budget_spent"),
+        params = {id:loggedUser.id, token:loggedUser.token}
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+    
+    fetch(url)
     .then((resp) => resp.json())
     .then(function(data){ 
         if(data.success){
-            document.getElementById(data.budget_spent).innerHTML = budgetSpentView;
+            document.getElementById("budgetSpentView").innerHTML = data.budget_spent;
             window.alert("budget mostrato");
         }
         else {
