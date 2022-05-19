@@ -2,7 +2,7 @@
  * This variable stores the logged in user
  */
 var loggedUser = {};
-
+var base="http://localhost:8080";
 
 //once the window is loaded
 window.addEventListener("load", function() {
@@ -39,7 +39,7 @@ function loadModal(){
         }
     }
 }
-
+/*
 //checks the input of the expense form, called when the button is clicked
 function validateInputs(){
     return validateAmount();
@@ -60,6 +60,7 @@ function validateAmount(){
     return true;
 }
 //even this properties can be obatained with the min attribute on the input tag
+*/
 
 function clearDate(date){
     //split in two the string and return the first half
@@ -209,67 +210,56 @@ function setBudget(){
 //if there arent any expenses do not show the table...
 function loadExpensesList(){
 
-    var url = new URL("http://localhost:8080/api/v1/users/123/expenses"),
-        params = {id:loggedUser.id, token:loggedUser.token}
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+    let url = new URL('api/v1/users/' + loggedUser.id + '/expenses', base);
+    let params = {token:loggedUser.token};
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
     
     fetch(url)
     .then((resp) => resp.json()) // Transform the data into json
     .then(function(data){
-        /*if(!data.success){
+        if(!data.success){
             console.log(data);
             throw data.message;
         }else{
-        */
-            //let expensesList = document.getElementById("expensesList");
-        let expensesTable = document.getElementById("expensesTable");
-        
-        data.forEach(expense => {
-            //console.log(expense);
-            
-            let trExpense = document.createElement("tr");
-            
-            for (attribute in expense) {
-                if(attribute!="_id"){
-                    let td = document.createElement("td");
-                    
-                    if(attribute=="date"){
-                        td.innerHTML = clearDate( expense [attribute] );
-                    }else{
-                        td.innerHTML = expense [attribute];
-                    }
 
-                    trExpense.appendChild(td);
-                }
+            let expensesList = document.getElementById("expensesList");
+            let userExpenses = data.expenses;
 
+            //if i have any expense
+            if(userExpenses.length>0){
+                let table = createExpensesTable(userExpenses);
+                table = fillExpensesTable(userExpenses, table);       
+                expensesList.appendChild(table);
+            }else{
+                let span = document.createElement("span");
+                span.innerHTML="Nessuna spesa registrata"; 
+                expensesList.appendChild(span);
             }
 
-            expensesTable.appendChild(trExpense);
-            });
-
-        return;
-    });
-    /*})
+            return;
+        }
+    })
     .catch( 
         (error) => {
             window.alert(error);
             console.error(error);
         }
     ); // If there is any error you will catch them here
-    */
 }
 
 function addExpense(){
+
+    let url = new URL('api/v1/users/' + loggedUser.id + '/expenses', base);
+
     var name = document.getElementById("name").value;
     var amount = document.getElementById("amount").value;
     var categoryId = document.getElementById("categoryId").value;
     var date = document.getElementById("date").value;
 
-    fetch('api/v1/users/123/expenses', {
+    fetch(url, {
         method: 'POST',
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify({
-            id: loggedUser.id,
             token: loggedUser.token, 
             name: name,
             amount: amount,
@@ -278,10 +268,43 @@ function addExpense(){
         })
     })
     .then((resp) => resp.json())
-    .then(function(data){/* 
-        console.log(data);
+    .then(function(data){
+
         if(data.success){
+            
             window.alert("Nuova spesa registrata");
+            
+            console.log(data.expense);
+            
+            let table = document.getElementById('expensesTable');
+            let expense = data.expense;
+            
+            //create table if its the first expense
+            if(!table){
+                let expensesList = document.getElementById("expensesList");
+               
+                //get the span and remove it
+                let span = expensesList.firstElementChild;
+                expensesList.removeChild(span);
+
+                //create the table and append it
+                table = createExpensesTable(new Array(expense));
+                table = fillExpensesTable(new Array(expense), table);
+                expensesList.appendChild(table);                
+            }else{
+                //else just update it 
+                table = fillExpensesTable(new Array(expense), table);
+            }
+
+
+            //get close modal icon
+            let span = document.getElementsByClassName("close")[0];
+
+            //close the modal
+            span.dispatchEvent(new MouseEvent('click'));
+
+            //reset form
+            document.getElementById('expenseForm').reset();
         }
         else {
             throw data.message;
@@ -289,8 +312,59 @@ function addExpense(){
     })
     .catch(function(error){
         window.alert(error);
-    })*/
-        console.log(data);
-    
     });
+
+
+}
+
+//create the table
+function createExpensesTable(userExpenses){
+    var table = document.createElement("table");
+    table.id = 'expensesTable';
+                
+    //setup the th row
+    let trHeaders = document.createElement("tr");
+
+    for (attribute in userExpenses[0]) {
+        if(attribute!="_id"){
+
+            let th = document.createElement("th");
+
+            th.innerHTML = attribute;
+
+            trHeaders.appendChild(th);
+        }
+    }
+    table.appendChild(trHeaders);
+
+    return table;
+}
+
+//fill the table
+function fillExpensesTable(userExpenses, table){
+
+    userExpenses.forEach(expense => {
+
+        let trExpense = document.createElement("tr");
+        
+        for (attribute in expense) {
+            if(attribute!="_id"){
+
+                let td = document.createElement("td");
+                
+                if(attribute=="date")
+                    expense[attribute] = clearDate(expense[attribute]);
+
+                td.innerHTML = expense [attribute];
+
+                trExpense.appendChild(td);
+            }
+
+        }
+
+        table.appendChild(trExpense);
+        
+    });
+
+    return table;
 }
