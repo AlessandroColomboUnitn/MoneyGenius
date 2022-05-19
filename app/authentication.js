@@ -32,7 +32,7 @@ router.post('/login', async function(req, res) {
 	}
 	var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
 
-	res.json({
+	res.status(200).json({
 		success: true,
 		message: 'Enjoy your token!',
 		token: token,
