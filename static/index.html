@@ -26,10 +26,16 @@
     </span>
 
     <form method="post" action="api/v1/users/setBudget" id="budgetform" hidden="true">
-        <label> Set Budget </label>
+        <b> Set Budget </b></br>
         <input name="budget" id="budget"/>
         <input type="button" value="submit", onclick="setBudget()"/>
+        <input type="button" value="submit", onclick="viewBudget()"/>
     </form>
     <script src="script.js"></script>
+
+    <form method="post" action="api/v1/viewBudget" id="viewBudgetLabel" hidden="true">
+        <b> Budget Speso </b></br>
+        <p id="budget_spent"></p>
+    </form>
 
 </body>
