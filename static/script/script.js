@@ -209,14 +209,11 @@ function setBudget(){
 //if there arent any expenses do not show the table...
 function loadExpensesList(){
 
-    fetch('/api/v1/users/123/expenses/',{
-        method: 'GET',
-        headers: {'Content-type': 'application/json'},
-        body: JSON.stringify({
-            token: loggedUser.token, 
-            id: loggedUser.id
-        })
-    })
+    var url = new URL("http://localhost:8080/api/v1/users/123/expenses"),
+        params = {id:loggedUser.id, token:loggedUser.token}
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+    
+    fetch(url)
     .then((resp) => resp.json()) // Transform the data into json
     .then(function(data){
         /*if(!data.success){
