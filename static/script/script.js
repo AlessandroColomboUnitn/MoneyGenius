@@ -210,7 +210,7 @@ function setBudget(){
 function loadExpensesList(){
 
     fetch('/api/v1/users/123/expenses/',{
-        method: 'POST',
+        method: 'GET',
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify({
             token: loggedUser.token, 
