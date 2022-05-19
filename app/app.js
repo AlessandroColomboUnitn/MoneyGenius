@@ -64,7 +64,7 @@ app.use('/api/v1/users', users);
 
 app.use('/api/v1/users/*/expenses/', addExpense);
 
-app.use('/api/v1/users/*/budget_spent/', viewBudget);
+app.use('/api/v1/users/budget_spent/', viewBudget);
 
 /*If no routs applyies, 404 error*/
 app.use((req, res) =>{
