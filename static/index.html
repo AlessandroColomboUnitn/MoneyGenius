@@ -1,35 +1,118 @@
 <!DOCTYPE html>
 <html>
 
-<head>
+<head>        
+    <title>MoneyGenius</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="script/script.js" async></script>
+
 </head>
 
 <body>
 
     <h1>MoneyGenius</h1>
 
-    <span>
+    <span id="loggedUser"></span>
+
+    <!-- nav for navigating the authentication -->
+    <nav id="navAuthentication">
+        <button type="button" id="setLogin" onclick="displayLogin()">accedi</button>
+        <button type="button" id="setSignup" onclick="displaySignup()">registrati</button>
+    </nav>
+
+    <!-- div containing the form for signup and login -->
+    <div id="divAuthentication" hidden="true">
         <form action="api/v1/users" method="post" name="authform" id="authform">
-            <span id="loggedUser"></span>
             <nav>
-                <input name="email" placeholder="mario.rossi@unitn.com" id="authEmail" required="true" hidden="true"/>
-                <input name="pasword" placeholder="123" id="authPassword" required="true" type="password" hidden="true" />
-                <input name="username" placeholder="marco" id="authName" required="true" hidden="true" />
+                <input type="text" name="email" placeholder="mario.rossi@unitn.com" id="authEmail" required="true"/>
+                <input type="password" name="pasword" placeholder="123" id="authPassword" required="true"/>
+                <input type="text" name="username" placeholder="mario" id="authName" required="true" hidden="true"/>
             </nav>
             <nav>
-                <button type="button" id="setLogin" onclick="displayLogin()">accedi</button>
-                <button type="button" id="setSignup" onclick="displaySignup()">registrati</button>
-                <button type="button" id="Login" onclick="login()" hidden="true">conferma</button> <button type="button" id="Signup" onclick="signup()" hidden="true">conferma</button>
-                <button type="button" id="back" onclick="resetForm()" hidden="true">indietro</button>
+                <button type="button" id="Login" onclick="login()" hidden="true">conferma</button> 
+                <button type="button" id="Signup" onclick="signup()" hidden="true">conferma</button>
+                <button type="button" id="back" onclick="resetForm()">indietro</button>
             </nav>
         </form>
-    </span>
+    </div>
 
-    <form method="post" action="api/v1/users/setBudget" id="budgetform" hidden="true">
-        <label> Set Budget </label>
-        <input name="budget" id="budget"/>
-        <input type="button" value="submit", onclick="setBudget()"/>
-    </form>
-    <script src="script.js"></script>
+    <!-- div containing the form for the budget -->
+    <div id="divBudget" hidden="true">
+        <hr>
+        <form method="post" action="api/v1/users/setBudget" id="budgetform">
+            <label> Set Budget </label>
+            <input name="budget" id="budget"/>
+            <input type="button" value="submit", onclick="setBudget()"/>
+        </form>
+        <hr>
+    </div>
+    
+    <!-- div containing the list of expenses and the modal for adding expenses -->
+    <div id="divExpense" hidden="true">
+    
+        <!-- div containing a list of all the expenses of the current month  -->
+        <div id="expensesList">
+            <table id="expensesTable">
+                <tr>
+                    <th>Nome</th>
+                    <th>Categoria</th>
+                    <th>Totale</th>
+                    <th>Data</th>
+                </tr>
+            </table>
+        </div>
+
+        <br><br>
+
+        <!-- button that when clicked opens the expense form-->
+        <button id="btnOpenFormExpense">Aggiungi Spesa</button>
+
+        <!-- HTML, css and js for the modal taken from w3schools -->
+        <!-- The Modal -->
+        <div id="mdlExpense" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+                
+                <!-- icon for closing the modal-->
+                <span class="close">&times;</span>
+                
+                <h3>Registra spesa:</h3>
+
+                <form method="post" name="expenseForm" id="expenseForm" onsubmit="return addExpense()">                    
+                    
+                    <table>
+                        <tr>
+                            <td>Nome:</td>
+                            <td><input type="text" name="name" id="name" required></td>
+                        </tr>            
+                        <tr>
+                            <td>Totale:</td>
+                            <td><input type="number" name="amount" id="amount" required></td>
+                        </tr>
+                        <!-- category here is as an input text but it should be a droplist with values taken from the apis -->                      
+                        <tr>
+                            <td>Categoria:</td>
+                            <td><input type="text" name="categoryId" id="categoryId" required></td>
+                        </tr>
+                        <tr>
+                            <td>Data:</td>
+                            <td><input type="date" name="date" id="date" required></td>
+                        </tr>                        
+                        <tr>
+                            <td><input type="submit" value="Conferma" id="btnAddExpense"></td>
+                        </tr>
+                    </table>     
+                
+                </form>       
+
+            </div>
+
+        </div>
+
+    </div>
 
 </body>
