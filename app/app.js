@@ -10,7 +10,7 @@ const tokenChecker = require("./tokenChecker");
 
 const users = require('./users.js');
 
-const addExpense = require("./addExpense.js");
+const expenses = require("./expense.js");
 
 //const viewBudget = require('./viewBudget');
 const categories = require("./categories");
@@ -36,7 +36,7 @@ app.use('/api/v1/users', users);
 
 app.use('/api/v1/users/:id/categories', categories)
 
-app.use('/api/v1/users/*/expenses/', addExpense);
+app.use('/api/v1/users/:id/expenses/', expenses);
 
 //app.use('/api/v1/users/*/budget_spent/', viewBudget);
 
