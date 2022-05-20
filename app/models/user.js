@@ -10,4 +10,4 @@ module.exports = mongoose.model('user', new Schema({
     allocated_budget: {type: Number, default: 0},
     categories: [{name: String, color: String, budget: Number}],
     expenses: [{name: String, categoryId: String, amount: Number, date: Date}]
-}))
+}));
