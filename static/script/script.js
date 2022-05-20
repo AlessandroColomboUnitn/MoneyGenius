@@ -109,10 +109,8 @@ function afterAuth(){
     document.getElementById("divAuthentication").hidden = true;
     document.getElementById("divExpense").hidden = false;
     document.getElementById("divBudget").hidden = false;
-<<<<<<< HEAD
     document.getElementById("viewBudgetLabel").hidden = false;
     
-=======
     document.getElementById("divCategory").hidden = false;
     //set user's default category
     fetch('../api/v1/users/'+loggedUser.id+'/categories/default', {
@@ -125,7 +123,6 @@ function afterAuth(){
         window.alert(data.success+" "+data.message);
     });
 
->>>>>>> b6da79236877ca28c030dff498b45b233590c466
     //loads the expenses
     loadExpensesList();
     viewBudget();
