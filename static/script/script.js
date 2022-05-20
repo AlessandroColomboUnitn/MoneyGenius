@@ -306,19 +306,19 @@ function addExpense(){
 
 function viewBudget(){
     
-    var url = new URL("http://localhost:8080/api/v1/user/budget_spent"),
+    var url = new URL("http://localhost:8080/api/v1/user/:id/budget_spent"),
         params = {id:loggedUser.id, token:loggedUser.token}
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
     
     fetch(url)
     .then((resp) => resp.json())
     .then(function(data){ 
-        if(data.success){
-            document.getElementById("budgetSpentView").innerHTML = data.budget_spent;
-            window.alert("budget mostrato");
+        if(true){
+            document.getElementById("budgetSpentView").innerHTML = data.budget;
+            let bsv = data.budget;
         }
         else {
-            throw data.message;
+          throw data.message;
         }
     })
     .catch(function(error){
