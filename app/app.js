@@ -39,7 +39,7 @@ const tokenChecker = require("./tokenChecker");
 
 const users = require('./users.js');
 
-const addExpense = require("./addExpense.js");
+const expenses = require("./expense.js");
 
 const viewBudget = require('./viewBudget.js');
 
@@ -66,7 +66,11 @@ app.use('/api/v1/users', users);
 
 app.use('/api/v1/users/:id/categories', categories)
 
+<<<<<<< HEAD
 app.use('/api/v1/users/:id/expenses/', addExpense);
+=======
+app.use('/api/v1/users/:id/expenses/', expenses);
+>>>>>>> 4fc3eec397449234c631ebc1c874e21fc35ba2fc
 
 app.use('/api/v1/user/:id/budget_spent', viewBudget);
 
