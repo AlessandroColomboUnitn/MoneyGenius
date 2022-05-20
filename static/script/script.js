@@ -98,6 +98,17 @@ function afterAuth(){
     document.getElementById("divAuthentication").hidden = true;
     document.getElementById("divExpense").hidden = false;
     document.getElementById("divBudget").hidden = false;
+    
+    //set user's default category
+    fetch('../api/v1/users/'+loggedUser.id+'/categories/default', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify( { id: loggedUser.id, email:loggedUser.email } ),
+    })
+    .then((resp) => resp.json())
+    .then(function(data){
+        window.alert(data.success+" "+data.message);
+    });
 
     //loads the expenses
     loadExpensesList();
