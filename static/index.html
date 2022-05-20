@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <script src="script/script.js" async></script>
+    <script src="script/category.js" async></script>
 
 </head>
 
@@ -49,7 +50,52 @@
         </form>
         <hr>
     </div>
-    
+
+
+    <div id="divCategory" hidden="true">
+         <!-- button that when clicked opens the expense form-->
+         <button id="btnOpenFormCategory">Aggiungi Categoria</button>
+
+         <!-- HTML, css and js for the modal taken from w3schools -->
+         <!-- The Modal -->
+         <div id="mdlCategory" class="modal">
+ 
+             <!-- Modal content -->
+             <div class="modal-content">
+                 
+                 <!-- icon for closing the modal-->
+                 <span class="close" id="spanCategory">&times;</span>
+                 
+                 <h3>Registra una nuova categoria:</h3>
+ 
+                 <form method="post" name="categoryForm" id="categoryForm">                    
+                     
+                     <table>
+                         <tr>
+                             <td>Nome:</td>
+                             <td><input type="text" name="name" id="categoryName" required></td>
+                         </tr>            
+                         <tr>
+                             <td>Color:</td>
+                             <td><input type="color" name="color" id="categoryColor" required></td>
+                         </tr>
+                         <!-- category here is as an input text but it should be a droplist with values taken from the apis -->                      
+                         <tr>
+                             <td>Budget:</td>
+                             <td><input type="number" name="budget" id="categoryBudget" required></td>
+                         </tr>                      
+                         <tr>
+                             <td><input type="button" value="Conferma" id="btnAddCategory" onclick="addCategory();"></td>
+                         </tr>
+                     </table>     
+                 
+                 </form>       
+ 
+             </div>
+ 
+         </div>
+    </div>
+
     <!-- div containing the list of expenses and the modal for adding expenses -->
     <div id="divExpense" hidden="true">
     

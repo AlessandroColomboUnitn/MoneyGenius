@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('./models/user');
 const assert = require('assert');
 const defaultCategory = "altro";
-const defaultColor = "gray";
+const defaultColor = "#919191";
 var defaulCategoryId;
 
 /**
@@ -39,7 +39,7 @@ router.post('', async function(req, res){
     let id = req.body.id; //user's id
     let name = req.body.name; //category's name
     let color = req.body.color; //category's color
-    let budget = req.body.budget; //category's budget
+    let budget = parseInt(req.body.budget); //category's budget
     
     //console.log(name+" "+color+" "+budget);
 
@@ -52,9 +52,9 @@ router.post('', async function(req, res){
         assert(user, "Utente non esistente"); //should not throw since user token is checked beforehand
         assert(!user.categories.find( x => x.name === name), "Creazione fallita, categoria già esistente."); //check that the category does not exists already
         assert(!user.categories.find( x => x.color === color), "Creazione fallita, colore categoria già assegnato."); //check that the color is not already assigned to another categoty
-        
+        assert(!isNaN(budget) && budget>0, "Il budget assegnato alla categoria non è vaildo");
         let new_alloc_budget = user.allocated_budget + budget;
-
+        console.log(new_alloc_budget);
         assert(new_alloc_budget <= user.budget, "Creazione fallita, il budget allocato per le categorie supera il budget totale."); //check that the sum of budgets of all categories does not exceed the user's budget
         
         await user.categories.push({name: name, color: color, budget: budget}); //add new category

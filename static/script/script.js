@@ -3,6 +3,9 @@
  */
 var loggedUser = {};
 
+function assert(condition, message){
+    if (!condition) throw message || "assertion failed";
+}
 
 //once the window is loaded
 window.addEventListener("load", function() {
@@ -13,30 +16,36 @@ window.addEventListener("load", function() {
 
 //code for the modal, code taken from w3schools.com
 function loadModal(){
-    // Get the modal
-    var modal = document.getElementById("mdlExpense");
+    // Get the modals
+    var mdlExpense = document.getElementById("mdlExpense");
+    var mdlCategory = document.getElementById("mdlCategory");
 
     // Get the button that opens the modal
     var btnOpenFormExpense = document.getElementById("btnOpenFormExpense");
+    var btnOpenFormCategory = document.getElementById("btnOpenFormCategory");
 
     // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
-
+    var spanExpense = document.getElementsByClassName("close")[0];
+    var spanCategory = document.getElementById("spanCategory");
     // When the user clicks on the button, open the modal
     btnOpenFormExpense.onclick = function() {
-        modal.style.display = "block";
+        mdlExpense.style.display = "block";
     }
 
+    btnOpenFormCategory.onclick = () => mdlCategory.style.display="block";
+
     // When the user clicks on <span> (x), close the modal
-    span.onclick = function() {
-        modal.style.display = "none";
+    spanExpense.onclick = function() {
+        mdlExpense.style.display = "none";
     }
+
+    spanCategory.onclick = () => mdlCategory.style.display = "none";
+
 
     // When the user clicks anywhere outside of the modal, close it
     window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
+        if (event.target == mdlExpense) mdlExpense.style.display = "none";
+        if (event.target == mdlCategory) mdlCategory.style.display = "none";
     }
 }
 
@@ -98,12 +107,12 @@ function afterAuth(){
     document.getElementById("divAuthentication").hidden = true;
     document.getElementById("divExpense").hidden = false;
     document.getElementById("divBudget").hidden = false;
-    
+    document.getElementById("divCategory").hidden = false;
     //set user's default category
     fetch('../api/v1/users/'+loggedUser.id+'/categories/default', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify( { id: loggedUser.id, email:loggedUser.email } ),
+        body: JSON.stringify( { id: loggedUser.id, token: loggedUser.token, email:loggedUser.email } ),
     })
     .then((resp) => resp.json())
     .then(function(data){
