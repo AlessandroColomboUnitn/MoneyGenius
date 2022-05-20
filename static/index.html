@@ -11,6 +11,17 @@
 
 </head>
 
+<style>
+    th, td {
+        padding: 7px;
+    }
+</style>
+<!--td {
+        border: 1px solid black;
+        border-radius: 10px;
+    }-->
+
+
 <body>
 
     <h1>MoneyGenius</h1>
@@ -114,8 +125,16 @@
 
 
     <form method="post" action="api/v1/viewBudget" id="viewBudgetLabel" hidden="true">
-        <b> Budget Speso </b></br>
-        <p> 0 <span id="budgetSpentView"></span></p>
+        <table>
+            <tr>
+                <th style="text-align:center;"> Budget Speso </th>
+                <th style="text-align:center;"> Budget Rimanente </th>
+            </tr>
+            <tr>
+                <td style="text-align:center;"> <span id="budgetSpentView"></span> </td>
+                <td style="text-align:center;"> <span id="budget2View"></span> </td>
+            </tr>
+        </table>
     </form>
 
 </body>

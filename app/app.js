@@ -41,7 +41,7 @@ const users = require('./users.js');
 
 const expenses = require("./expense.js");
 
-const viewBudget = require('./viewBudget.js');
+const budgets = require('./budgets.js');
 
 const categories = require("./categories");
 
@@ -66,13 +66,9 @@ app.use('/api/v1/users', users);
 
 app.use('/api/v1/users/:id/categories', categories)
 
-<<<<<<< HEAD
-app.use('/api/v1/users/:id/expenses/', addExpense);
-=======
 app.use('/api/v1/users/:id/expenses/', expenses);
->>>>>>> 4fc3eec397449234c631ebc1c874e21fc35ba2fc
 
-app.use('/api/v1/user/:id/budget_spent', viewBudget);
+app.use('/api/v1/users/:id/budget', budgets);
 
 /*If no routs applyies, 404 error*/
 app.use((req, res) =>{

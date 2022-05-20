@@ -322,30 +322,28 @@ function addExpense(){
     .catch(function(error){
         window.alert(error);
     });
-<<<<<<< HEAD
 }
 
 function viewBudget(){
     
-    var url = new URL("http://localhost:8080/api/v1/user/:id/budget_spent"),
-        params = {id:loggedUser.id, token:loggedUser.token}
+    var url = new URL("http://localhost:8080/api/v1/users/" + loggedUser.id + "/budget"),
+        params = {token:loggedUser.token}
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
     
     fetch(url)
     .then((resp) => resp.json())
     .then(function(data){ 
-        if(true){
-            document.getElementById("budgetSpentView").innerHTML = data.budget;
-            let bsv = data.budget;
+        if(data.success){
+            document.getElementById("budgetSpentView").innerHTML = data.total_spent;
+            document.getElementById("budget2View").innerHTML = data.budget;
         }
         else {
           throw data.message;
         }
     })
     .catch(function(error){
-        window.alert("impossibile visualizzare il budget");
+        window.alert(error.message);
     })
-=======
 
 
 }
@@ -400,5 +398,4 @@ function fillExpensesTable(userExpenses, table){
     });
 
     return table;
->>>>>>> 4fc3eec397449234c631ebc1c874e21fc35ba2fc
 }
