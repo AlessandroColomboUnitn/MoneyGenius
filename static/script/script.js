@@ -8,12 +8,6 @@ function assert(condition, message){
 }
 var base="http://localhost:8080";
 
-//once the window is loaded
-window.addEventListener("load", function() {
-
-    //loadModal();
-
-});
 
 //code for the modal, code taken from w3schools.com
 function loadModal(){
@@ -106,6 +100,7 @@ function resetForm(){
 
 //hide the authentication section and show the user homepage
 function afterAuth(){
+
     //document.getElementById("loggedUser").innerHTML = loggedUser.name;
     document.getElementById("navAuthentication").hidden = true;
     document.getElementById("divAuthentication").hidden = true;
@@ -115,6 +110,7 @@ function afterAuth(){
     
     document.getElementById("divCategory").hidden = false;
     //set user's default category
+    
     fetch('../api/v1/users/'+loggedUser.id+'/categories/default', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -144,8 +140,8 @@ function afterAuth(){
         let divExpense = document.getElementById("divExpense");
         divExpense.innerHTML = text;
 
-        //loads the expenses
-        loadExpensesList();
+    //loads the expenses
+    loadExpensesList();
 
         loadModal();
 
