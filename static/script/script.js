@@ -69,7 +69,7 @@ function validateAmount(){
     
     return true;
 }
-//even this properties can be obatained with the min attribute on the input tag
+//even this properties can be obatained with the min name on the input tag
 */
 
 function clearDate(date){
@@ -248,7 +248,7 @@ function loadExpensesList(){
 
             //if i have any expense
             if(userExpenses.length>0){
-                let table = createExpensesTable(userExpenses);
+                let table = createExpensesTable();
                 table = fillExpensesTable(userExpenses, table);       
                 expensesList.appendChild(table);
             }else{
@@ -309,7 +309,7 @@ function addExpense(){
                 expensesList.removeChild(span);
 
                 //create the table and append it
-                table = createExpensesTable(new Array(expense));
+                table = createExpensesTable();
                 table = fillExpensesTable(new Array(expense), table);
                 expensesList.appendChild(table);                
             }else{
@@ -338,28 +338,29 @@ function addExpense(){
 
 }
 
+
 //create the table
-function createExpensesTable(userExpenses){
+function createExpensesTable(){
     var table = document.createElement("table");
     table.id = 'expensesTable';
                 
     //setup the th row
     let trHeaders = document.createElement("tr");
+    let thNames = ['Nome', 'Categoria', 'Totale', 'Data'];
+    
+    for (i in thNames) {
+        let th = document.createElement("th");
 
-    for (attribute in userExpenses[0]) {
-        if(attribute!="_id"){
+        th.innerHTML = thNames[i];
 
-            let th = document.createElement("th");
-
-            th.innerHTML = attribute;
-
-            trHeaders.appendChild(th);
-        }
+        trHeaders.appendChild(th);
     }
+
     table.appendChild(trHeaders);
 
     return table;
 }
+
 
 //fill the table
 function fillExpensesTable(userExpenses, table){
@@ -368,15 +369,15 @@ function fillExpensesTable(userExpenses, table){
 
         let trExpense = document.createElement("tr");
         
-        for (attribute in expense) {
-            if(attribute!="_id"){
+        for (name in expense) {
+            if(name!="_id"){
 
                 let td = document.createElement("td");
                 
-                if(attribute=="date")
-                    expense[attribute] = clearDate(expense[attribute]);
+                if(name=="date")
+                    expense[name] = clearDate(expense[name]);
 
-                td.innerHTML = expense [attribute];
+                td.innerHTML = expense [name];
 
                 trExpense.appendChild(td);
             }

@@ -77,16 +77,24 @@ router.get('', async function(req, res) {
     let id = req.params.id;
 
     //retrieve the user instance
-    var user = await User.findOne({
-		_id: id
-	}).exec();
+    var user = await User.findById(id).exec();
 
+    var expenses = user.expenses;
+    var categories = user.categories;
+
+    //TODO find a better solution to 
+    expenses.forEach(expense => {
+        let cat= categories.find( cat => cat.id === expense.categoryId);
+        //assert
+        expense.categoryId = cat.name;
+    });
+
+/*
     if(!user){
         res.status(400).json({ success: false, message: 'Utente non trovato' });
         return;
     }
-  
-    var expenses = user.expenses;
+*/
 
     /*
         clear the date
@@ -99,7 +107,7 @@ router.get('', async function(req, res) {
     res.status(200).json({
         success: true,
         message: 'Here are your expenses!',
-        expenses: expenses,
+        expenses: expenses
     });
 
 });
