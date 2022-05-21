@@ -11,7 +11,7 @@ var base="http://localhost:8080";
 //once the window is loaded
 window.addEventListener("load", function() {
 
-    loadModal();
+    //loadModal();
 
 });
 
@@ -104,12 +104,15 @@ function resetForm(){
     document.getElementById("authform").reset();
 }
 
+//hide the authentication section and show the user homepage
 function afterAuth(){
     //document.getElementById("loggedUser").innerHTML = loggedUser.name;
     document.getElementById("navAuthentication").hidden = true;
     document.getElementById("divAuthentication").hidden = true;
     document.getElementById("divExpense").hidden = false;
     document.getElementById("divBudget").hidden = false;
+    document.getElementById("viewBudgetLabel").hidden = false;
+    
     document.getElementById("divCategory").hidden = false;
     //set user's default category
     fetch('../api/v1/users/'+loggedUser.id+'/categories/default', {
@@ -125,10 +128,40 @@ function afterAuth(){
         window.alert(error);
     });
 
+
+    //fetch the budget html
+    fetch('./budget.html')
+    .then(response=> response.text())
+    .then(text => {
+        let divExpense = document.getElementById("divBudget");
+        divBudget.innerHTML = text;
+    });
+
+    //fetch the expense html
+    fetch('./expense.html')
+    .then(response=> response.text())
+    .then(text => {
+        let divExpense = document.getElementById("divExpense");
+        divExpense.innerHTML = text;
+
+        //loads the expenses
+        loadExpensesList();
+
+        loadModal();
+
+    });
+
+    //load the category drop list input
+
+
     //loads the expenses
-    loadExpensesList();
+    viewBudget();
+
 }
 
+function afterSetBudget(){
+    viewBudget();
+}
 
  /** 
  * Based on source: https://github.com/unitn-software-engineering/EasyLib/blob/master/static/script.js 
@@ -221,6 +254,8 @@ function setBudget(){
     .then(function(data){ 
         if(data.success){
             window.alert("budget impostato con successo");
+            afterSetBudget();
+            viewBudget();
         }
         else {
             throw data.message;
@@ -338,6 +373,28 @@ function addExpense(){
     .catch(function(error){
         window.alert(error);
     });
+}
+
+function viewBudget(){
+    
+    var url = new URL("http://localhost:8080/api/v1/users/" + loggedUser.id + "/budget"),
+        params = {token:loggedUser.token}
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+    
+    fetch(url)
+    .then((resp) => resp.json())
+    .then(function(data){ 
+        if(data.success){
+            document.getElementById("budgetSpentView").innerHTML = data.total_spent;
+            document.getElementById("budget2View").innerHTML = data.budget;
+        }
+        else {
+          throw data.message;
+        }
+    })
+    .catch(function(error){
+        window.alert(error.message);
+    })
 
 
 }

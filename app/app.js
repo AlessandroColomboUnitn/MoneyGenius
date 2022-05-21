@@ -12,7 +12,8 @@ const users = require('./users.js');
 
 const expenses = require("./expense.js");
 
-//const viewBudget = require('./viewBudget');
+const budgets = require('./budgets.js');
+
 const categories = require("./categories");
 
 //middleware for accessing request body
@@ -38,7 +39,7 @@ app.use('/api/v1/users/:id/categories', categories)
 
 app.use('/api/v1/users/:id/expenses/', expenses);
 
-//app.use('/api/v1/users/*/budget_spent/', viewBudget);
+app.use('/api/v1/users/:id/budget', budgets);
 
 /*If no routs applyies, 404 error*/
 app.use((req, res) =>{

@@ -12,11 +12,20 @@
 
 </head>
 
+<style>
+    th, td {
+        padding: 7px;
+    }
+</style>
+<!--td {
+        border: 1px solid black;
+        border-radius: 10px;
+    }-->
+
+
 <body>
 
     <h1>MoneyGenius</h1>
-
-    <span id="loggedUser"></span>
 
     <!-- nav for navigating the authentication -->
     <nav id="navAuthentication">
@@ -41,14 +50,7 @@
     </div>
 
     <!-- div containing the form for the budget -->
-    <div id="divBudget" hidden="true">
-        <hr>
-        <form method="post" action="api/v1/users/setBudget" id="budgetform">
-            <label> Set Budget </label>
-            <input name="budget" id="budget"/>
-            <input type="button" value="submit", onclick="setBudget()"/>
-        </form>
-        <hr>
+    <div id="divBudget">
     </div>
 
 
@@ -57,62 +59,24 @@
     </div>
 
     <!-- div containing the list of expenses and the modal for adding expenses -->
-    <div id="divExpense" hidden="true">
-    
-        <!-- div containing a list of all the expenses of the current month  -->
-        <div id="expensesList">
-        </div>
-
-        <br>
-
-        <!-- button that when clicked opens the expense form-->
-        <button id="btnOpenFormExpense">Aggiungi Spesa</button>
-
-        <!-- HTML, css and js for the modal taken from w3schools -->
-        <!-- The Modal -->
-        <div id="mdlExpense" class="modal">
-
-            <!-- Modal content -->
-            <div class="modal-content">
-                
-                <!-- icon for closing the modal-->
-                <span class="close">&times;</span>
-                
-                <h3>Registra spesa:</h3>
-
-                <form method="post" name="expenseForm" id="expenseForm">                    
-                    
-                    <table>
-                        <tr>
-                            <td>Nome:</td>
-                            <td><input type="text" name="name" id="name" required></td>
-                        </tr>            
-                        <tr>
-                            <td>Totale:</td>
-                            <td><input type="number" name="amount" id="amount" required></td>
-                        </tr>
-                        <!-- category here is as an input text but it should be a droplist with values taken from the apis -->                      
-                        <tr>
-                            <td>Categoria:</td>
-                            <td><input type="text" name="categoryId" id="categoryId" required></td>
-                        </tr>
-                        <tr>
-                            <td>Data:</td>
-                            <td><input type="date" name="date" id="date" required></td>
-                        </tr>                        
-                        <tr>
-                            <td><input type="button" value="Conferma" id="btnAddExpense" onclick="addExpense();"></td>
-                        </tr>
-                    </table>     
-                
-                </form>       
-
-            </div>
-
-        </div>
-
-        <hr>
-        
+    <div id="divExpense">
     </div>
+    
+    <br>
+
+
+
+    <form method="post" action="api/v1/viewBudget" id="viewBudgetLabel" hidden="true">
+        <table>
+            <tr>
+                <th style="text-align:center;"> Budget Speso </th>
+                <th style="text-align:center;"> Budget Rimanente </th>
+            </tr>
+            <tr>
+                <td style="text-align:center;"> <span id="budgetSpentView"></span> </td>
+                <td style="text-align:center;"> <span id="budget2View"></span> </td>
+            </tr>
+        </table>
+    </form>
 
 </body>
