@@ -133,6 +133,14 @@ function afterAuth(){
         divBudget.innerHTML = text;
     });
 
+    //fetch the category html
+    fetch("./category.html")
+    .then(response => response.text())
+    .then( text => {
+        document.getElementById("divCategory").innerHTML = text;
+
+    });
+
     //fetch the expense html
     fetch('./expense.html')
     .then(response=> response.text())
