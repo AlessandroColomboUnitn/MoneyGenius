@@ -8,12 +8,6 @@ function assert(condition, message){
 }
 var base="http://localhost:8080";
 
-//once the window is loaded
-window.addEventListener("load", function() {
-
-    loadModal();
-
-});
 
 //code for the modal, code taken from w3schools.com
 function loadModal(){
@@ -49,6 +43,7 @@ function loadModal(){
         if (event.target == mdlCategory) mdlCategory.style.display = "none";
     }
 }
+
 /*
 //checks the input of the expense form, called when the button is clicked
 function validateInputs(){
@@ -103,7 +98,9 @@ function resetForm(){
     document.getElementById("authform").reset();
 }
 
+//hide the authentication section and show the user homepage
 function afterAuth(){
+
     //document.getElementById("loggedUser").innerHTML = loggedUser.name;
     document.getElementById("navAuthentication").hidden = true;
     document.getElementById("divAuthentication").hidden = true;
@@ -115,18 +112,61 @@ function afterAuth(){
     document.getElementById("budgetRimanente").hidden = false;
 
     //set user's default category
+    
     fetch('../api/v1/users/'+loggedUser.id+'/categories/default', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify( { id: loggedUser.id, token: loggedUser.token, email:loggedUser.email } ),
     })
     .then((resp) => resp.json())
+<<<<<<< HEAD
     /*.then(function(data){
         window.alert(data.success+" "+data.message);
     });*/
+=======
+    .then(function(data){
+        assert(data.success, data.message);
+    })
+    .catch(function(error){
+        window.alert(error);
+    });
+>>>>>>> 05521af57610790b2c7a35ac35b41d053b4e55ef
+
+
+    //fetch the budget html
+    fetch('./budget.html')
+    .then(response=> response.text())
+    .then(text => {
+        let divExpense = document.getElementById("divBudget");
+        divBudget.innerHTML = text;
+    });
+
+    //fetch the category html
+    fetch("./category.html")
+    .then(response => response.text())
+    .then( text => {
+        document.getElementById("divCategory").innerHTML = text;
+
+    });
+
+    //fetch the expense html
+    fetch('./expense.html')
+    .then(response=> response.text())
+    .then(text => {
+        let divExpense = document.getElementById("divExpense");
+        divExpense.innerHTML = text;
 
     //loads the expenses
     loadExpensesList();
+
+        loadModal();
+
+    });
+
+    //load the category drop list input
+
+
+    //loads the expenses
     viewBudget();
 
 }
@@ -135,7 +175,6 @@ function afterSetBudget(){
     viewBudget();
     document.getElementById("budgetRimanente").hidden = false;
 }
-
 
  /** 
  * Based on source: https://github.com/unitn-software-engineering/EasyLib/blob/master/static/script.js 

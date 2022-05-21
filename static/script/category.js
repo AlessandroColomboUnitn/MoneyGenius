@@ -18,6 +18,7 @@ function addCategory(){
     .then((resp) => resp.json())
     .then(function(data){
         assert(data.success, data.message);
+        document.getElementById("spanCategory").click();
     }).catch(function(error){
         window.alert(error);
     });
