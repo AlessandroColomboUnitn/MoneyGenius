@@ -20,7 +20,7 @@ function loadModal(){
     var btnOpenFormCategory = document.getElementById("btnOpenFormCategory");
 
     // Get the <span> element that closes the modal
-    var spanExpense = document.getElementsByClassName("close")[0];
+    var spanExpense = document.getElementById("spanCloseExpenseForm");
     var spanCategory = document.getElementById("spanCategory");
     // When the user clicks on the button, open the modal
     btnOpenFormExpense.onclick = function() {
@@ -381,6 +381,8 @@ function addExpense(){
             
             let table = document.getElementById('expensesTable');
             let expense = data.expense;
+            let budget = data.budget;
+            let budget_spent = data.budget_spent;
             
             //create table if its the first expense
             if(!table){
@@ -393,7 +395,14 @@ function addExpense(){
                 //create the table and append it
                 table = createExpensesTable();
                 table = fillExpensesTable(new Array(expense), table);
-                expensesList.appendChild(table);                
+                expensesList.appendChild(table);
+
+                //update budget and budget_spent
+                document.getElementById("budgetSpentView").innerHTML = budget_spent;
+                
+                if(!isNaN(budget))
+                    document.getElementById("budget2View").innerHTML = budget;
+
             }else{
                 //else just update it 
                 table = fillExpensesTable(new Array(expense), table);

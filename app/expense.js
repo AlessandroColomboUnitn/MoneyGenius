@@ -15,16 +15,16 @@ router.post('', async function(req, res){
     let categoryId = req.body.categoryId;
     let date = req.body.date;
     
-    //check if the inputs are valid
-    if(validateInputs(name, amount, categoryId, date)){
-
+    try{
+        //check the inputs
+        assert(validateInputs(), "Creazione fallita, input non validi.");
+        
         //get the id from the request url
         let id = req.params.id;
 
         //retrieve the user instance
-        let user = await User.findOne({
-            _id: id
-        }).exec();
+        let user = await User.findOne({_id: id}).exec();
+        assert(user, "Creazione fallita, utente non riconosciuto.");
 
         //create the expense
         let expense={
@@ -34,39 +34,47 @@ router.post('', async function(req, res){
             date: date
         };
 
-        //push on the array of expenses
-        user.expenses.push(expense);
+        //push on the expenses array
+        await user.expenses.push(expense);
 
-        //saving the changes on the db
-        await user.save()
-        //if the document is saved correctly
-        .then(updatedUser =>{
-            // updatedUser === user; //true
-            /*  
-                from the api slides:
-                The response of a POST request should provide an empty body
-                and an HTTP header'Location' with a link to the newly created resource. 
-            
+        //update budget left
+        if(!isNaN(user.budget))
+            user.budget-=expense.amount;
+        
+        //update budget spent
+        user.budget_spent+=expense.amount;
 
-                res.location("/api/v1/users/:id/expenses/:id").status(201).send();
-            */
-            
-            res.status(201).json({
-                success: true,
-                expense: expense
-            });
-        })
-        //if there is an error with the db
-        .catch(error => {
-            //write on console the error and send response with code and error message
-            console.log(error);
-            res.status(500).json({success: false, message: "Internal Server Error"});
+        //update budget left x catgory
+        user.categories.find(cat => {
+            if(cat.id === expense.categoryId)
+                cat.budget-=expense.amount;
+        });
+        
+        //update budget spent x catgory
+        user.categories.find(cat => {
+            if(cat.id === expense.categoryId)
+                cat.cat_spent+=expense.amount;
+        });
+        //update budget x catgory
+
+
+        user = await user.save(); 
+    
+        res.status(201).json({
+            success: true,
+            message: "Nuova spesa registrata.",
+            expense: expense,
+            budget: user.budget,
+            budget_spent: user.budget_spent
         });
 
-    }else{
-        res.status(400).json({success: false, message: "Input non valido"});
+    }catch(error){ //if one of the above assertions fails, we return the respective error message
+        console.log(error);
+        res.status(400).json({
+            success: false,
+            message: error.message
+        });
     }
-    
 });
 
 
@@ -74,27 +82,29 @@ router.post('', async function(req, res){
 //API endpoint: api/v1/users/:id/expenses
 router.get('', async function(req, res) {
     
-    //get the id from the request url
+    //get the user id from the request url
     let id = req.params.id;
 
     try{
         //retrieve the user instance
         var user = await User.findById(id).exec();
 
-        var expenses = user.expenses;
-        var categories = user.categories;
+        assert(user, "Utente non riconosciuto.");
+
+        var expenses = []; expenses = Array.from(user.expenses);
+        var categories = []; categories = Array.from(user.categories);
 
         //TODO find a better solution to
         expenses.forEach(expense => {
             let cat = categories.find(cat => cat.id === expense.categoryId);
-            assert(cat, 'Invalid category');
+            assert(cat, 'Categoria non esistente.');
             expense.categoryId = cat.name;
         });
 
 
         res.status(200).json({
             success: true,
-            message: 'Here are your expenses!',
+            message: 'Ecco le tue spese.',
             expenses: expenses
         });
 
@@ -119,7 +129,8 @@ function validateInputs(name, amount, categoryId, date){
         (!isNaN(amount) && amount > 0) &&
         categoryId !="" /*&&
         date*/
-    );
+
+    ) || true;
 }
 
 module.exports = router;
