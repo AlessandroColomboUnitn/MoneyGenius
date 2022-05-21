@@ -5,7 +5,7 @@ const app = express();
 //Login and signup
 const authentication = require("./authentication");
 //Cheks validity of JWT
-const tokenChecker = require("./tokenChecker");
+//const tokenChecker = require("./tokenChecker");
 
 
 const users = require('./users.js');
@@ -31,11 +31,11 @@ app.use('/api/v1/authentications', authentication);
  * 
  */
 
-app.use(tokenChecker);
+//app.use(tokenChecker);
 
 app.use('/api/v1/users', users);
 
-app.use('/api/v1/users/:id/categories', categories)
+app.use('/api/v1/users/:id/categories', categories);
 
 app.use('/api/v1/users/:id/expenses/', expenses);
 

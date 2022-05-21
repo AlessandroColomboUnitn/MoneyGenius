@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 const User = require('./models/user');
 const assert = require('assert');
 const user = require('./models/user');
@@ -126,21 +126,26 @@ router.delete('', async function (req, res){
 });
 
 router.get('', async(req, res) => {
-    
-    let id = req.params.id;
 
-    var user = await User.findById(id);
-    
-    assert(user, "utente non identificato");
+    try{
+        let id = req.params.id;
 
-    let totalCategory = user.categories[index].budget;
-    let spentInCategory = user.categories[index].cat_spent; //  cat_spent è da creare
+        var user = await User.findById(id);
+        
+        assert(user, "utente non identificato");
 
-    await user.save();
-    res.status(200).json({
-        success: true, 
-        categories: categories});
-
+        await user.save();
+        res.status(200).json({
+            success: true, 
+            categories: user.categories
+        });
+    }
+    catch(error){
+        res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
 });
 
 module.exports = router;
