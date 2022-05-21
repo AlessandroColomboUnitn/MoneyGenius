@@ -104,13 +104,11 @@ function afterAuth(){
     //document.getElementById("loggedUser").innerHTML = loggedUser.name;
     document.getElementById("navAuthentication").hidden = true;
     document.getElementById("divAuthentication").hidden = true;
-    document.getElementById("divExpense").hidden = false;
+    //document.getElementById("divExpense").hidden = false;
     document.getElementById("divBudget").hidden = false;
     document.getElementById("viewBudgetLabel").hidden = false;
-    document.getElementById("showCategory").hidden = false;
-    document.getElementById("divCategory").hidden = false;
     document.getElementById("budgetRimanente").hidden = false;
-
+    
     //set user's default category
     
     fetch('../api/v1/users/'+loggedUser.id+'/categories/default', {
@@ -140,7 +138,7 @@ function afterAuth(){
     .then(response => response.text())
     .then( text => {
         document.getElementById("divCategory").innerHTML = text;
-
+        showRecapCategories();
     });
 
     //fetch the expense html
@@ -153,7 +151,7 @@ function afterAuth(){
     //loads the expenses
     loadExpensesList();
 
-        loadModal();
+    loadModal();
 
     });
 
@@ -454,88 +452,4 @@ function fillExpensesTable(userExpenses, table){
     });
 
     return table;
-}
-
-function createCategoriesTable(userCategories){
-    var tableCat = document.createElement("tableCat");
-    tableCat.id = 'categoriesTable';
-                
-    //setup the th row
-    let trHeadersCat = document.createElement("tr");
-
-    for (attribute in userCategories[0]) {
-        if(attribute!="_id"){
-
-            let thCat = document.createElement("th");
-
-            thCat.innerHTML = attribute;
-
-            trHeadersCat.appendChild(thCat);
-        }
-    }
-    tableCat.appendChild(trHeadersCat);
-
-    return tableCat;
-}
-
-function showRecapCategories(){
-    
-    var url = new URL("http://localhost:8080/api/v1/users/" + loggedUser.id + "/categories", base),
-        params = {token:loggedUser.token}
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-    
-    fetch(url)
-    .then((resp) => resp.json())
-    .then(function(data){ 
-        if(!data.success){
-            console.log(data);
-            throw data.message;
-        }else{
-
-            let categoriesList = document.getElementById("categoriesList");
-            let userCategories = data.categories;
-
-            //if i have any expense
-            if(userCategories.length>0){
-                let tableCat = createCategoriesTable(userCategories);
-                tableCat = fillCategoriesTable(userCategories, tableCat);       
-                categoriesList.appendChild(tableCat);
-            }else{
-                let spanCat = document.createElement("span");
-                span.innerHTML="Nessuna categoria registrata"; 
-                categoriesList.appendChild(spanCat);
-            }
-
-            return;
-        }
-    })
-    .catch( 
-        (error) => {
-            window.alert(error);
-            console.error(error);
-        }
-    ); // If there is any error you will catch them here
-}
-
-function fillCategoriesTable(userCategories, tableCat){
-
-    userCategories.forEach(category => {
-
-        let trCategory = document.createElement("tr");
-        
-        for (attribute in category) {
-            if(attribute!="id" || attribute!="color"){
-
-                let td = document.createElement("td");
-
-                trCategory.appendChild(td);
-            }
-
-        }
-
-        tableCat.appendChild(trCategory);
-        
-    });
-
-    return tableCat;
 }

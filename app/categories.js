@@ -133,7 +133,7 @@ router.get('', async(req, res) => {
         var user = await User.findById(id);
         
         assert(user, "utente non identificato");
-
+        
         await user.save();
         res.status(200).json({
             success: true, 

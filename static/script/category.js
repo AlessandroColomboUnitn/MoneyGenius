@@ -23,3 +23,88 @@ function addCategory(){
         window.alert(error);
     });
 }
+
+function createCategoriesTable(){
+    var tableCat = document.createElement("tableCat");
+    tableCat.id = 'categoriesTable';
+
+    var thNames = ["Nome", "Speso", "Budget"];
+                
+    //setup the th row
+    let trHeadersCat = document.createElement("tr");
+
+    for (let i = 0; i<thNames.length; i++) {
+            let thCat = document.createElement("th");
+
+            thCat.innerHTML = thNames[i];
+
+            trHeadersCat.appendChild(thCat);
+    }
+    tableCat.appendChild(trHeadersCat);
+
+    return tableCat;
+}
+
+function showRecapCategories(){
+    
+    var url = new URL("api/v1/users/" + loggedUser.id + "/categories", base),
+        params = {token:loggedUser.token}
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+    
+    fetch(url)
+    .then((resp) => resp.json())
+    .then(function(data){ 
+        if(!data.success){
+            console.log(data);
+            throw data.message;
+        }else{
+
+            let categoriesList = document.getElementById("categoriesList");
+            
+            let userCategories = data.categories;
+            console.log(userCategories);
+
+            //if i have any expense
+            if(userCategories.length>0){
+                let tableCat = createCategoriesTable();
+                tableCat = fillCategoriesTable(userCategories, tableCat);       
+                categoriesList.appendChild(tableCat);
+            }else{
+                let spanCat = document.createElement("span");
+                spanCat.innerHTML="Nessuna categoria registrata"; 
+                categoriesList.appendChild(spanCat);
+            }
+
+            return;
+        }
+    })
+    .catch( 
+        (error) => {
+            window.alert(error);
+            console.error(error);
+        }
+    ); // If there is any error you will catch them here
+}
+
+function fillCategoriesTable(userCategories, tableCat){
+
+    userCategories.forEach(elementCategory => {
+
+        let trCategory = document.createElement("tr");
+        
+        for (attribute in elementCategory) {
+            if(attribute!="_id" && attribute!="color"){
+
+                let td = document.createElement("td");
+                td.innerHTML = elementCategory[attribute];
+                trCategory.appendChild(td);
+            }
+
+        }
+
+        tableCat.appendChild(trCategory);
+        
+    });
+
+    return tableCat;
+}
