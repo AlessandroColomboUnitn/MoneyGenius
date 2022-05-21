@@ -119,18 +119,12 @@ function afterAuth(){
         body: JSON.stringify( { id: loggedUser.id, token: loggedUser.token, email:loggedUser.email } ),
     })
     .then((resp) => resp.json())
-<<<<<<< HEAD
-    /*.then(function(data){
-        window.alert(data.success+" "+data.message);
-    });*/
-=======
     .then(function(data){
         assert(data.success, data.message);
     })
     .catch(function(error){
         window.alert(error);
     });
->>>>>>> 05521af57610790b2c7a35ac35b41d053b4e55ef
 
 
     //fetch the budget html
