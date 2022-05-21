@@ -1,8 +1,8 @@
+const assert = require('assert');
 const express = require('express');
 const router = express.Router({ mergeParams: true }); //{ mergeParams: true } to access params in the route of app.js
 
 const User = require('./models/user'); // get our mongoose model
-
 
 
 //API for recording an expense
@@ -77,26 +77,32 @@ router.get('', async function(req, res) {
     //get the id from the request url
     let id = req.params.id;
 
-    //retrieve the user instance
-    var user = await User.findById(id).exec();
+    try{
+        //retrieve the user instance
+        var user = await User.findById(id).exec();
 
-    var expenses = user.expenses;
-    var categories = user.categories;
+        var expenses = user.expenses;
+        var categories = user.categories;
 
-    //TODO find a better solution to 
-    expenses.forEach(expense => {
-        let cat= categories.find( cat => cat.id === expense.categoryId);
-        //assert
-        expense.categoryId = cat.name;
-    });
+        //TODO find a better solution to
+        expenses.forEach(expense => {
+            let cat = categories.find(cat => cat.id === expense.categoryId);
+            assert(cat, 'Invalid category');
+            expense.categoryId = cat.name;
+        });
 
-/*
-    if(!user){
-        res.status(400).json({ success: false, message: 'Utente non trovato' });
-        return;
+
+        res.status(200).json({
+            success: true,
+            message: 'Here are your expenses!',
+            expenses: expenses
+        });
+
     }
-*/
-
+    catch(error){
+        res.status(400).json({ success: false, message: error.message });
+        console.log(error);
+    }
     /*
         clear the date
         remove the id 
@@ -104,13 +110,6 @@ router.get('', async function(req, res) {
         filter them by max limit
         show only last month
     */
-    
-    res.status(200).json({
-        success: true,
-        message: 'Here are your expenses!',
-        expenses: expenses
-    });
-
 });
 
 

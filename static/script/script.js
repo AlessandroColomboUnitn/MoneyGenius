@@ -153,7 +153,9 @@ function afterAuth(){
     //loads the expenses
     loadExpensesList();
 
-        loadModal();
+    loadModal();
+
+    loadCategoriesOptions();
 
     });
 
@@ -314,6 +316,40 @@ function loadExpensesList(){
     ); // If there is any error you will catch them here
 }
 
+
+function loadCategoriesOptions(){
+    let url = new URL('api/v1/users/' + loggedUser.id + '/categories', base);
+    let params = {token:loggedUser.token};
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+ 
+
+    fetch(url)
+    .then((resp) => resp.json()) // Transform the data into json
+    .then(function(data){
+        if(!data.success){
+            console.log(data);
+            throw data.message;
+        }else{
+
+            let categoriesSel = document.getElementById("categoryId");
+            let userCategories = data.categories;
+
+            userCategories.forEach(category => {
+                categoriesSel.options[categoriesSel.options.length] = new Option(category.name, category.id);
+            })
+
+            return;
+        }
+    })
+    .catch( 
+        (error) => {
+            window.alert(error);
+            console.error(error);
+        }
+    );
+
+}
+
 function addExpense(){
 
     let url = new URL('api/v1/users/' + loggedUser.id + '/expenses', base);
@@ -404,7 +440,6 @@ function viewBudget(){
     })
 }
 
-
 //create the table
 function createExpensesTable(){
     var table = document.createElement("table");
@@ -426,7 +461,6 @@ function createExpensesTable(){
 
     return table;
 }
-
 
 //fill the table
 function fillExpensesTable(userExpenses, table){
