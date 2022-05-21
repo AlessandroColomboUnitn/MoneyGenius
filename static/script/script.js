@@ -110,8 +110,10 @@ function afterAuth(){
     document.getElementById("divExpense").hidden = false;
     document.getElementById("divBudget").hidden = false;
     document.getElementById("viewBudgetLabel").hidden = false;
-    
+    document.getElementById("showCategory").hidden = false;
     document.getElementById("divCategory").hidden = false;
+    document.getElementById("budgetRimanente").hidden = false;
+
     //set user's default category
     fetch('../api/v1/users/'+loggedUser.id+'/categories/default', {
         method: 'POST',
@@ -119,9 +121,9 @@ function afterAuth(){
         body: JSON.stringify( { id: loggedUser.id, token: loggedUser.token, email:loggedUser.email } ),
     })
     .then((resp) => resp.json())
-    .then(function(data){
+    /*.then(function(data){
         window.alert(data.success+" "+data.message);
-    });
+    });*/
 
     //loads the expenses
     loadExpensesList();
@@ -131,6 +133,7 @@ function afterAuth(){
 
 function afterSetBudget(){
     viewBudget();
+    document.getElementById("budgetRimanente").hidden = false;
 }
 
 
@@ -360,14 +363,12 @@ function viewBudget(){
             document.getElementById("budget2View").innerHTML = data.budget;
         }
         else {
-          throw data.message;
+            throw data.message;
         }
     })
     .catch(function(error){
         window.alert(error.message);
     })
-
-
 }
 
 //create the table
@@ -420,4 +421,88 @@ function fillExpensesTable(userExpenses, table){
     });
 
     return table;
+}
+
+function createCategoriesTable(userCategories){
+    var tableCat = document.createElement("tableCat");
+    tableCat.id = 'categoriesTable';
+                
+    //setup the th row
+    let trHeadersCat = document.createElement("tr");
+
+    for (attribute in userCategories[0]) {
+        if(attribute!="_id"){
+
+            let thCat = document.createElement("th");
+
+            thCat.innerHTML = attribute;
+
+            trHeadersCat.appendChild(thCat);
+        }
+    }
+    tableCat.appendChild(trHeadersCat);
+
+    return tableCat;
+}
+
+function showRecapCategories(){
+    
+    var url = new URL("http://localhost:8080/api/v1/users/" + loggedUser.id + "/categories", base),
+        params = {token:loggedUser.token}
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+    
+    fetch(url)
+    .then((resp) => resp.json())
+    .then(function(data){ 
+        if(!data.success){
+            console.log(data);
+            throw data.message;
+        }else{
+
+            let categoriesList = document.getElementById("categoriesList");
+            let userCategories = data.categories;
+
+            //if i have any expense
+            if(userCategories.length>0){
+                let tableCat = createCategoriesTable(userCategories);
+                tableCat = fillCategoriesTable(userCategories, tableCat);       
+                categoriesList.appendChild(tableCat);
+            }else{
+                let spanCat = document.createElement("span");
+                span.innerHTML="Nessuna categoria registrata"; 
+                categoriesList.appendChild(spanCat);
+            }
+
+            return;
+        }
+    })
+    .catch( 
+        (error) => {
+            window.alert(error);
+            console.error(error);
+        }
+    ); // If there is any error you will catch them here
+}
+
+function fillCategoriesTable(userCategories, tableCat){
+
+    userCategories.forEach(category => {
+
+        let trCategory = document.createElement("tr");
+        
+        for (attribute in category) {
+            if(attribute!="id" || attribute!="color"){
+
+                let td = document.createElement("td");
+
+                trCategory.appendChild(td);
+            }
+
+        }
+
+        tableCat.appendChild(trCategory);
+        
+    });
+
+    return tableCat;
 }

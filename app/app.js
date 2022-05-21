@@ -14,7 +14,7 @@ const expenses = require("./expense.js");
 
 const budgets = require('./budgets.js');
 
-const categories = require("./categories");
+const categories = require("./categories.js");
 
 //middleware for accessing request body
 app.use(express.json());
