@@ -24,17 +24,18 @@ function loadModal(){
     var spanCategory = document.getElementById("spanCategory");
     // When the user clicks on the button, open the modal
     btnOpenFormExpense.onclick = function() {
+        console.log(mdlExpense);
         mdlExpense.style.display = "block";
     }
 
-    btnOpenFormCategory.onclick = () => mdlCategory.style.display="block";
+    btnOpenFormCategory.onclick = function() {mdlCategory.style.display="block";}
 
     // When the user clicks on <span> (x), close the modal
     spanExpense.onclick = function() {
         mdlExpense.style.display = "none";
     }
 
-    spanCategory.onclick = () => mdlCategory.style.display = "none";
+    spanCategory.onclick = () => mdlCategory.style.display = 'none' ;
 
 
     // When the user clicks anywhere outside of the modal, close it

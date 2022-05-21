@@ -3,7 +3,6 @@ function addCategory(){
     var name = document.getElementById("categoryName").value;
     var color = document.getElementById("categoryColor").value;
     var budget = document.getElementById("categoryBudget").value;
-    console.log(color);
     fetch('api/v1/users/'+loggedUser.id+'/categories/', {
         method: 'POST',
         headers: {'Content-type': 'application/json'},
@@ -20,6 +19,27 @@ function addCategory(){
         assert(data.success, data.message);
         document.getElementById("spanCategory").click();
     }).catch(function(error){
+        window.alert(error);
+    });
+}
+
+function deleteCategory(category_name){
+    console.log(category_name);
+    fetch('api/v1/users/'+loggedUser.id+'/categories/', {
+        method: 'DELETE',
+        headers: {'Content-type': 'application/json'},
+        body: JSON.stringify({
+            id: loggedUser.id,
+            token: loggedUser.token, 
+            name: category_name
+        })
+    })
+    .then( resp => resp.json())
+    .then(function(data){
+        assert(data.success, data.message);
+        //showRecapCategories();
+    })
+    .catch(function(error){
         window.alert(error);
     });
 }
@@ -91,17 +111,19 @@ function fillCategoriesTable(userCategories, tableCat){
     userCategories.forEach(elementCategory => {
 
         let trCategory = document.createElement("tr");
-        
+        var category_name;
         for (attribute in elementCategory) {
             if(attribute!="_id" && attribute!="color"){
-
                 let td = document.createElement("td");
                 td.innerHTML = elementCategory[attribute];
                 trCategory.appendChild(td);
+                if(attribute === "name") category_name = elementCategory[attribute];
             }
-
         }
-
+        let button = document.createElement("button");
+        button.innerHTML = "X";
+        button.onclick = ()  => deleteCategory(category_name);
+        trCategory.appendChild(button);
         tableCat.appendChild(trCategory);
         
     });
