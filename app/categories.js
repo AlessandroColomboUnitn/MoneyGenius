@@ -1,7 +1,8 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 const User = require('./models/user');
 const assert = require('assert');
+const user = require('./models/user');
 const defaultCategory = "altro";
 const defaultColor = "#919191";
 var defaulCategoryId;
@@ -56,7 +57,7 @@ router.post('', async function(req, res){
         let new_alloc_budget = user.allocated_budget + budget;
         console.log(new_alloc_budget);
         assert(new_alloc_budget <= user.budget, "Creazione fallita, il budget allocato per le categorie supera il budget totale."); //check that the sum of budgets of all categories does not exceed the user's budget
-        
+
         await user.categories.push({name: name, color: color, budget: budget}); //add new category
         user.allocated_budget = new_alloc_budget; //update sum of budget allocated for all categories
         let free_budget = user.budget - new_alloc_budget; //budget not yet allocated to any category
@@ -117,6 +118,29 @@ router.delete('', async function (req, res){
         });
         
     }catch(error){
+        res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+});
+
+router.get('', async(req, res) => {
+
+    try{
+        let id = req.params.id;
+
+        var user = await User.findById(id);
+        
+        assert(user, "utente non identificato");
+
+        await user.save();
+        res.status(200).json({
+            success: true, 
+            categories: user.categories
+        });
+    }
+    catch(error){
         res.status(400).json({
             success: false,
             message: error.message

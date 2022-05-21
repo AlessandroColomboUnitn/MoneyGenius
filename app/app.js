@@ -5,15 +5,16 @@ const app = express();
 //Login and signup
 const authentication = require("./authentication");
 //Cheks validity of JWT
-const tokenChecker = require("./tokenChecker");
+//const tokenChecker = require("./tokenChecker");
 
 
 const users = require('./users.js');
 
 const expenses = require("./expense.js");
 
-//const viewBudget = require('./viewBudget');
-const categories = require("./categories");
+const budgets = require('./budgets.js');
+
+const categories = require("./categories.js");
 
 //middleware for accessing request body
 app.use(express.json());
@@ -30,15 +31,15 @@ app.use('/api/v1/authentications', authentication);
  * 
  */
 
-app.use(tokenChecker);
+//app.use(tokenChecker);
 
 app.use('/api/v1/users', users);
 
-app.use('/api/v1/users/:id/categories', categories)
+app.use('/api/v1/users/:id/categories', categories);
 
 app.use('/api/v1/users/:id/expenses/', expenses);
 
-//app.use('/api/v1/users/*/budget_spent/', viewBudget);
+app.use('/api/v1/users/:id/budget', budgets);
 
 /*If no routs applyies, 404 error*/
 app.use((req, res) =>{

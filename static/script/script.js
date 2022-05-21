@@ -8,12 +8,6 @@ function assert(condition, message){
 }
 var base="http://localhost:8080";
 
-//once the window is loaded
-window.addEventListener("load", function() {
-
-    loadModal();
-
-});
 
 //code for the modal, code taken from w3schools.com
 function loadModal(){
@@ -49,6 +43,7 @@ function loadModal(){
         if (event.target == mdlCategory) mdlCategory.style.display = "none";
     }
 }
+
 /*
 //checks the input of the expense form, called when the button is clicked
 function validateInputs(){
@@ -103,14 +98,21 @@ function resetForm(){
     document.getElementById("authform").reset();
 }
 
+//hide the authentication section and show the user homepage
 function afterAuth(){
+
     //document.getElementById("loggedUser").innerHTML = loggedUser.name;
     document.getElementById("navAuthentication").hidden = true;
     document.getElementById("divAuthentication").hidden = true;
     document.getElementById("divExpense").hidden = false;
     document.getElementById("divBudget").hidden = false;
+    document.getElementById("viewBudgetLabel").hidden = false;
+    document.getElementById("showCategory").hidden = false;
     document.getElementById("divCategory").hidden = false;
+    document.getElementById("budgetRimanente").hidden = false;
+
     //set user's default category
+    
     fetch('../api/v1/users/'+loggedUser.id+'/categories/default', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -118,13 +120,55 @@ function afterAuth(){
     })
     .then((resp) => resp.json())
     .then(function(data){
-        window.alert(data.success+" "+data.message);
+        assert(data.success, data.message);
+    })
+    .catch(function(error){
+        window.alert(error);
     });
+
+
+    //fetch the budget html
+    fetch('./budget.html')
+    .then(response=> response.text())
+    .then(text => {
+        let divExpense = document.getElementById("divBudget");
+        divBudget.innerHTML = text;
+    });
+
+    //fetch the category html
+    fetch("./category.html")
+    .then(response => response.text())
+    .then( text => {
+        document.getElementById("divCategory").innerHTML = text;
+
+    });
+
+    //fetch the expense html
+    fetch('./expense.html')
+    .then(response=> response.text())
+    .then(text => {
+        let divExpense = document.getElementById("divExpense");
+        divExpense.innerHTML = text;
 
     //loads the expenses
     loadExpensesList();
+
+        loadModal();
+
+    });
+
+    //load the category drop list input
+
+
+    //loads the expenses
+    viewBudget();
+
 }
 
+function afterSetBudget(){
+    viewBudget();
+    document.getElementById("budgetRimanente").hidden = false;
+}
 
  /** 
  * Based on source: https://github.com/unitn-software-engineering/EasyLib/blob/master/static/script.js 
@@ -217,6 +261,8 @@ function setBudget(){
     .then(function(data){ 
         if(data.success){
             window.alert("budget impostato con successo");
+            afterSetBudget();
+            viewBudget();
         }
         else {
             throw data.message;
@@ -334,8 +380,28 @@ function addExpense(){
     .catch(function(error){
         window.alert(error);
     });
+}
 
-
+function viewBudget(){
+    
+    var url = new URL("http://localhost:8080/api/v1/users/" + loggedUser.id + "/budget"),
+        params = {token:loggedUser.token}
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+    
+    fetch(url)
+    .then((resp) => resp.json())
+    .then(function(data){ 
+        if(data.success){
+            document.getElementById("budgetSpentView").innerHTML = data.total_spent;
+            document.getElementById("budget2View").innerHTML = data.budget;
+        }
+        else {
+            throw data.message;
+        }
+    })
+    .catch(function(error){
+        window.alert(error.message);
+    })
 }
 
 
@@ -389,4 +455,88 @@ function fillExpensesTable(userExpenses, table){
     });
 
     return table;
+}
+
+function createCategoriesTable(userCategories){
+    var tableCat = document.createElement("tableCat");
+    tableCat.id = 'categoriesTable';
+                
+    //setup the th row
+    let trHeadersCat = document.createElement("tr");
+
+    for (attribute in userCategories[0]) {
+        if(attribute!="_id"){
+
+            let thCat = document.createElement("th");
+
+            thCat.innerHTML = attribute;
+
+            trHeadersCat.appendChild(thCat);
+        }
+    }
+    tableCat.appendChild(trHeadersCat);
+
+    return tableCat;
+}
+
+function showRecapCategories(){
+    
+    var url = new URL("http://localhost:8080/api/v1/users/" + loggedUser.id + "/categories", base),
+        params = {token:loggedUser.token}
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+    
+    fetch(url)
+    .then((resp) => resp.json())
+    .then(function(data){ 
+        if(!data.success){
+            console.log(data);
+            throw data.message;
+        }else{
+
+            let categoriesList = document.getElementById("categoriesList");
+            let userCategories = data.categories;
+
+            //if i have any expense
+            if(userCategories.length>0){
+                let tableCat = createCategoriesTable(userCategories);
+                tableCat = fillCategoriesTable(userCategories, tableCat);       
+                categoriesList.appendChild(tableCat);
+            }else{
+                let spanCat = document.createElement("span");
+                span.innerHTML="Nessuna categoria registrata"; 
+                categoriesList.appendChild(spanCat);
+            }
+
+            return;
+        }
+    })
+    .catch( 
+        (error) => {
+            window.alert(error);
+            console.error(error);
+        }
+    ); // If there is any error you will catch them here
+}
+
+function fillCategoriesTable(userCategories, tableCat){
+
+    userCategories.forEach(category => {
+
+        let trCategory = document.createElement("tr");
+        
+        for (attribute in category) {
+            if(attribute!="id" || attribute!="color"){
+
+                let td = document.createElement("td");
+
+                trCategory.appendChild(td);
+            }
+
+        }
+
+        tableCat.appendChild(trCategory);
+        
+    });
+
+    return tableCat;
 }
