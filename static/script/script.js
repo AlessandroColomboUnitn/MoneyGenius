@@ -11,7 +11,7 @@ var base="http://localhost:8080";
 //once the window is loaded
 window.addEventListener("load", function() {
 
-    loadModal();
+    //loadModal();
 
 });
 
@@ -103,6 +103,7 @@ function resetForm(){
     document.getElementById("authform").reset();
 }
 
+//hide the authentication section and show the user homepage
 function afterAuth(){
     //document.getElementById("loggedUser").innerHTML = loggedUser.name;
     document.getElementById("navAuthentication").hidden = true;
@@ -123,8 +124,33 @@ function afterAuth(){
         window.alert(data.success+" "+data.message);
     });
 
+
+    //fetch the budget html
+    fetch('./budget.html')
+    .then(response=> response.text())
+    .then(text => {
+        let divExpense = document.getElementById("divBudget");
+        divBudget.innerHTML = text;
+    });
+
+    //fetch the expense html
+    fetch('./expense.html')
+    .then(response=> response.text())
+    .then(text => {
+        let divExpense = document.getElementById("divExpense");
+        divExpense.innerHTML = text;
+
+        //loads the expenses
+        loadExpensesList();
+
+        loadModal();
+
+    });
+
+    //load the category drop list input
+
+
     //loads the expenses
-    loadExpensesList();
     viewBudget();
 
 }
@@ -132,7 +158,6 @@ function afterAuth(){
 function afterSetBudget(){
     viewBudget();
 }
-
 
  /** 
  * Based on source: https://github.com/unitn-software-engineering/EasyLib/blob/master/static/script.js 
