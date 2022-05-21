@@ -49,6 +49,7 @@ function loadModal(){
         if (event.target == mdlCategory) mdlCategory.style.display = "none";
     }
 }
+
 /*
 //checks the input of the expense form, called when the button is clicked
 function validateInputs(){
@@ -118,7 +119,10 @@ function afterAuth(){
     })
     .then((resp) => resp.json())
     .then(function(data){
-        window.alert(data.success+" "+data.message);
+        assert(data.success, data.message);
+    })
+    .catch(function(error){
+        window.alert(error);
     });
 
     //loads the expenses
