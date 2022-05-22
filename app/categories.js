@@ -85,7 +85,7 @@ router.post('', async function(req, res){
 
 router.delete('', async function (req, res){
     
-    let id = req.body.id; //user's email
+    let id = req.body.id; //user's id
     let name = req.body.name; //category's name
 
     try{
@@ -104,7 +104,7 @@ router.delete('', async function (req, res){
         let cat_budget = user.categories[index].budget; 
         let cat_id = user.categories[index].id;
         user.allocated_budget -= cat_budget; //subtract category budget to complessive categories budget
-        user.categories.splice(index);
+        user.categories.splice(index,1);
         
         user.expenses.forEach(element => {
             if (element.categoryId === cat_id)  element.categoryId = defaulCategoryId; //set default category id in all expenses belonging to the deleted category
@@ -133,7 +133,7 @@ router.get('', async(req, res) => {
         var user = await User.findById(id);
         
         assert(user, "utente non identificato");
-
+        
         await user.save();
         res.status(200).json({
             success: true, 

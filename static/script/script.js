@@ -24,17 +24,18 @@ function loadModal(){
     var spanCategory = document.getElementById("spanCategory");
     // When the user clicks on the button, open the modal
     btnOpenFormExpense.onclick = function() {
+        console.log(mdlExpense);
         mdlExpense.style.display = "block";
     }
 
-    btnOpenFormCategory.onclick = () => mdlCategory.style.display="block";
+    btnOpenFormCategory.onclick = function() {mdlCategory.style.display="block";}
 
     // When the user clicks on <span> (x), close the modal
     spanExpense.onclick = function() {
         mdlExpense.style.display = "none";
     }
 
-    spanCategory.onclick = () => mdlCategory.style.display = "none";
+    spanCategory.onclick = () => mdlCategory.style.display = 'none' ;
 
 
     // When the user clicks anywhere outside of the modal, close it
@@ -104,13 +105,11 @@ function afterAuth(){
     //document.getElementById("loggedUser").innerHTML = loggedUser.name;
     document.getElementById("navAuthentication").hidden = true;
     document.getElementById("divAuthentication").hidden = true;
-    document.getElementById("divExpense").hidden = false;
+    //document.getElementById("divExpense").hidden = false;
     document.getElementById("divBudget").hidden = false;
     document.getElementById("viewBudgetLabel").hidden = false;
-    document.getElementById("showCategory").hidden = false;
-    document.getElementById("divCategory").hidden = false;
     document.getElementById("budgetRimanente").hidden = false;
-
+    
     //set user's default category
     
     fetch('../api/v1/users/'+loggedUser.id+'/categories/default', {
@@ -131,7 +130,7 @@ function afterAuth(){
     fetch('./budget.html')
     .then(response=> response.text())
     .then(text => {
-        let divExpense = document.getElementById("divBudget");
+        let divBudget = document.getElementById("divBudget");
         divBudget.innerHTML = text;
     });
 
@@ -140,7 +139,7 @@ function afterAuth(){
     .then(response => response.text())
     .then( text => {
         document.getElementById("divCategory").innerHTML = text;
-
+        showRecapCategories();
     });
 
     //fetch the expense html
@@ -150,16 +149,16 @@ function afterAuth(){
         let divExpense = document.getElementById("divExpense");
         divExpense.innerHTML = text;
 
-    //loads the expenses
+    //load the expenses
     loadExpensesList();
-
+    //load the expense modal
     loadModal();
-
+    //load the category drop down list 
     loadCategoriesOptions();
 
     });
 
-    //load the category drop list input
+    
 
 
     //loads the expenses
@@ -498,88 +497,4 @@ function fillExpensesTable(userExpenses, table){
     });
 
     return table;
-}
-
-function createCategoriesTable(userCategories){
-    var tableCat = document.createElement("tableCat");
-    tableCat.id = 'categoriesTable';
-                
-    //setup the th row
-    let trHeadersCat = document.createElement("tr");
-
-    for (attribute in userCategories[0]) {
-        if(attribute!="_id"){
-
-            let thCat = document.createElement("th");
-
-            thCat.innerHTML = attribute;
-
-            trHeadersCat.appendChild(thCat);
-        }
-    }
-    tableCat.appendChild(trHeadersCat);
-
-    return tableCat;
-}
-
-function showRecapCategories(){
-    
-    var url = new URL("http://localhost:8080/api/v1/users/" + loggedUser.id + "/categories", base),
-        params = {token:loggedUser.token}
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-    
-    fetch(url)
-    .then((resp) => resp.json())
-    .then(function(data){ 
-        if(!data.success){
-            console.log(data);
-            throw data.message;
-        }else{
-
-            let categoriesList = document.getElementById("categoriesList");
-            let userCategories = data.categories;
-
-            //if i have any expense
-            if(userCategories.length>0){
-                let tableCat = createCategoriesTable(userCategories);
-                tableCat = fillCategoriesTable(userCategories, tableCat);       
-                categoriesList.appendChild(tableCat);
-            }else{
-                let spanCat = document.createElement("span");
-                span.innerHTML="Nessuna categoria registrata"; 
-                categoriesList.appendChild(spanCat);
-            }
-
-            return;
-        }
-    })
-    .catch( 
-        (error) => {
-            window.alert(error);
-            console.error(error);
-        }
-    ); // If there is any error you will catch them here
-}
-
-function fillCategoriesTable(userCategories, tableCat){
-
-    userCategories.forEach(category => {
-
-        let trCategory = document.createElement("tr");
-        
-        for (attribute in category) {
-            if(attribute!="id" || attribute!="color"){
-
-                let td = document.createElement("td");
-
-                trCategory.appendChild(td);
-            }
-
-        }
-
-        tableCat.appendChild(trCategory);
-        
-    });
-
-    return tableCat;
 }
