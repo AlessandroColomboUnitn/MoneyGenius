@@ -21,7 +21,7 @@ function loadModal(){
     var btnOpenFormCategory = document.getElementById("btnOpenFormCategory");
     console.log(btnOpenFormCategory+" "+btnOpenFormExpense);
     // Get the <span> element that closes the modal
-    var spanExpense = document.getElementsByClassName("close")[0];
+    var spanExpense = document.getElementById("spanCloseExpenseForm");
     var spanCategory = document.getElementById("spanCategory");
     // When the user clicks on the button, open the modal
     btnOpenFormExpense.onclick = function() {
@@ -67,7 +67,7 @@ function validateAmount(){
     
     return true;
 }
-//even this properties can be obatained with the min attribute on the input tag
+//even this properties can be obatained with the min name on the input tag
 */
 
 function clearDate(date){
@@ -132,7 +132,7 @@ function afterAuth(){
     fetch('./budget.html')
     .then(response=> response.text())
     .then(text => {
-        let divExpense = document.getElementById("divBudget");
+        let divBudget = document.getElementById("divBudget");
         divBudget.innerHTML = text;
     });
 
@@ -151,14 +151,16 @@ function afterAuth(){
         let divExpense = document.getElementById("divExpense");
         divExpense.innerHTML = text;
 
-    //loads the expenses
+    //load the expenses
     loadExpensesList();
-
-        loadModal();
+    //load the expense modal
+    loadModal();
+    //load the category drop down list 
+    loadCategoriesOptions();
 
     });
 
-    //load the category drop list input
+    
 
 
     //loads the expenses
@@ -295,7 +297,7 @@ function loadExpensesList(){
 
             //if i have any expense
             if(userExpenses.length>0){
-                let table = createExpensesTable(userExpenses);
+                let table = createExpensesTable();
                 table = fillExpensesTable(userExpenses, table);       
                 expensesList.appendChild(table);
             }else{
@@ -313,6 +315,40 @@ function loadExpensesList(){
             console.error(error);
         }
     ); // If there is any error you will catch them here
+}
+
+
+function loadCategoriesOptions(){
+    let url = new URL('api/v1/users/' + loggedUser.id + '/categories', base);
+    let params = {token:loggedUser.token};
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+ 
+
+    fetch(url)
+    .then((resp) => resp.json()) // Transform the data into json
+    .then(function(data){
+        if(!data.success){
+            console.log(data);
+            throw data.message;
+        }else{
+
+            let categoriesSel = document.getElementById("categoryId");
+            let userCategories = data.categories;
+
+            userCategories.forEach(category => {
+                categoriesSel.options[categoriesSel.options.length] = new Option( category.name, category._id,);
+            })
+
+            return;
+        }
+    })
+    .catch( 
+        (error) => {
+            window.alert(error);
+            console.error(error);
+        }
+    );
+
 }
 
 function addExpense(){
@@ -341,11 +377,11 @@ function addExpense(){
         if(data.success){
             
             window.alert("Nuova spesa registrata");
-            
-            console.log(data.expense);
-            
+                        
             let table = document.getElementById('expensesTable');
             let expense = data.expense;
+            //let budget = data.budget;
+            //let budget_spent = data.budget_spent;
             
             //create table if its the first expense
             if(!table){
@@ -356,23 +392,32 @@ function addExpense(){
                 expensesList.removeChild(span);
 
                 //create the table and append it
-                table = createExpensesTable(new Array(expense));
+                table = createExpensesTable();
                 table = fillExpensesTable(new Array(expense), table);
-                expensesList.appendChild(table);                
+                expensesList.appendChild(table);
             }else{
                 //else just update it 
                 table = fillExpensesTable(new Array(expense), table);
             }
 
-
             //get close modal icon
-            let span = document.getElementsByClassName("close")[0];
+            let span = document.getElementById("spanCloseExpenseForm");
 
             //close the modal
             span.dispatchEvent(new MouseEvent('click'));
 
             //reset form
             document.getElementById('expenseForm').reset();
+
+            //update budget UI
+            viewBudget();
+            /*
+            //update budget and budget_spent
+            document.getElementById("budgetSpentView").innerHTML = budget_spent;
+            
+            if(!isNaN(budget))
+                document.getElementById("budget2View").innerHTML = budget;
+            */
         }
         else {
             throw data.message;
@@ -406,23 +451,22 @@ function viewBudget(){
 }
 
 //create the table
-function createExpensesTable(userExpenses){
+function createExpensesTable(){
     var table = document.createElement("table");
     table.id = 'expensesTable';
                 
     //setup the th row
     let trHeaders = document.createElement("tr");
+    let thNames = ['Nome', 'Categoria', 'Totale', 'Data'];
+    
+    for (i in thNames) {
+        let th = document.createElement("th");
 
-    for (attribute in userExpenses[0]) {
-        if(attribute!="_id"){
+        th.innerHTML = thNames[i];
 
-            let th = document.createElement("th");
-
-            th.innerHTML = attribute;
-
-            trHeaders.appendChild(th);
-        }
+        trHeaders.appendChild(th);
     }
+
     table.appendChild(trHeaders);
 
     return table;
@@ -435,15 +479,15 @@ function fillExpensesTable(userExpenses, table){
 
         let trExpense = document.createElement("tr");
         
-        for (attribute in expense) {
-            if(attribute!="_id"){
+        for (name in expense) {
+            if(name!="_id"){
 
                 let td = document.createElement("td");
                 
-                if(attribute=="date")
-                    expense[attribute] = clearDate(expense[attribute]);
+                if(name=="date")
+                    expense[name] = clearDate(expense[name]);
 
-                td.innerHTML = expense [attribute];
+                td.innerHTML = expense [name];
 
                 trExpense.appendChild(td);
             }
