@@ -334,7 +334,7 @@ function loadCategoriesOptions(){
             let userCategories = data.categories;
 
             userCategories.forEach(category => {
-                categoriesSel.options[categoriesSel.options.length] = new Option(category.name, category.id);
+                categoriesSel.options[categoriesSel.options.length] = new Option( category.name, category._id,);
             })
 
             return;
@@ -375,13 +375,11 @@ function addExpense(){
         if(data.success){
             
             window.alert("Nuova spesa registrata");
-            
-            console.log(data.expense);
-            
+                        
             let table = document.getElementById('expensesTable');
             let expense = data.expense;
-            let budget = data.budget;
-            let budget_spent = data.budget_spent;
+            //let budget = data.budget;
+            //let budget_spent = data.budget_spent;
             
             //create table if its the first expense
             if(!table){
@@ -395,27 +393,29 @@ function addExpense(){
                 table = createExpensesTable();
                 table = fillExpensesTable(new Array(expense), table);
                 expensesList.appendChild(table);
-
-                //update budget and budget_spent
-                document.getElementById("budgetSpentView").innerHTML = budget_spent;
-                
-                if(!isNaN(budget))
-                    document.getElementById("budget2View").innerHTML = budget;
-
             }else{
                 //else just update it 
                 table = fillExpensesTable(new Array(expense), table);
             }
 
-
             //get close modal icon
-            let span = document.getElementsByClassName("close")[0];
+            let span = document.getElementById("spanCloseExpenseForm");
 
             //close the modal
             span.dispatchEvent(new MouseEvent('click'));
 
             //reset form
             document.getElementById('expenseForm').reset();
+
+            //update budget UI
+            viewBudget();
+            /*
+            //update budget and budget_spent
+            document.getElementById("budgetSpentView").innerHTML = budget_spent;
+            
+            if(!isNaN(budget))
+                document.getElementById("budget2View").innerHTML = budget;
+            */
         }
         else {
             throw data.message;

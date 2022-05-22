@@ -10,7 +10,7 @@ const tokenChecker = require("./tokenChecker");
 
 const users = require('./users.js');
 
-const expenses = require("./expense.js");
+const expenses = require("./expenses.js");
 
 const budgets = require('./budgets.js');
 

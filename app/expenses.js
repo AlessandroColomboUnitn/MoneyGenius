@@ -11,7 +11,7 @@ router.post('', async function(req, res){
 
     //get the value of the form submitted
     let name = req.body.name;
-    let amount = req.body.amount;
+    let amount = + req.body.amount; //cast to number
     let categoryId = req.body.categoryId;
     let date = req.body.date;
     
@@ -38,31 +38,29 @@ router.post('', async function(req, res){
         await user.expenses.push(expense);
 
         //update budget left
-        user.total_spent=expense.amount;
-        
+        user.allocated_budget+=expense.amount;
+
         //update budget spent
         user.budget_spent+=expense.amount;
 
+        //get the category
+        let category = user.categories.find(cat => cat.id === expense.categoryId);
+
         //update budget left x catgory
-        user.categories.find(cat => {
-            if(cat.id === expense.categoryId)
-                cat.budget-=expense.amount;
-        });
         
         //update budget spent x catgory
-        user.categories.find(cat => {
-            if(cat.id === expense.categoryId)
-                cat.cat_spent+=expense.amount;
-        });
 
         user = await user.save(); 
+
+        //modify expense to send the category name
+        expense.categoryId = category.name;
     
         res.status(201).json({
             success: true,
             message: "Nuova spesa registrata.",
             expense: expense,
-            budget: user.budget,
-            budget_spent: user.budget_spent
+            //budget: user.budget,
+            //budget_spent: user.budget_spent
         });
 
     }catch(error){ //if one of the above assertions fails, we return the respective error message
