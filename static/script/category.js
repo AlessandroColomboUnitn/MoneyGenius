@@ -18,7 +18,10 @@ function addCategory(){
     .then((resp) => resp.json())
     .then(function(data){
         assert(data.success, data.message);
-        fillCategoriesTable([{nam: name, color: color, budget:budget}], document.getElementById("tableCat"));
+        
+        if(document.getElementById("tableCat")) document.getElementById("tableCat").remove();
+        else document.getElementById("spanCat").remove();
+        showRecapCategories(); //first time we have to create the category table
         document.getElementById("spanCategory").click();
     }).catch(function(error){
         window.alert(error);
@@ -39,7 +42,8 @@ function deleteCategory(category_name){
     .then( resp => resp.json())
     .then(function(data){
         assert(data.success, data.message);
-        document.getElementById(category_name+"row").remove();
+        document.getElementById("tableCat").remove();
+        showRecapCategories();
     })
     .catch(function(error){
         window.alert(error);
@@ -48,7 +52,7 @@ function deleteCategory(category_name){
 
 function createCategoriesTable(){
     var tableCat = document.createElement("tableCat");
-    tableCat.id = 'categoriesTable';
+    tableCat.id = 'tableCat';
 
     var thNames = ["Nome", "Speso", "Budget"];
                 
@@ -92,6 +96,7 @@ function showRecapCategories(){
                 categoriesList.appendChild(tableCat);
             }else{
                 let spanCat = document.createElement("span");
+                spanCat.id = "spanCat";
                 spanCat.innerHTML="Nessuna categoria registrata"; 
                 categoriesList.appendChild(spanCat);
             }
@@ -121,7 +126,7 @@ function fillCategoriesTable(userCategories, tableCat){
                 if(attribute === "name") category_name = elementCategory[attribute];
             }
         }
-        trCategory.id=category_name+" row";
+        trCategory.id = category_name+" row";
         let button = document.createElement("button");
         button.innerHTML = "X";
         button.onclick = ()  => deleteCategory(category_name);
