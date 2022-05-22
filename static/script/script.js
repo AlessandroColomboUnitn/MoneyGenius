@@ -14,11 +14,12 @@ function loadModal(){
     // Get the modals
     var mdlExpense = document.getElementById("mdlExpense");
     var mdlCategory = document.getElementById("mdlCategory");
+    console.log(mdlExpense+" "+mdlCategory);
 
     // Get the button that opens the modal
     var btnOpenFormExpense = document.getElementById("btnOpenFormExpense");
     var btnOpenFormCategory = document.getElementById("btnOpenFormCategory");
-
+    console.log(btnOpenFormCategory+" "+btnOpenFormExpense);
     // Get the <span> element that closes the modal
     var spanExpense = document.getElementsByClassName("close")[0];
     var spanCategory = document.getElementById("spanCategory");
@@ -28,7 +29,8 @@ function loadModal(){
         mdlExpense.style.display = "block";
     }
 
-    btnOpenFormCategory.onclick = function() {mdlCategory.style.display="block";}
+    btnOpenFormCategory.onclick = function() {
+        mdlCategory.style.display="block";}
 
     // When the user clicks on <span> (x), close the modal
     spanExpense.onclick = function() {
@@ -152,7 +154,7 @@ function afterAuth(){
     //loads the expenses
     loadExpensesList();
 
-    loadModal();
+        loadModal();
 
     });
 

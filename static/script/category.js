@@ -1,3 +1,4 @@
+
 function addCategory(){
     
     var name = document.getElementById("categoryName").value;
@@ -17,6 +18,7 @@ function addCategory(){
     .then((resp) => resp.json())
     .then(function(data){
         assert(data.success, data.message);
+        fillCategoriesTable([{nam: name, color: color, budget:budget}], document.getElementById("tableCat"));
         document.getElementById("spanCategory").click();
     }).catch(function(error){
         window.alert(error);
@@ -37,7 +39,7 @@ function deleteCategory(category_name){
     .then( resp => resp.json())
     .then(function(data){
         assert(data.success, data.message);
-        //showRecapCategories();
+        document.getElementById(category_name+"row").remove();
     })
     .catch(function(error){
         window.alert(error);
@@ -82,7 +84,6 @@ function showRecapCategories(){
             let categoriesList = document.getElementById("categoriesList");
             
             let userCategories = data.categories;
-            console.log(userCategories);
 
             //if i have any expense
             if(userCategories.length>0){
@@ -120,6 +121,7 @@ function fillCategoriesTable(userCategories, tableCat){
                 if(attribute === "name") category_name = elementCategory[attribute];
             }
         }
+        trCategory.id=category_name+" row";
         let button = document.createElement("button");
         button.innerHTML = "X";
         button.onclick = ()  => deleteCategory(category_name);
