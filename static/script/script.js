@@ -119,6 +119,7 @@ function afterAuth(){
     .then((resp) => resp.json())
     .then(function(data){
         assert(data.success, data.message);
+        //showRecapCategories();
     })
     .catch(function(error){
         window.alert(error);
@@ -129,7 +130,7 @@ function afterAuth(){
     fetch('./budget.html')
     .then(response=> response.text())
     .then(text => {
-        let divExpense = document.getElementById("divBudget");
+        let divBudget = document.getElementById("divBudget");
         divBudget.innerHTML = text;
     });
 
@@ -138,7 +139,6 @@ function afterAuth(){
     .then(response => response.text())
     .then( text => {
         document.getElementById("divCategory").innerHTML = text;
-        showRecapCategories();
     });
 
     //fetch the expense html
@@ -152,7 +152,7 @@ function afterAuth(){
     loadExpensesList();
 
     loadModal();
-
+    showRecapCategories();
     });
 
     //load the category drop list input
@@ -160,7 +160,6 @@ function afterAuth(){
 
     //loads the expenses
     viewBudget();
-
 }
 
 function afterSetBudget(){
@@ -258,7 +257,7 @@ function setBudget(){
     .then((resp) => resp.json())
     .then(function(data){ 
         if(data.success){
-            window.alert("budget impostato con successo");
+            //window.alert("budget impostato con successo");
             afterSetBudget();
             viewBudget();
         }
@@ -380,28 +379,6 @@ function addExpense(){
     });
 }
 
-function viewBudget(){
-    
-    var url = new URL("http://localhost:8080/api/v1/users/" + loggedUser.id + "/budget"),
-        params = {token:loggedUser.token}
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-    
-    fetch(url)
-    .then((resp) => resp.json())
-    .then(function(data){ 
-        if(data.success){
-            document.getElementById("budgetSpentView").innerHTML = data.total_spent;
-            document.getElementById("budget2View").innerHTML = data.budget;
-        }
-        else {
-            throw data.message;
-        }
-    })
-    .catch(function(error){
-        window.alert(error.message);
-    })
-}
-
 //create the table
 function createExpensesTable(userExpenses){
     var table = document.createElement("table");
@@ -452,4 +429,27 @@ function fillExpensesTable(userExpenses, table){
     });
 
     return table;
+}
+
+
+function viewBudget(){
+    
+    var url = new URL("http://localhost:8080/api/v1/users/" + loggedUser.id + "/budget"),
+        params = {token:loggedUser.token}
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+    
+    fetch(url)
+    .then((resp) => resp.json())
+    .then(function(data){ 
+        if(data.success){
+            document.getElementById("budgetSpentView").innerHTML = data.total_spent;
+            document.getElementById("budget2View").innerHTML = data.budget;
+        }
+        else {
+            throw data.message;
+        }
+    })
+    .catch(function(error){
+        window.alert(error.message);
+    })
 }
