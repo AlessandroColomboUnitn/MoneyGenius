@@ -43,8 +43,6 @@ router.post('', async function(req, res){
         //update budget spent
         user.budget_spent+=expense.amount;
 
-        console.log(categoryId);
-
         //get the category
         let category = user.categories.find(cat => cat.id == expense.categoryId);
 
@@ -92,14 +90,13 @@ router.get('', async function(req, res) {
         var expenses = [...user.expenses];
         var categories = user.categories;
 
-        if(expenses.length !== 0){ 
-            //TODO find a better solution to
-            expenses.forEach(expense => {
-                let cat = categories.find(cat => cat.id === expense.categoryId);
-                assert(cat, 'Categoria non esistente.');
-                expense.categoryId = cat.name;
-            });
-        }
+        //TODO find a better solution to
+        expenses.forEach(expense => {
+            let cat = categories.find(cat => cat.id === expense.categoryId);
+            assert(cat, 'Categoria non esistente.');
+            expense.categoryId = cat.name;
+        });
+    
 
 
         res.status(200).json({
