@@ -14,12 +14,10 @@ function loadModal(){
     // Get the modals
     var mdlExpense = document.getElementById("mdlExpense");
     var mdlCategory = document.getElementById("mdlCategory");
-    console.log(mdlExpense+" "+mdlCategory);
 
     // Get the button that opens the modal
     var btnOpenFormExpense = document.getElementById("btnOpenFormExpense");
     var btnOpenFormCategory = document.getElementById("btnOpenFormCategory");
-    console.log(btnOpenFormCategory+" "+btnOpenFormExpense);
     // Get the <span> element that closes the modal
     var spanExpense = document.getElementById("spanCloseExpenseForm");
     var spanCategory = document.getElementById("spanCategory");
@@ -102,7 +100,7 @@ function resetForm(){
 }
 
 //hide the authentication section and show the user homepage
-function afterAuth(){
+async function afterAuth(){
 
     //document.getElementById("loggedUser").innerHTML = loggedUser.name;
     document.getElementById("navAuthentication").hidden = true;
@@ -126,42 +124,32 @@ function afterAuth(){
     .catch(function(error){
         window.alert(error);
     });
+    
+    let budget = await fetch('./budget.html');
+    budget = await budget.text();
+    let divBudget = document.getElementById("divBudget");
+    divBudget.innerHTML = budget;
+    
+    let category = await fetch('./category.html');
+    category = await category.text();
+    let divCategory = document.getElementById("divCategory");
+    divCategory.innerHTML = category;
 
-
-    //fetch the budget html
-    fetch('./budget.html')
-    .then(response=> response.text())
-    .then(text => {
-        let divBudget = document.getElementById("divBudget");
-        divBudget.innerHTML = text;
-    });
-
-    //fetch the category html
-    fetch("./category.html")
-    .then(response => response.text())
-    .then( text => {
-        document.getElementById("divCategory").innerHTML = text;
-        showRecapCategories();
-    });
-
-    //fetch the expense html
-    fetch('./expense.html')
-    .then(response=> response.text())
-    .then(text => {
-        let divExpense = document.getElementById("divExpense");
-        divExpense.innerHTML = text;
+    let expense = await fetch('./expense.html');
+    expense = await expense.text();
+    let divExpense = document.getElementById("divExpense");
+    divExpense.innerHTML = expense;
 
     //load the expenses
     loadExpensesList();
+    
     //load the expense modal
     loadModal();
+        
     //load the category drop down list 
     loadCategoriesOptions();
 
-    });
-
-    
-
+    showRecapCategories();
 
     //loads the expenses
     viewBudget();
@@ -334,7 +322,6 @@ function loadCategoriesOptions(){
 
             let categoriesSel = document.getElementById("categoryId");
             let userCategories = data.categories;
-
             userCategories.forEach(category => {
                 categoriesSel.options[categoriesSel.options.length] = new Option( category.name, category._id,);
             })
@@ -356,6 +343,7 @@ function addExpense(){
     let url = new URL('api/v1/users/' + loggedUser.id + '/expenses', base);
 
     var name = document.getElementById("name").value;
+    console.log("name="+name);
     var amount = document.getElementById("amount").value;
     var categoryId = document.getElementById("categoryId").value;
     var date = document.getElementById("date").value;
