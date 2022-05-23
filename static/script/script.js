@@ -154,6 +154,7 @@ function afterSetBudget(){
     .then((resp) => resp.json())
     .then(function(data){
         assert(data.success, data.message);
+        loadCategoriesOptions();
         //showRecapCategories();
     })
     .catch(function(error){
@@ -285,6 +286,9 @@ function loadExpensesList(){
 
             //if i have any expense
             if(userExpenses.length>0){
+                if(document.getElementById("expenseTable"))
+                    document.getElementById("expenseTable").remove();
+
                 let table = createExpensesTable();
                 table = fillExpensesTable(userExpenses, table);       
                 expensesList.appendChild(table);
@@ -319,7 +323,7 @@ function loadCategoriesOptions(){
             console.log(data);
             throw data.message;
         }else{
-            
+
             let categoriesSel = document.getElementById("categoryId");
             
             var child = categoriesSel.lastElementChild; 

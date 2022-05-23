@@ -38,17 +38,16 @@ router.post('', async function(req, res){
         await user.expenses.push(expense);
 
         //update budget left
-        user.allocated_budget+=expense.amount;
+        //user.allocated_budget += expense.amount;
 
         //update budget spent
-        user.budget_spent+=expense.amount;
+        user.budget_spent += expense.amount;
 
         //get the category
         let category = user.categories.find(cat => cat.id == expense.categoryId);
 
-        //update budget left x catgory
-        
         //update budget spent x catgory
+        category.cat_spent += expense.amount;
 
         user = await user.save(); 
 

@@ -17,11 +17,10 @@ router.post('/default', async function(req, res){
         console.log();
         assert(user, "Utente non esistente");
         if(user.categories.length === 0){
-            user.categories.push({name: defaultCategory, color: defaultColor, budget: user.budget-user.allocated_budget});
-            defaulCategoryId = user.categories[0].id;
-            
+            user.categories.push({name: defaultCategory, color: defaultColor, budget: user.budget-user.allocated_budget});   
             user = await user.save();
         }
+        defaulCategoryId = user.categories[0].id;
         
         res.status(200).json({
             success: true
@@ -62,10 +61,13 @@ router.post('', async function(req, res){
         assert(new_alloc_budget <= user.budget, "Creazione fallita, il budget allocato per le categorie supera il budget totale."); //check that the sum of budgets of all categories does not exceed the user's budget
 
         await user.categories.push({name: name, color: color, budget: budget}); //add new category
+        
         user.allocated_budget = new_alloc_budget; //update sum of budget allocated for all categories
+        
         let free_budget = user.budget - new_alloc_budget; //budget not yet allocated to any category
 
         let default_index = user.categories.findIndex((obj) => obj.name === defaultCategory); //find default category index 
+        
         user.categories[default_index].budget = free_budget; //decrease default categoty budget
         
         user = await user.save(); 
@@ -105,6 +107,7 @@ router.delete('', async function (req, res){
         
         let cat_budget = user.categories[index].budget; 
         let cat_id = user.categories[index].id;
+        let cat_spent = user.categories[index].cat_spent;
         user.allocated_budget -= cat_budget; //subtract category budget to complessive categories budget
         user.categories.splice(index,1);
         
@@ -117,8 +120,14 @@ router.delete('', async function (req, res){
             }
         });
         
-        user.categories.find((obj) => obj.name === defaultCategory).budget = user.budget - user.allocated_budget; //return -1 if no category match the input category name
+        user.categories.find( (obj) => {
+            if(obj.name === defaultCategory){
+                obj.budget = user.budget - user.allocated_budget;
+                obj.cat_spent += cat_spent;
+            }
+        }),
         
+
         assert(index !== -1, "Cancellazione fallita, categoria non esistente.");
 
         await user.save();
