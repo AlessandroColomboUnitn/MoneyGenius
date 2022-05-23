@@ -504,6 +504,13 @@ paths:
     get:
       summary: List of expenses
       description: Show the list of existing expenses.
+      parameters:
+        - in: path
+          name: token
+          required: true
+          schema: 
+            type: string
+          description: User's authentication token
       responses:
         '200':
           description: All the expenses are shown correctly.
@@ -525,7 +532,7 @@ paths:
                     description: Array with all the expenses objects
                     items:
                       $ref: '#/components/schemas/Expense'
-        '400':
+        '404':
           description: Invalid parameters passed
           content:
             application/json:
