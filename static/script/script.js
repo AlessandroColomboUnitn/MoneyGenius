@@ -17,7 +17,7 @@ function loadModal(){
 
     // Get the button that opens the modal
     var btnOpenFormExpense = document.getElementById("btnOpenFormExpense");
-    var btnOpenFormCategory = document.getElementById("btnOpenFormCategory");
+    var btnOpenFormCategory = document.getElementById("btnOpenFormCategory")
     // Get the <span> element that closes the modal
     var spanExpense = document.getElementById("spanCloseExpenseForm");
     var spanCategory = document.getElementById("spanCategory");
@@ -110,7 +110,41 @@ async function afterAuth(){
     document.getElementById("viewBudgetLabel").hidden = false;
     document.getElementById("budgetRimanente").hidden = false;
     
-    //set user's default category
+    
+    let budget = await fetch('./budget.html');
+    budget = await budget.text();
+    let divBudget = document.getElementById("divBudget");
+    divBudget.innerHTML = budget;
+    
+    let category = await fetch('./category.html');
+    category = await category.text();
+    let divCategory = document.getElementById("divCategory");
+    divCategory.innerHTML = category;
+
+    let expense = await fetch('./expense.html');
+    expense = await expense.text();
+    let divExpense = document.getElementById("divExpense");
+    divExpense.innerHTML = expense;
+
+    //load the expenses
+    loadExpensesList();
+    
+    //load the expense modal
+    loadModal();
+        
+    //load the category drop down list 
+    loadCategoriesOptions();
+
+    showRecapCategories();
+
+    //loads the expenses
+    viewBudget();
+}
+
+function afterSetBudget(){
+    viewBudget();
+    document.getElementById("budgetRimanente").hidden = false;
+       //set user's default category
     
     fetch('../api/v1/users/'+loggedUser.id+'/categories/default', {
         method: 'POST',
@@ -125,69 +159,6 @@ async function afterAuth(){
     .catch(function(error){
         window.alert(error);
     });
-    
-    let budget = await fetch('./budget.html');
-    budget = await budget.text();
-    let divBudget = document.getElementById("divBudget");
-    divBudget.innerHTML = budget;
-    
-    let category = await fetch('./category.html');
-    category = await category.text();
-    let divCategory = document.getElementById("divCategory");
-    divCategory.innerHTML = category;
-
-<<<<<<< HEAD
-    let expense = await fetch('./expense.html');
-    expense = await expense.text();
-    let divExpense = document.getElementById("divExpense");
-    divExpense.innerHTML = expense;
-=======
-
-    //fetch the budget html
-    fetch('./budget.html')
-    .then(response=> response.text())
-    .then(text => {
-        let divBudget = document.getElementById("divBudget");
-        divBudget.innerHTML = text;
-    });
-
-    //fetch the category html
-    fetch("./category.html")
-    .then(response => response.text())
-    .then( text => {
-        document.getElementById("divCategory").innerHTML = text;
-    });
-
-    //fetch the expense html
-    fetch('./expense.html')
-    .then(response=> response.text())
-    .then(text => {
-        let divExpense = document.getElementById("divExpense");
-        divExpense.innerHTML = text;
->>>>>>> 1b371853169ff91a8955aacd1f80cd99455f384d
-
-    //load the expenses
-    loadExpensesList();
-    
-    //load the expense modal
-    loadModal();
-<<<<<<< HEAD
-        
-=======
-    showRecapCategories();
->>>>>>> 1b371853169ff91a8955aacd1f80cd99455f384d
-    //load the category drop down list 
-    loadCategoriesOptions();
-
-    showRecapCategories();
-
-    //loads the expenses
-    viewBudget();
-}
-
-function afterSetBudget(){
-    viewBudget();
-    document.getElementById("budgetRimanente").hidden = false;
 }
 
  /** 
@@ -348,8 +319,15 @@ function loadCategoriesOptions(){
             console.log(data);
             throw data.message;
         }else{
-
+            
             let categoriesSel = document.getElementById("categoryId");
+            
+            var child = categoriesSel.lastElementChild; 
+            while (child) { //clear all children
+                categoriesSel.removeChild(child);
+                child = categoriesSel.lastElementChild;
+            }
+
             let userCategories = data.categories;
             userCategories.forEach(category => {
                 categoriesSel.options[categoriesSel.options.length] = new Option( category.name, category._id,);

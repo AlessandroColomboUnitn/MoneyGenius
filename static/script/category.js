@@ -22,25 +22,26 @@ function addCategory(){
     .then(function(data){
         assert(data.success, data.message);
         
-        if(document.getElementById("tableCat")) document.getElementById("tableCat").remove();
-        else document.getElementById("spanCat").remove();
-        showRecapCategories(); //first time we have to create the category table
-        document.getElementById("spanCategory").click();
 
+        document.getElementById("spanCategory").click();
         let tableCat = document.getElementById('tableCat');
-        if(!tableCat){
+
+        if(!tableCat){ //we have to create table cat
             let categoriesList = document.getElementById('categoriesList');
             let span = categoriesList.firstElementChild;
             categoriesList.removeChild(span);
 
-            //create the table and append it
+            showRecapCategories();
+
+            /*//create the table and append it
             tableCat = createCategoriesTable();
             tableCat = fillCategoriesTable(data.categories, tableCat);
-            categoriesList.appendChild(tableCat);                
+            categoriesList.appendChild(tableCat);        */        
         }else{
-            table = fillCategoriesTable(newCategory, tableCat);
+            tableCat.remove();
+            showRecapCategories();
         }   
-
+        loadCategoriesOptions();
         //console.log(newCategory);
         //tableCat = fillCategoriesTable(newCategory, tableCat);
     }).catch(function(error){
@@ -66,8 +67,7 @@ function deleteCategory(category_name){
         assert(data.success, data.message);
         document.getElementById("tableCat").remove();
         showRecapCategories();
-        loadExpensesList();
-        //loadCategoriesOptions();
+        loadCategoriesOptions();
     })
     .catch(function(error){
         window.alert(error);

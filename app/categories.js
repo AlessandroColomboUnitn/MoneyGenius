@@ -108,11 +108,16 @@ router.delete('', async function (req, res){
         user.allocated_budget -= cat_budget; //subtract category budget to complessive categories budget
         user.categories.splice(index,1);
         
+        console.log(cat_id);
+
         user.expenses.forEach(element => {
-            if (element.categoryId === cat_id)  element.categoryId = defaulCategoryId; //set default category id in all expenses belonging to the deleted category
+            if (element.categoryId == cat_id) {
+                element.categoryId = defaulCategoryId; //set default category id in all expenses belonging to the deleted category
+                console.log("default "+defaulCategoryId);
+            }
         });
         
-        user.categories.find((obj) => obj.name === defaultCategory).budget=user.budget-user.allocated_budget; //return -1 if no category match the input category name
+        user.categories.find((obj) => obj.name === defaultCategory).budget = user.budget - user.allocated_budget; //return -1 if no category match the input category name
         
         assert(index !== -1, "Cancellazione fallita, categoria non esistente.");
 
