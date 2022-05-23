@@ -154,7 +154,72 @@ paths:
                     description: Error message
                     example: Registrazione fallita, email o password non validi
                     
-        
+  /users/{id}/setBudget:
+    post:
+      summary: Set the budget
+      description: Use the input parameter to set the budget.    
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                budget:
+                  type: number
+                  example: 300
+      responses:
+        '201':
+          description: Budget set correctly
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the budget setting process
+                    example: true
+        '400':
+          description: Invalid parameters 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the budget setting process
+                    example: false
+                  message:
+                    type: string
+                    description: Error message
+                    example: Input non valido
+                    
+  /users/{id}/budget:
+    get:
+      summary: Show the budget
+      description: Show the total spent at the moment and the budget available to be spent.    
+      responses:
+        '200':
+          description: Budget spent and budget remaining correctly shown.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of budget shown
+                    example: true
+                  total_spent:
+                    type: number
+                    description: How much of the budget is already allocated to expenses
+                    example: 0
+                  budget:
+                    type: number
+                    description: Budget still to be spent 
+                    example: 300
+                    
   /users/{id}/categories:
     post:
       summary: Create a new category
@@ -313,3 +378,51 @@ paths:
                     type: string
                     description: Error message
                     example: "Cancellazione fallita, categoria non trovata"
+                    
+  /users/{id}/categories:
+    get:
+      summary: List of categories
+      description: Show the list of existing categories.    
+      responses:
+        '200':
+          description: Budget spent and budget remaining correctly shown.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of list shown
+                    example: true
+                  categories:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Category'
+                      
+components:
+  schemas:
+    Category:
+      type: object
+      required:
+        - id
+        - name
+        - color
+        - budget
+        - cat_spent
+      properties:
+        id:
+          type: string
+          description: id of the category
+        name:
+          type: string
+          description: name of the category
+        color:
+          type: string
+          description: color assigned to the category
+        budget: 
+          type: number
+          description: budget assigned to the category
+        cat_spent:
+          type: number
+          description: how much the user already spent in that category
