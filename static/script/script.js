@@ -90,9 +90,10 @@ function afterAuth(){
     .then((resp) => resp.json())
     .then(function(data){
         assert(data.success, data.message);
-        showRecapCategories();
+        //showRecapCategories();
     })
     .catch(function(error){
+        console.log(error);
         window.alert(error);
     });
 
