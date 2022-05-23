@@ -2,27 +2,29 @@
  * This variable stores the logged in user
  */
 var loggedUser = {};
+//base URL of the server
+var base="http://localhost:8080";
+
 
 function assert(condition, message){
     if (!condition) throw message || "assertion failed";
 }
-var base="http://localhost:8080";
-
 
 //code for the modal, code taken from w3schools.com
-function loadModal(){
+function loadModals(){
     // Get the modals
     var mdlExpense = document.getElementById("mdlExpense");
     var mdlCategory = document.getElementById("mdlCategory");
 
     // Get the button that opens the modal
-    var btnOpenFormExpense = document.getElementById("btnOpenFormExpense");
-    var btnOpenFormCategory = document.getElementById("btnOpenFormCategory")
+    var btnOpenExpenseForm = document.getElementById("btnOpenExpenseForm");
+    var btnOpenFormCategory = document.getElementById("btnOpenFormCategory");
+
     // Get the <span> element that closes the modal
     var spanExpense = document.getElementById("spanCloseExpenseForm");
     var spanCategory = document.getElementById("spanCategory");
     // When the user clicks on the button, open the modal
-    btnOpenFormExpense.onclick = function() {
+    btnOpenExpenseForm.onclick = function() {
         console.log(mdlExpense);
         mdlExpense.style.display = "block";
     }
@@ -45,41 +47,12 @@ function loadModal(){
     }
 }
 
-/*
-//checks the input of the expense form, called when the button is clicked
-function validateInputs(){
-    return validateAmount();
-    //checkDate() date should not be int the future or before 2000 for examples
-}
-
-//if the amount is not a number or is less than zero send an alert
-function validateAmount(){
-    //let v = document.forms["expenseForm"]["amount"].value;
-    let v = document.getElementById("amount").value;
-    
-    //if(isNaN(v) || v<=0){
-    if (v <= 0) {
-        alert("Errore: inserito Totale negativo");
-        return false;
-    }
-    
-    return true;
-}
-//even this properties can be obatained with the min name on the input tag
-*/
-
-function clearDate(date){
-    //split in two the string and return the first half
-    return date.split('T')[0];
-}
-
-
 //displays login form after login selection
 function displayLogin(){
     document.getElementById("navAuthentication").hidden=true;
     document.getElementById("divAuthentication").hidden=false;
     document.getElementById("Login").hidden=false;
- }
+}
 
 //displays signup form after signup selection
 function displaySignup(){
@@ -87,9 +60,9 @@ function displaySignup(){
     document.getElementById("divAuthentication").hidden=false;
     document.getElementById("authName").hidden=false;
     document.getElementById("Signup").hidden=false;
- }
+}
 
- //resets page and form
+//resets page and form
 function resetForm(){
     document.getElementById("navAuthentication").hidden=false;
     document.getElementById("divAuthentication").hidden=true;
@@ -105,8 +78,7 @@ async function afterAuth(){
     //document.getElementById("loggedUser").innerHTML = loggedUser.name;
     document.getElementById("navAuthentication").hidden = true;
     document.getElementById("divAuthentication").hidden = true;
-    //document.getElementById("divExpense").hidden = false;
-    document.getElementById("divBudget").hidden = false;
+    
     document.getElementById("viewBudgetLabel").hidden = false;
     document.getElementById("budgetRimanente").hidden = false;
     
@@ -130,7 +102,7 @@ async function afterAuth(){
     loadExpensesList();
     
     //load the expense modal
-    loadModal();
+    loadModals();
         
     //load the category drop down list 
     loadCategoriesOptions();
@@ -206,7 +178,6 @@ function login()
     ); // If there is any error you will catch them here
 
 }
-
 
 /**
  * This function is called when the signup button is pressed.

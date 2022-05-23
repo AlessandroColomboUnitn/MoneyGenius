@@ -13,11 +13,11 @@ router.post('', async function(req, res){
     let name = req.body.name;
     let amount = + req.body.amount; //cast to number
     let categoryId = req.body.categoryId;
-    let date = req.body.date;
+    let date = new Date(req.body.date);
     
     try{
         //check the inputs
-        assert(validateInputs(), "Creazione fallita, input non validi.");
+        assert(validateInputs(name, amount, categoryId, date), "Creazione fallita, input non validi.");
         
         //get the id from the request url
         let id = req.params.id;
@@ -25,6 +25,10 @@ router.post('', async function(req, res){
         //retrieve the user instance
         let user = await User.findOne({_id: id}).exec();
         assert(user, "Creazione fallita, utente non riconosciuto.");
+
+        //retrieve the category
+        let category = user.categories.find(cat => cat.id == categoryId);
+        assert(category, 'Creazione fallita, categoria non esistente.');
 
         //create the expense
         let expense={
@@ -42,10 +46,7 @@ router.post('', async function(req, res){
 
         //update budget spent
         user.budget_spent += expense.amount;
-
-        //get the category
-        let category = user.categories.find(cat => cat.id == expense.categoryId);
-
+        
         //update budget spent x catgory
         category.cat_spent += expense.amount;
 
@@ -83,21 +84,24 @@ router.get('', async function(req, res) {
         //retrieve the user instance
         var user = await User.findById(id).exec();
 
-        assert(user, "Utente non riconosciuto.");
+        assert(user, 'Utente non riconosciuto');
 
         //shallow copy to avoid updates on db
         var expenses = [...user.expenses];
         var categories = user.categories;
 
-        //TODO find a better solution to
+        //sort categories descending order
+        expenses.sort((a, b) => b.date - a.date);
+
+        //retrieve the name of the category and stores it for the response
         expenses.forEach(expense => {
-            let cat = categories.find(cat => cat.id === expense.categoryId);
+            let cat = categories.find(cat => cat.id == expense.categoryId);
             assert(cat, 'Categoria non esistente.');
             expense.categoryId = cat.name;
         });
     
 
-
+        //send back the response
         res.status(200).json({
             success: true,
             message: 'Ecco le tue spese.',
@@ -109,24 +113,17 @@ router.get('', async function(req, res) {
         res.status(400).json({ success: false, message: error.message });
         console.log(error);
     }
-    /*
-        clear the date
-        remove the id 
-        sort them by date in decrescent order
-        filter them by max limit
-        show only last month
-    */
 });
 
 
 function validateInputs(name, amount, categoryId, date){
-    return (
+    return +
+    (
         name!="" &&
-        (!isNaN(amount) && amount > 0) &&
-        categoryId !="" /*&&
-        date*/
-
-    ) || true;
+        (!isNaN(amount) && amount >= 0) &&
+        categoryId !="" &&
+        date instanceof Date && !isNaN(date.valueOf())
+    );
 }
 
 module.exports = router;
