@@ -154,7 +154,7 @@ paths:
                     description: Error message
                     example: Registrazione fallita, email o password non validi
                     
-  /users/{id}/setBudget:
+  /users/{id}/budget:
     post:
       summary: Set the budget
       description: Use the input parameter to set the budget.    
