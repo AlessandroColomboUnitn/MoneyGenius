@@ -43,6 +43,8 @@ function addCategory(){
     });
 }
 
+
+
 function deleteCategory(category_name){
     console.log(category_name);
     fetch('api/v1/users/'+loggedUser.id+'/categories/', {
