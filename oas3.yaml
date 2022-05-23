@@ -522,18 +522,23 @@ components:
         id:
           type: string
           description: id of the category
+          example: 628a2d2415fde6981acaf11d
         name:
           type: string
           description: name of the category
+          example: spesa
         color:
           type: string
           description: color assigned to the category
+          example: "#919191"
         budget: 
           type: number
           description: budget assigned to the category
+          example: 200
         cat_spent:
           type: number
           description: how much the user already spent in that category
+          example: 100
           
     Expense:
       type: object
