@@ -59,6 +59,8 @@ function addExpense(){
 
             //update budget UI
             viewBudget();
+
+            fillCategoriesTable(expense, );
             /*
             //update budget and budget_spent
             document.getElementById("budgetSpentView").innerHTML = budget_spent;
@@ -97,6 +99,48 @@ function loadExpensesList(){
 
             //if i have any expense
             if(userExpenses.length>0){
+
+                let table = createExpensesTable();
+                table = fillExpensesTable(userExpenses, table);       
+                expensesList.appendChild(table);
+            
+            }else{
+                let span = document.createElement("span");
+                span.innerHTML="Nessuna spesa registrata"; 
+                expensesList.appendChild(span);
+            }
+
+            return;
+        }
+    })
+    .catch( 
+        (error) => {
+            window.alert(error);
+            console.error(error);
+        }
+    ); // If there is any error you will catch them here
+}
+
+/*
+function loadExpensesList(){
+
+    let url = new URL('api/v1/users/' + loggedUser.id + '/expenses', base);
+    let params = {token:loggedUser.token};
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+    
+    fetch(url)
+    .then((resp) => resp.json()) // Transform the data into json
+    .then(function(data){
+        if(!data.success){
+            console.log(data);
+            throw data.message;
+        }else{
+
+            let expensesList = document.getElementById("expensesList");
+            let userExpenses = data.expenses;
+
+            //if i have any expense
+            if(userExpenses.length>0){
                 let table = createExpensesTable();
                 table = fillExpensesTable(userExpenses, table);       
                 expensesList.appendChild(table);
@@ -116,6 +160,7 @@ function loadExpensesList(){
         }
     ); // If there is any error you will catch them here
 }
+*/
 
 //send an asynchronous request to the api to retrieve the list of categories
 //then add the option to the drop down list

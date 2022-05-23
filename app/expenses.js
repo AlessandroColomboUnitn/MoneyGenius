@@ -27,7 +27,7 @@ router.post('', async function(req, res){
         assert(user, "Creazione fallita, utente non riconosciuto.");
 
         //retrieve the category
-        let category = user.categories.find(cat => cat.id === categoryId);
+        let category = user.categories.find(cat => cat.id == categoryId);
         assert(category, 'Creazione fallita, categoria non esistente.');
 
         //create the expense
@@ -46,7 +46,7 @@ router.post('', async function(req, res){
 
         //update budget spent
         user.budget_spent+=expense.amount;
-        
+
         //update budget left x catgory
         //category.budget-=expense.amount;
 
@@ -99,7 +99,7 @@ router.get('', async function(req, res) {
 
         //retrieve the name of the category and stores it for the response
         expenses.forEach(expense => {
-            let cat = categories.find(cat => cat.id === expense.categoryId);
+            let cat = categories.find(cat => cat.id == expense.categoryId);
             assert(cat, 'Categoria non esistente.');
             expense.categoryId = cat.name;
         });

@@ -102,7 +102,7 @@ async function afterAuth(){
     loadExpensesList();
     
     //load the expense modal
-    loadModal();
+    loadModals();
         
     //load the category drop down list 
     loadCategoriesOptions();
