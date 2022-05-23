@@ -53,6 +53,7 @@ router.post('', async function(req, res){
         let user = await User.findById(id);
   
         assert(user, "Utente non esistente"); //should not throw since user token is checked beforehand
+        assert(user.budget, "Creazione fallita, per poter creare una categoria devi avere un budget mensile.") 
         assert(!user.categories.find( x => x.name === name), "Creazione fallita, categoria già esistente."); //check that the category does not exists already
         assert(!user.categories.find( x => x.color === color), "Creazione fallita, colore categoria già assegnato."); //check that the color is not already assigned to another categoty
         assert(!isNaN(budget) && budget>0, "Il budget assegnato alla categoria non è vaildo");
@@ -72,7 +73,6 @@ router.post('', async function(req, res){
         res.status(200).json({
             success: true,
             message: "Creazione riuscita.",
-            free_budget: free_budget
         });
 
     }catch(error){ //if one of the above assertions fails, we return the respective error message
@@ -108,10 +108,19 @@ router.delete('', async function (req, res){
         user.allocated_budget -= cat_budget; //subtract category budget to complessive categories budget
         user.categories.splice(index,1);
         
+        console.log(cat_id);
+
         user.expenses.forEach(element => {
-            if (element.categoryId === cat_id)  element.categoryId = defaulCategoryId; //set default category id in all expenses belonging to the deleted category
+            if (element.categoryId == cat_id) {
+                element.categoryId = defaulCategoryId; //set default category id in all expenses belonging to the deleted category
+                console.log("default "+defaulCategoryId);
+            }
         });
         
+        user.categories.find((obj) => obj.name === defaultCategory).budget = user.budget - user.allocated_budget; //return -1 if no category match the input category name
+        
+        assert(index !== -1, "Cancellazione fallita, categoria non esistente.");
+
         await user.save();
 
         res.status(200).json({

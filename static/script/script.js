@@ -29,7 +29,8 @@ function loadModals(){
         mdlExpense.style.display = "block";
     }
 
-    btnOpenFormCategory.onclick = function() {mdlCategory.style.display="block";}
+    btnOpenFormCategory.onclick = function() {
+        mdlCategory.style.display="block";}
 
     // When the user clicks on <span> (x), close the modal
     spanExpense.onclick = function() {
@@ -72,7 +73,7 @@ function resetForm(){
 }
 
 //hide the authentication section and show the user homepage
-function afterAuth(){
+async function afterAuth(){
 
     //document.getElementById("loggedUser").innerHTML = loggedUser.name;
     document.getElementById("navAuthentication").hidden = true;
@@ -81,7 +82,42 @@ function afterAuth(){
     document.getElementById("viewBudgetLabel").hidden = false;
     document.getElementById("budgetRimanente").hidden = false;
     
-    //set user's default category
+    
+    let budget = await fetch('./budget.html');
+    budget = await budget.text();
+    let divBudget = document.getElementById("divBudget");
+    divBudget.innerHTML = budget;
+    
+    let category = await fetch('./category.html');
+    category = await category.text();
+    let divCategory = document.getElementById("divCategory");
+    divCategory.innerHTML = category;
+
+    let expense = await fetch('./expense.html');
+    expense = await expense.text();
+    let divExpense = document.getElementById("divExpense");
+    divExpense.innerHTML = expense;
+
+    //load the expenses
+    loadExpensesList();
+    
+    //load the expense modal
+    loadModal();
+        
+    //load the category drop down list 
+    loadCategoriesOptions();
+
+    showRecapCategories();
+
+    //loads the expenses
+    viewBudget();
+}
+
+function afterSetBudget(){
+    viewBudget();
+    document.getElementById("budgetRimanente").hidden = false;
+       //set user's default category
+    
     fetch('../api/v1/users/'+loggedUser.id+'/categories/default', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -93,42 +129,8 @@ function afterAuth(){
         //showRecapCategories();
     })
     .catch(function(error){
-        console.log(error);
         window.alert(error);
     });
-
-    //fetch the budget html
-    fetch('./budget.html')
-    .then(response=> response.text())
-    .then(text => {
-        document.getElementById("divBudget").innerHTML = text;
-        viewBudget();
-    });
-
-    //fetch the category html
-    fetch("./category.html")
-    .then(response => response.text())
-    .then( text => {
-        document.getElementById("divCategory").innerHTML = text;
-    });
-
-    //fetch the expense html
-    fetch('./expense.html')
-    .then(response=> response.text())
-    .then(text => {
-        document.getElementById("divExpense").innerHTML = text;
-        //load the expenses
-        loadExpensesList();
-        //load the expense modal
-        loadModals();
-        //load the category drop down list 
-        loadCategoriesOptions();
-    });
-}
-
-function afterSetBudget(){
-    viewBudget();
-    document.getElementById("budgetRimanente").hidden = false;
 }
 
  /** 

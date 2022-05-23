@@ -1,3 +1,4 @@
+
 function addCategory(){
     
     var name = document.getElementById("categoryName").value;
@@ -20,22 +21,27 @@ function addCategory(){
     .then((resp) => resp.json())
     .then(function(data){
         assert(data.success, data.message);
-        document.getElementById("spanCategory").click();
+        
 
-        let tableCat = document.getElementById('categoriesTable');
-        if(!tableCat){
+        document.getElementById("spanCategory").click();
+        let tableCat = document.getElementById('tableCat');
+
+        if(!tableCat){ //we have to create table cat
             let categoriesList = document.getElementById('categoriesList');
             let span = categoriesList.firstElementChild;
             categoriesList.removeChild(span);
 
-            //create the table and append it
+            showRecapCategories();
+
+            /*//create the table and append it
             tableCat = createCategoriesTable();
             tableCat = fillCategoriesTable(data.categories, tableCat);
-            categoriesList.appendChild(tableCat);                
+            categoriesList.appendChild(tableCat);        */        
         }else{
-            table = fillCategoriesTable(newCategory, tableCat);
+            tableCat.remove();
+            showRecapCategories();
         }   
-
+        loadCategoriesOptions();
         //console.log(newCategory);
         //tableCat = fillCategoriesTable(newCategory, tableCat);
     }).catch(function(error){
@@ -59,7 +65,9 @@ function deleteCategory(category_name){
     .then( resp => resp.json())
     .then(function(data){
         assert(data.success, data.message);
-        //showRecapCategories();
+        document.getElementById("tableCat").remove();
+        showRecapCategories();
+        loadCategoriesOptions();
     })
     .catch(function(error){
         window.alert(error);
@@ -68,7 +76,7 @@ function deleteCategory(category_name){
 
 function createCategoriesTable(){
     var tableCat = document.createElement("tableCat");
-    tableCat.id = 'categoriesTable';
+    tableCat.id = 'tableCat';
 
     const thNames = ["Nome", "Budget", "di cui Speso"];
                 
@@ -136,6 +144,7 @@ function fillCategoriesTable(userCategories, tableCat){
                 if(attribute === "name") category_name = elementCategory[attribute];
             }
         }
+        trCategory.id = category_name+" row";
         let button = document.createElement("button");
         button.innerHTML = "X";
         button.onclick = ()  => deleteCategory(category_name);

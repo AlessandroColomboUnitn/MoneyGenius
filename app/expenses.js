@@ -46,7 +46,7 @@ router.post('', async function(req, res){
 
         //update budget spent
         user.budget_spent+=expense.amount;
-
+        
         //update budget left x catgory
         //category.budget-=expense.amount;
 
@@ -103,6 +103,7 @@ router.get('', async function(req, res) {
             assert(cat, 'Categoria non esistente.');
             expense.categoryId = cat.name;
         });
+    
 
         //send back the response
         res.status(200).json({
