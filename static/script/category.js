@@ -23,6 +23,7 @@ function addCategory(){
         else document.getElementById("spanCat").remove();
         showRecapCategories(); //first time we have to create the category table
         document.getElementById("spanCategory").click();
+        //loadCategoriesOptions();
     }).catch(function(error){
         window.alert(error);
     });
@@ -44,6 +45,8 @@ function deleteCategory(category_name){
         assert(data.success, data.message);
         document.getElementById("tableCat").remove();
         showRecapCategories();
+        loadExpensesList();
+        //loadCategoriesOptions();
     })
     .catch(function(error){
         window.alert(error);
