@@ -166,7 +166,16 @@ paths:
               properties:
                 budget:
                   type: number
+                  description: Budget set by the user
                   example: 300
+                id: 
+                  type: string
+                  description: Id associated with the new user
+                  example: 628a2d2415fde6981acaf117
+                token:
+                  type: string
+                  description: User's authentication token
+                  example: eyJzdwIiOiIxMiMONTY30DkwIiwibmFtZSI6IkDvaG4
       responses:
         '201':
           description: Budget set correctly
@@ -199,6 +208,18 @@ paths:
     get:
       summary: Show the budget
       description: Show the total spent at the moment and the budget available to be spent.    
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: User's id
+          name: token
+          required: true
+          schema: 
+            type: string
+          description: User's authentication token
       responses:
         '200':
           description: Budget spent and budget remaining correctly shown.
@@ -236,19 +257,19 @@ paths:
                     example: "eyJzdwIiOiIxMiMONTY30DkwIiwibmFtZSI6IkDvaG4"
                 id:
                   type: string
-                  description: user's id
+                  description: User's id
                   example: "628a2d2415fde6981acaf117"
                 name:
                   type: string
-                  description: name of the new category
+                  description: Name of the new category
                   example: "Spesa"
                 color:
                   type: string
-                  description: color of the new category
+                  description: Color of the new category
                   example: "#919191"
                 budget:
                   type: integer
-                  description: budget of the new category
+                  description: Budget of the new category
                   example: 200
       responses:
         '201':
@@ -382,7 +403,19 @@ paths:
   /users/{id}/categories:
     get:
       summary: List of categories
-      description: Show the list of existing categories.    
+      description: Show the list of existing categories.   
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: User's id
+          name: token
+          required: true
+          schema: 
+            type: string
+          description: User's authentication token
       responses:
         '200':
           description: All the categories are shown correctly.
@@ -416,19 +449,19 @@ paths:
                   example: "eyJzdwIiOiIxMiMONTY30DkwIiwibmFtZSI6IkDvaG4"
                 name:
                   type: string
-                  description: name of the new expense
+                  description: Name of the new expense
                   example: "Pizza"
                 amount:
                   type: number
-                  description: amount of the new expense
+                  description: Amount of the new expense
                   example: 12
                 categoryId:
                   type: string
-                  description: category's id of the new expense
+                  description: Category's id of the new expense
                   example: "628a20fe6b7d93a608dc0fdc"
                 categoryId:
                   type: string
-                  description: date of the new expense
+                  description: Date of the new expense
                   example: "2022-05-19"
 
       responses:
