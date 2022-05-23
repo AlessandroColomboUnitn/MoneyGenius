@@ -524,7 +524,7 @@ paths:
                     type: array
                     description: Array with all the expenses objects
                     items:
-                      $ref: '#/components/schemas/Category'
+                      $ref: '#/components/schemas/Expense'
         '400':
           description: Invalid parameters passed
           content:
@@ -585,15 +585,20 @@ components:
         _id:
           type: string
           description: id of the expense
+          example: "628ab8d7f10846b3fa633a46"
         name:
           type: string
           description: name of the expense
+          example: "Pizza"
         categoryId:
           type: string
           description: name of the category of the expense
+          example: "628a2d2415fde6981acaf11d"
         amount: 
           type: number
           description: amount of the expense
+          example: 12
         date:
           type: string
           description: date of the expense
+          example: "2022-05-18T00:00:00.000+00:00"
