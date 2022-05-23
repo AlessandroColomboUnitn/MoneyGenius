@@ -8,8 +8,9 @@ info:
 servers:
   - url: http://localhost:8000/api/v1
     description: Development server
+    
 paths:
-  /authentications/{login}:
+  /authentications/login:
     post:
       summary: Authenticate an existing user
       description: Use the input parameters to authenticate an existing user.   
@@ -21,9 +22,11 @@ paths:
               properties:
                 email:
                   type: string
+                  description: "user's email"
                   example: "marco@unitn.it"
                 password:
                   type: string
+                  description: "user's password"
                   example: "123"
       responses:
         '200':
@@ -60,7 +63,7 @@ paths:
                   self: 
                     type: string
                     description: Reference to the logged user
-                    example: api/v1/marco's_id
+                    example: users/628a2d2415fde6981acaf117
         '400':
           description: Invalid parameters 
           content:
@@ -75,9 +78,9 @@ paths:
                   message:
                     type: string
                     description: Error message
-                    example: Autenticazione failed, invalid email or password
+                    example: Autenticazione fallita, email o password non validi
 
-  /authentications/{signup}:
+  /authentications/signup:
     post:
       summary: Register a new user
       description: Use the input parameters to register a new user.    
@@ -89,12 +92,15 @@ paths:
               properties:
                 email:
                   type: string
+                  description: user's email
                   example: "marco@unitn.it"
                 name:
                   type: string
+                  description: user's name
                   example: "Marco"
                 password:
                   type: string
+                  description: user's password
                   example: "123"
       responses:
         '200':
@@ -115,7 +121,7 @@ paths:
                   id: 
                     type: string
                     description: Id associated with the new user
-                    example: marco's_id
+                    example: 628a2d2415fde6981acaf117
                   success:
                     type: boolean
                     description: Result of the registration process
@@ -131,7 +137,7 @@ paths:
                   self: 
                     type: string
                     description: Reference to the new user
-                    example: api/v1/marco's_id
+                    example: users/628a2d2415fde6981acaf117
         '400':
           description: Invalid parameters 
           content:
@@ -146,4 +152,164 @@ paths:
                   message:
                     type: string
                     description: Error message
-                    example: Registration failed, invalid email or password
+                    example: Registrazione fallita, email o password non validi
+                    
+        
+  /users/{id}/categories:
+    post:
+      summary: Create a new category
+      description: Use the input parameters to create a new category.    
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                    type: string
+                    description: User's authentication token
+                    example: "eyJzdwIiOiIxMiMONTY30DkwIiwibmFtZSI6IkDvaG4"
+                id:
+                  type: string
+                  description: user's id
+                  example: "628a2d2415fde6981acaf117"
+                name:
+                  type: string
+                  description: name of the new category
+                  example: "Spesa"
+                color:
+                  type: string
+                  description: color of the new category
+                  example: "#919191"
+                budget:
+                  type: integer
+                  description: budget of the new category
+                  example: 200
+      responses:
+        '201':
+          description: Creation successful, location in the URL of the request 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the operation
+                    example: true
+                  message:
+                    type: string
+                    description: A message for the user
+                    example: Categoria creata correttamente! 
+                  self: 
+                    type: string
+                    description: Reference to the new category
+                    example: students/628a2d2415fde6981acaf117/categories/628a2d2415fde6981acaf11d
+        '400':
+          description: Invalid parameters 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the operation
+                    example: false
+                  message:
+                    type: string
+                    description: Error message
+                    example: "Creazione fallita, parametri mancanti"
+                    
+  /users/{id}/categories/default:
+    post:
+      summary: Create the default category
+      description: If not already present, create the default category.    
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                    type: string
+                    description: User's authentication token
+                    example: "eyJzdwIiOiIxMiMONTY30DkwIiwibmFtZSI6IkDvaG4"
+                id:
+                  type: string
+                  description: User's id
+                  example: "628a2d2415fde6981acaf117"
+      responses:
+        '201':
+          description: Creation successful, location in the URL of the request 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the operation
+                    example: true
+                  message:
+                    type: string
+                    description: A message for the user
+                    example: Categoria creata correttamente! 
+                  self: 
+                    type: string
+                    description: Reference to the new category
+                    example: sutdents/628a2d2415fde6981acaf117/categories/628a2d2415fde6981acaf11d
+  
+  /users/{id}/categories:
+    delete:
+      summary: Delete an existent category
+      description: Use the input parameters to delete an existent category.    
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                    type: string
+                    description: User's authentication token
+                    example: "eyJzdwIiOiIxMiMONTY30DkwIiwibmFtZSI6IkDvaG4"
+                id:
+                  type: string
+                  description: User's id
+                  example: "628a2d2415fde6981acaf117"
+                name:
+                  type: string
+                  description: Category name
+                  example: "Spesa"
+      responses:
+        '204':
+          description: Successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the operation
+                    example: true
+                  message:
+                    type: string
+                    description: A message for the user
+                    example: Categoria rimossa correttamente! 
+        '404':
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the operation
+                    example: false
+                  message:
+                    type: string
+                    description: Error message
+                    example: "Cancellazione fallita, categoria non trovata"
