@@ -4,6 +4,9 @@ function addCategory(){
     var name = document.getElementById("categoryName").value;
     var color = document.getElementById("categoryColor").value;
     var budget = document.getElementById("categoryBudget").value;
+    var newCategory = [{name: name,  budget: budget, cat_spent: 0}];
+    //console.log(color);
+
     fetch('api/v1/users/'+loggedUser.id+'/categories/', {
         method: 'POST',
         headers: {'Content-type': 'application/json'},
@@ -23,11 +26,29 @@ function addCategory(){
         else document.getElementById("spanCat").remove();
         showRecapCategories(); //first time we have to create the category table
         document.getElementById("spanCategory").click();
-        //loadCategoriesOptions();
+
+        let tableCat = document.getElementById('tableCat');
+        if(!tableCat){
+            let categoriesList = document.getElementById('categoriesList');
+            let span = categoriesList.firstElementChild;
+            categoriesList.removeChild(span);
+
+            //create the table and append it
+            tableCat = createCategoriesTable();
+            tableCat = fillCategoriesTable(data.categories, tableCat);
+            categoriesList.appendChild(tableCat);                
+        }else{
+            table = fillCategoriesTable(newCategory, tableCat);
+        }   
+
+        //console.log(newCategory);
+        //tableCat = fillCategoriesTable(newCategory, tableCat);
     }).catch(function(error){
         window.alert(error);
     });
 }
+
+
 
 function deleteCategory(category_name){
     console.log(category_name);
@@ -57,7 +78,7 @@ function createCategoriesTable(){
     var tableCat = document.createElement("tableCat");
     tableCat.id = 'tableCat';
 
-    var thNames = ["Nome", "Speso", "Budget"];
+    const thNames = ["Nome", "Budget", "di cui Speso"];
                 
     //setup the th row
     let trHeadersCat = document.createElement("tr");
@@ -84,28 +105,22 @@ function showRecapCategories(){
     .then((resp) => resp.json())
     .then(function(data){ 
         if(!data.success){
-            console.log(data);
+            //console.log(data);
             throw data.message;
         }else{
-
-            let categoriesList = document.getElementById("categoriesList");
-            
+            let categoriesList = document.getElementById('categoriesList');
             let userCategories = data.categories;
-
-            //if i have any expense
-            if(userCategories.length>0){
-                let tableCat = createCategoriesTable();
-                tableCat = fillCategoriesTable(userCategories, tableCat);       
-                categoriesList.appendChild(tableCat);
-            }else{
-                let spanCat = document.createElement("span");
-                spanCat.id = "spanCat";
-                spanCat.innerHTML="Nessuna categoria registrata"; 
-                categoriesList.appendChild(spanCat);
-            }
-
-            return;
-        }
+                if(userCategories.length>=0){
+                    let tableCat = createCategoriesTable();
+                    tableCat = fillCategoriesTable(userCategories, tableCat);       
+                    categoriesList.appendChild(tableCat);
+                }else{
+                    let spanCat = document.createElement("span");
+                    spanCat.innerHTML="Errore in showRecapCategories"; 
+                    categoriesList.appendChild(spanCat);
+                }
+        }     
+       return;
     })
     .catch( 
         (error) => {
@@ -116,7 +131,7 @@ function showRecapCategories(){
 }
 
 function fillCategoriesTable(userCategories, tableCat){
-
+    
     userCategories.forEach(elementCategory => {
 
         let trCategory = document.createElement("tr");

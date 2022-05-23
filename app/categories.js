@@ -17,10 +17,12 @@ router.post('/default', async function(req, res){
         console.log();
         assert(user, "Utente non esistente");
         if(user.categories.length === 0){
-            user.categories.push({name: defaultCategory, color: defaultColor, budget: user.budget});
+            user.categories.push({name: defaultCategory, color: defaultColor, budget: user.budget-user.allocated_budget});
             defaulCategoryId = user.categories[0].id;
+            
             user = await user.save();
         }
+        
         res.status(200).json({
             success: true
         })
