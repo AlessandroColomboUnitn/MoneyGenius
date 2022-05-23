@@ -153,13 +153,10 @@ function afterAuth(){
     loadExpensesList();
     //load the expense modal
     loadModal();
-<<<<<<< HEAD
     showRecapCategories();
-=======
     //load the category drop down list 
     loadCategoriesOptions();
 
->>>>>>> 379636c22d26256d63e78efe855d3d5e80186b20
     });
 
     
