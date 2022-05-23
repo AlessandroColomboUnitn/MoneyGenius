@@ -269,7 +269,7 @@ paths:
                   self: 
                     type: string
                     description: Reference to the new category
-                    example: students/628a2d2415fde6981acaf117/categories/628a2d2415fde6981acaf11d
+                    example: users/628a2d2415fde6981acaf117/categories/628a2d2415fde6981acaf11d
         '400':
           description: Invalid parameters 
           content:
@@ -385,7 +385,7 @@ paths:
       description: Show the list of existing categories.    
       responses:
         '200':
-          description: Budget spent and budget remaining correctly shown.
+          description: All the categories are shown correctly.
           content:
             application/json:
               schema:
@@ -399,6 +399,114 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Category'
+
+  /users/{id}/expenses:
+    post:
+      summary: Create a new expense
+      description: Use the input parameters to create a new expense.    
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: User's authentication token
+                  example: "eyJzdwIiOiIxMiMONTY30DkwIiwibmFtZSI6IkDvaG4"
+                name:
+                  type: string
+                  description: name of the new expense
+                  example: "Pizza"
+                amount:
+                  type: number
+                  description: amount of the new expense
+                  example: 12
+                categoryId:
+                  type: string
+                  description: category's id of the new expense
+                  example: "628a20fe6b7d93a608dc0fdc"
+                categoryId:
+                  type: string
+                  description: date of the new expense
+                  example: "2022-05-19"
+
+      responses:
+        '201':
+          description: Creation successful, location in the URL of the request 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the operation
+                    example: true
+                  message:
+                    type: string
+                    description: A message for the user
+                    example: Nuova spesa registrata.
+                  self: 
+                    type: string
+                    description: Reference to the new expense
+                    example: users/628a43bccba4586929357ae2/expenses/628ab8d7f10846b3fa633a46
+        '400':
+          description: Invalid parameters passed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the operation
+                    example: false
+                  message:
+                    type: string
+                    description: Error message
+                    example: "Creazione fallita, input non validi."
+
+  /users/{id}/expenses:
+    get:
+      summary: List of expenses
+      description: Show the list of existing expenses.
+      responses:
+        '200':
+          description: All the expenses are shown correctly.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the operation
+                    example: true
+                  message:
+                    type: string
+                    description: A message for the user
+                    example: "'Ecco le tue spese."
+                  expenses:
+                    type: array
+                    description: Array with all the expenses objects
+                    items:
+                      $ref: '#/components/schemas/Category'
+        '400':
+          description: Invalid parameters passed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the operation
+                    example: false
+                  message:
+                    type: string
+                    description: Error message
+                    example: "Categoria non esistente."
                       
 components:
   schemas:
@@ -426,3 +534,28 @@ components:
         cat_spent:
           type: number
           description: how much the user already spent in that category
+          
+    Expense:
+      type: object
+      required:
+        - _id
+        - name
+        - categoryId
+        - amount
+        - date
+      properties:
+        _id:
+          type: string
+          description: id of the expense
+        name:
+          type: string
+          description: name of the expense
+        categoryId:
+          type: string
+          description: name of the category of the expense
+        amount: 
+          type: number
+          description: amount of the expense
+        date:
+          type: string
+          description: date of the expense
