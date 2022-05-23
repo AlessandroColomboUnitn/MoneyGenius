@@ -67,7 +67,7 @@ function deleteCategory(category_name){
 }
 
 function createCategoriesTable(){
-    tableCat = document.createElement("tableCat");
+    var tableCat = document.createElement("tableCat");
     tableCat.id = 'categoriesTable';
 
     const thNames = ["Nome", "Budget", "di cui Speso"];
