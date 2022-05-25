@@ -169,10 +169,15 @@ function loadCategoriesOptions(){
 //create the table
 function createExpensesTable(){
     var table = document.createElement("table");
+    var thead = document.createElement("thead");
+    var trHeaders = document.createElement("tr");
+
     table.id = 'expensesTable';
+    table.classList.add("table");
+    table.classList.add("table-hover");
+    table.classList.add("text-center");
                 
     //setup the th row
-    let trHeaders = document.createElement("tr");
     let thatt = ['Nome', 'Categoria', 'Totale', 'Data'];
     
     for (i in thatt) {
@@ -182,14 +187,17 @@ function createExpensesTable(){
 
         trHeaders.appendChild(th);
     }
-
-    table.appendChild(trHeaders);
+    
+    thead.appendChild(trHeaders);
+    table.appendChild(thead);
 
     return table;
 }
 
 //fill the table
 function fillExpensesTable(userExpenses, table){
+
+    var tbody = document.createElement("tbody");
 
     userExpenses.forEach(expense => {
 
@@ -210,9 +218,11 @@ function fillExpensesTable(userExpenses, table){
 
         }
 
-        table.appendChild(trExpense);
+        tbody.appendChild(trExpense);
         
     });
+
+    table.appendChild(tbody);
 
     return table;
 }

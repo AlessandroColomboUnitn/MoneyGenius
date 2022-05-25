@@ -79,10 +79,6 @@ async function afterAuth(){
     document.getElementById("navAuthentication").hidden = true;
     document.getElementById("divAuthentication").hidden = true;
     
-    document.getElementById("viewBudgetLabel").hidden = false;
-    document.getElementById("budgetRimanente").hidden = false;
-    
-    
     let budget = await fetch('./budget.html');
     budget = await budget.text();
     let divBudget = document.getElementById("divBudget");
