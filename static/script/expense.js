@@ -60,6 +60,10 @@ function addExpense(){
             //update budget UI
             viewBudget();
 
+            //update categories
+            showRecapCategories();
+
+
             /*
             //update budget and budget_spent
             document.getElementById("budgetSpentView").innerHTML = budget_spent;
