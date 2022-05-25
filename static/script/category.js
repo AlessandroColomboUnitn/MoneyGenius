@@ -51,7 +51,7 @@ function addCategory(){
 
 
 async function deleteCategory(category_name){
-    console.log("name:"+category_name);
+    //console.log("name:"+category_name);
     
     const resp = await fetch('api/v1/users/'+loggedUser.id+'/categories/', {
         method: 'DELETE',
