@@ -117,6 +117,7 @@ function addExpense(){
             //let budget_spent = data.budget_spent;
             
             //create table if its the first expense
+            showRecapCategories();
             if(!table){
                 let expensesList = document.getElementById("expensesList");
                
