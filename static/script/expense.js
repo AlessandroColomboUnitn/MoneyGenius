@@ -19,10 +19,11 @@ function loadExpensesList(){
 
             //if i have any expense
             if(userExpenses.length>0){
-                if(document.getElementById("expenseTable"))
-                    document.getElementById("expenseTable").remove();
-
-                let table = createExpensesTable();
+                let table = document.getElementById("expensesTable");
+                if(table)
+                    table.remove();
+    
+                table = createExpensesTable();
                 table = fillExpensesTable(userExpenses, table);       
                 expensesList.appendChild(table);
             }else{
