@@ -1,4 +1,3 @@
-
 function addCategory(){
     
     var name = document.getElementById("categoryName").value;
@@ -51,9 +50,10 @@ function addCategory(){
 
 
 
-function deleteCategory(category_name){
-    console.log(category_name);
-    fetch('api/v1/users/'+loggedUser.id+'/categories/', {
+async function deleteCategory(category_name){
+    console.log("name:"+category_name);
+    
+    const resp = await fetch('api/v1/users/'+loggedUser.id+'/categories/', {
         method: 'DELETE',
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify({
@@ -61,17 +61,18 @@ function deleteCategory(category_name){
             token: loggedUser.token, 
             name: category_name
         })
-    })
-    .then( resp => resp.json())
-    .then(function(data){
-        assert(data.success, data.message);
-        document.getElementById("tableCat").remove();
+    });
+    try{
+        console.log(resp.ok);
+        assert(resp.ok);
         showRecapCategories();
         loadCategoriesOptions();
-    })
-    .catch(function(error){
-        window.alert(error);
-    });
+        loadExpensesList();
+    }
+    catch{
+        resp_json = await resp.json();
+        window.alert(resp_json.message);
+    };
 }
 
 function createCategoriesTable(){
@@ -97,9 +98,9 @@ function createCategoriesTable(){
 
 function showRecapCategories(){
     
-    var url = new URL("api/v1/users/" + loggedUser.id + "/categories", base),
-        params = {token:loggedUser.token}
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+    var url = new URL("api/v1/users/" + loggedUser.id + "/categories", base);
+    let params = {token:loggedUser.token};
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
     
     fetch(url)
     .then((resp) => resp.json())
@@ -111,7 +112,9 @@ function showRecapCategories(){
             let categoriesList = document.getElementById('categoriesList');
             let userCategories = data.categories;
                 if(userCategories.length>=0){
-                    let tableCat = createCategoriesTable();
+                    let tableCat = document.getElementById("tableCat");
+                    if(tableCat) tableCat.remove();
+                    tableCat = createCategoriesTable();
                     tableCat = fillCategoriesTable(userCategories, tableCat);       
                     categoriesList.appendChild(tableCat);
                 }else{
