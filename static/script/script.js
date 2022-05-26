@@ -83,6 +83,7 @@ async function afterAuth(){
     budget = await budget.text();
     let divBudget = document.getElementById("divBudget");
     divBudget.innerHTML = budget;
+    document.getElementById("budgetRimanente").hidden = false;
     
     let category = await fetch('./category.html');
     category = await category.text();
