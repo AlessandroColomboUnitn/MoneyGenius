@@ -42,17 +42,13 @@ router.post('', async function(req, res){
         await user.expenses.push(expense);
 
         //update budget left
-        user.allocated_budget+=expense.amount;
+        //user.allocated_budget += expense.amount;
 
         //update budget spent
-        user.budget_spent+=expense.amount;
-
-        //update budget left x catgory
-        //category.budget-=expense.amount;
-
+        user.budget_spent += expense.amount;
+        
         //update budget spent x catgory
-        assert(category.budget >= (category.cat_spent+expense.amount) , 'Creazione fallita, budget della categoria rimasto insufficiente.');
-        category.cat_spent+=expense.amount;
+        category.cat_spent += expense.amount;
 
         user = await user.save(); 
 

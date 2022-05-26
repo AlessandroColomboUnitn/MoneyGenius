@@ -1,11 +1,31 @@
 <!DOCTYPE html>
 <html>
     <form method="post" action="api/v1/users/setBudget" id="budgetform">
-        <label> Set Budget </label>
+        <label> Inserisci Budget </label>
         <input name="budget" id="budget"/>
         <input type="button" value="submit", onclick="setBudget()"/>
     </form>
+
     <hr>
 
+    <div class="row text-center">
+        <div class="col-sm-6">
+            <strong>Budget Speso</strong>
+        </div>
+        <div class="col-sm-6" >
+            <strong>Budget Rimanente</strong>
+        </div>
+    </div>    
     
+    <div class="row text-center">
+        <div class="col-sm-6">
+            <span id="budgetSpentView"></span>
+        </div>
+        <div id="budgetRimanente" class="col-sm-6" hidden="true" >
+            <span id="budget2View"></span>
+        </div>
+    </div>
+
+    <hr>
+
 </html>

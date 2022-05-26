@@ -5,7 +5,6 @@ const assert = require('assert');
 const user = require('./models/user');
 const defaultCategory = "altro";
 const defaultColor = "#919191";
-var defaulCategoryId;
 
 /**
  * If not present, create default category
@@ -17,9 +16,7 @@ router.post('/default', async function(req, res){
         console.log();
         assert(user, "Utente non esistente");
         if(user.categories.length === 0){
-            user.categories.push({name: defaultCategory, color: defaultColor, budget: user.budget-user.allocated_budget});
-            defaulCategoryId = user.categories[0].id;
-            
+            user.categories.push({name: defaultCategory, color: defaultColor, budget: user.budget-user.allocated_budget});   
             user = await user.save();
         }
         
@@ -33,6 +30,7 @@ router.post('/default', async function(req, res){
         });
     }
 });
+
 
 /**
  * Create a new category
@@ -62,15 +60,18 @@ router.post('', async function(req, res){
         assert(new_alloc_budget <= user.budget, "Creazione fallita, il budget allocato per le categorie supera il budget totale."); //check that the sum of budgets of all categories does not exceed the user's budget
 
         await user.categories.push({name: name, color: color, budget: budget}); //add new category
+        
         user.allocated_budget = new_alloc_budget; //update sum of budget allocated for all categories
+        
         let free_budget = user.budget - new_alloc_budget; //budget not yet allocated to any category
 
         let default_index = user.categories.findIndex((obj) => obj.name === defaultCategory); //find default category index 
+        
         user.categories[default_index].budget = free_budget; //decrease default categoty budget
         
         user = await user.save(); 
 
-        res.status(200).json({
+        res.status(201).json({
             success: true,
             message: "Creazione riuscita.",
         });
@@ -99,35 +100,44 @@ router.delete('', async function (req, res){
         assert(name!=defaultCategory, "Impossibile eliminare la categoria di default");
         assert(user.categories, "Cancellazione fallita, categoria non esistente."); //check that the categories array is not empty
         
+        var defaulCategoryId = user.categories[0].id; //get the id of the default categoty "altro"
+
         let index = user.categories.findIndex((obj) => obj.name === name); //return -1 if no category match the input category name
         
         assert(index !== -1, "Cancellazione fallita, categoria non esistente.");
         
         let cat_budget = user.categories[index].budget; 
         let cat_id = user.categories[index].id;
+        let cat_spent = user.categories[index].cat_spent;
         user.allocated_budget -= cat_budget; //subtract category budget to complessive categories budget
         user.categories.splice(index,1);
         
-        console.log(cat_id);
+        //console.log(cat_id);
 
         user.expenses.forEach(element => {
-            if (element.categoryId == cat_id) {
+            if (element.categoryId === cat_id) {
                 element.categoryId = defaulCategoryId; //set default category id in all expenses belonging to the deleted category
-                console.log("default "+defaulCategoryId);
+                //console.log("default "+defaulCategoryId);
             }
         });
         
-        user.categories.find((obj) => obj.name === defaultCategory).budget = user.budget - user.allocated_budget; //return -1 if no category match the input category name
+        user.categories.find( (obj) => {
+            if(obj.name === defaultCategory){
+                obj.budget = user.budget - user.allocated_budget;
+                obj.cat_spent += cat_spent;
+            }
+        });
         
+
         assert(index !== -1, "Cancellazione fallita, categoria non esistente.");
 
         await user.save();
-
-        res.status(200).json({
+    
+        res.status(204).json({
             success: true,
-            message: "Category correctly removed!"
+            message: "Cancellazione avvenuta con successo"
         });
-        
+
     }catch(error){
         res.status(400).json({
             success: false,

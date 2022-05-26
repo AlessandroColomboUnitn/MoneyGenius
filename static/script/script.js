@@ -79,14 +79,11 @@ async function afterAuth(){
     document.getElementById("navAuthentication").hidden = true;
     document.getElementById("divAuthentication").hidden = true;
     
-    document.getElementById("viewBudgetLabel").hidden = false;
-    document.getElementById("budgetRimanente").hidden = false;
-    
-    
     let budget = await fetch('./budget.html');
     budget = await budget.text();
     let divBudget = document.getElementById("divBudget");
     divBudget.innerHTML = budget;
+    document.getElementById("budgetRimanente").hidden = false;
     
     let category = await fetch('./category.html');
     category = await category.text();
@@ -113,25 +110,6 @@ async function afterAuth(){
     viewBudget();
 }
 
-function afterSetBudget(){
-    viewBudget();
-    document.getElementById("budgetRimanente").hidden = false;
-       //set user's default category
-    
-    fetch('../api/v1/users/'+loggedUser.id+'/categories/default', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify( { id: loggedUser.id, token: loggedUser.token, email:loggedUser.email } ),
-    })
-    .then((resp) => resp.json())
-    .then(function(data){
-        assert(data.success, data.message);
-        //showRecapCategories();
-    })
-    .catch(function(error){
-        window.alert(error);
-    });
-}
 
  /** 
  * Based on source: https://github.com/unitn-software-engineering/EasyLib/blob/master/static/script.js 
@@ -207,52 +185,4 @@ function signup(){
         window.alert(error);
         console.error(error);
     });
-}
-
-function setBudget(){
-    var budget = document.getElementById("budget").value;
-    fetch('../api/v1/users/setBudget', {
-        method: 'POST',
-        headers: {'Content-type': 'application/json'},
-        body: JSON.stringify({
-            email: loggedUser.email, 
-            token: loggedUser.token, 
-            budget: budget} )
-    })
-    .then((resp) => resp.json())
-    .then(function(data){ 
-        if(data.success){
-            //window.alert("budget impostato con successo");
-            afterSetBudget();
-            viewBudget();
-        }
-        else {
-            throw data.message;
-        }
-    })
-    .catch(function(error){
-        window.alert("impossibile impostare il budget");
-    })
-}
-
-function viewBudget(){
-    
-    var url = new URL("http://localhost:8080/api/v1/users/" + loggedUser.id + "/budget"),
-        params = {token:loggedUser.token}
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-    
-    fetch(url)
-    .then((resp) => resp.json())
-    .then(function(data){ 
-        if(data.success){
-            document.getElementById("budgetSpentView").innerHTML = data.total_spent;
-            document.getElementById("budget2View").innerHTML = data.budget;
-        }
-        else {
-            throw data.message;
-        }
-    })
-    .catch(function(error){
-        window.alert(error.message);
-    })
 }

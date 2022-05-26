@@ -1,4 +1,3 @@
-
 function addCategory(){
     
     var name = document.getElementById("categoryName").value;
@@ -51,9 +50,10 @@ function addCategory(){
 
 
 
-function deleteCategory(category_name){
-    console.log(category_name);
-    fetch('api/v1/users/'+loggedUser.id+'/categories/', {
+async function deleteCategory(category_name){
+    //console.log("name:"+category_name);
+    
+    const resp = await fetch('api/v1/users/'+loggedUser.id+'/categories/', {
         method: 'DELETE',
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify({
@@ -61,45 +61,54 @@ function deleteCategory(category_name){
             token: loggedUser.token, 
             name: category_name
         })
-    })
-    .then( resp => resp.json())
-    .then(function(data){
-        assert(data.success, data.message);
-        document.getElementById("tableCat").remove();
+    });
+    try{
+        console.log(resp.ok);
+        assert(resp.ok);
         showRecapCategories();
         loadCategoriesOptions();
-    })
-    .catch(function(error){
-        window.alert(error);
-    });
+        loadExpensesList();
+    }
+    catch{
+        resp_json = await resp.json();
+        window.alert(resp_json.message);
+    };
 }
 
 function createCategoriesTable(){
     var tableCat = document.createElement("tableCat");
-    tableCat.id = 'tableCat';
+    var thead = document.createElement("thead");
+    var trHeadersCat = document.createElement("tr");
 
-    const thNames = ["Nome", "Budget", "di cui Speso"];
+    tableCat.id = 'tableCat';
+    tableCat.classList.add("table");
+    tableCat.classList.add("table-hover");
+    tableCat.classList.add("text-center");
+
+
+    const thNames = ["Nome", "Budget", "di cui Speso", ""];
                 
     //setup the th row
-    let trHeadersCat = document.createElement("tr");
-
     for (let i = 0; i<thNames.length; i++) {
+
             let thCat = document.createElement("th");
 
             thCat.innerHTML = thNames[i];
 
             trHeadersCat.appendChild(thCat);
     }
-    tableCat.appendChild(trHeadersCat);
+
+    thead.appendChild(trHeadersCat);
+    tableCat.appendChild(thead);
 
     return tableCat;
 }
 
 function showRecapCategories(){
     
-    var url = new URL("api/v1/users/" + loggedUser.id + "/categories", base),
-        params = {token:loggedUser.token}
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+    var url = new URL("api/v1/users/" + loggedUser.id + "/categories", base);
+    let params = {token:loggedUser.token};
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
     
     fetch(url)
     .then((resp) => resp.json())
@@ -111,7 +120,9 @@ function showRecapCategories(){
             let categoriesList = document.getElementById('categoriesList');
             let userCategories = data.categories;
                 if(userCategories.length>=0){
-                    let tableCat = createCategoriesTable();
+                    let tableCat = document.getElementById("tableCat");
+                    if(tableCat) tableCat.remove();
+                    tableCat = createCategoriesTable();
                     tableCat = fillCategoriesTable(userCategories, tableCat);       
                     categoriesList.appendChild(tableCat);
                 }else{
@@ -132,6 +143,8 @@ function showRecapCategories(){
 
 function fillCategoriesTable(userCategories, tableCat){
     
+    var tbody = document.createElement("tbody");
+
     userCategories.forEach(elementCategory => {
 
         let trCategory = document.createElement("tr");
@@ -145,13 +158,18 @@ function fillCategoriesTable(userCategories, tableCat){
             }
         }
         trCategory.id = category_name+" row";
+        let td = document.createElement("td");
         let button = document.createElement("button");
         button.innerHTML = "X";
         button.onclick = ()  => deleteCategory(category_name);
-        trCategory.appendChild(button);
-        tableCat.appendChild(trCategory);
+        td.appendChild(button);
+        trCategory.appendChild(td);
+
+        tbody.appendChild(trCategory);
         
     });
+
+    tableCat.appendChild(tbody);
 
     return tableCat;
 }

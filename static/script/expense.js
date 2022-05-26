@@ -60,6 +60,10 @@ function addExpense(){
             //update budget UI
             viewBudget();
 
+            //update categories
+            showRecapCategories();
+
+
             /*
             //update budget and budget_spent
             document.getElementById("budgetSpentView").innerHTML = budget_spent;
@@ -77,7 +81,7 @@ function addExpense(){
     });
 }
 
-//send an asynchronous request to the api to retrieve the list of expenses
+//send an asynchronous request to the api to retrieve the list of epenses
 //if there arent any expenses do not show the table...
 function loadExpensesList(){
 
@@ -98,49 +102,11 @@ function loadExpensesList(){
 
             //if i have any expense
             if(userExpenses.length>0){
-
-                let table = createExpensesTable();
-                table = fillExpensesTable(userExpenses, table);       
-                expensesList.appendChild(table);
-            
-            }else{
-                let span = document.createElement("span");
-                span.innerHTML="Nessuna spesa registrata"; 
-                expensesList.appendChild(span);
-            }
-
-            return;
-        }
-    })
-    .catch( 
-        (error) => {
-            window.alert(error);
-            console.error(error);
-        }
-    ); // If there is any error you will catch them here
-}
-
-/*
-function loadExpensesList(){
-
-    let url = new URL('api/v1/users/' + loggedUser.id + '/expenses', base);
-    let params = {token:loggedUser.token};
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+                let table = document.getElementById("expensesTable");
+                if(table)
+                    table.remove();
     
-    fetch(url)
-    .then((resp) => resp.json()) // Transform the data into json
-    .then(function(data){
-        if(!data.success){
-            console.log(data);
-            throw data.message;
-        }else{
-
-            let expensesList = document.getElementById("expensesList");
-            let userExpenses = data.expenses;
-
-            //if i have any expense
-            if(userExpenses.length>0){
-                let table = createExpensesTable();
+                table = createExpensesTable();
                 table = fillExpensesTable(userExpenses, table);       
                 expensesList.appendChild(table);
             }else{
@@ -159,10 +125,8 @@ function loadExpensesList(){
         }
     ); // If there is any error you will catch them here
 }
-*/
 
-//send an asynchronous request to the api to retrieve the list of categories
-//then add the option to the drop down list
+//load dynamically the category in the select input of the expense form
 function loadCategoriesOptions(){
     let url = new URL('api/v1/users/' + loggedUser.id + '/categories', base);
     let params = {token:loggedUser.token};
@@ -178,8 +142,14 @@ function loadCategoriesOptions(){
         }else{
 
             let categoriesSel = document.getElementById("categoryId");
-            let userCategories = data.categories;
+            
+            var child = categoriesSel.lastElementChild; 
+            while (child) { //clear all children
+                categoriesSel.removeChild(child);
+                child = categoriesSel.lastElementChild;
+            }
 
+            let userCategories = data.categories;
             userCategories.forEach(category => {
                 categoriesSel.options[categoriesSel.options.length] = new Option( category.name, category._id,);
             })
@@ -199,21 +169,27 @@ function loadCategoriesOptions(){
 //create the table
 function createExpensesTable(){
     var table = document.createElement("table");
+    var thead = document.createElement("thead");
+    var trHeaders = document.createElement("tr");
+
     table.id = 'expensesTable';
+    table.classList.add("table");
+    table.classList.add("table-hover");
+    table.classList.add("text-center");
                 
     //setup the th row
-    let trHeaders = document.createElement("tr");
-    let thNames = ['Nome', 'Categoria', 'Totale', 'Data'];
+    let thatt = ['Nome', 'Categoria', 'Totale', 'Data'];
     
-    for (i in thNames) {
+    for (i in thatt) {
         let th = document.createElement("th");
 
-        th.innerHTML = thNames[i];
+        th.innerHTML = thatt[i];
 
         trHeaders.appendChild(th);
     }
-
-    table.appendChild(trHeaders);
+    
+    thead.appendChild(trHeaders);
+    table.appendChild(thead);
 
     return table;
 }
@@ -221,32 +197,35 @@ function createExpensesTable(){
 //fill the table
 function fillExpensesTable(userExpenses, table){
 
+    var tbody = document.createElement("tbody");
+
     userExpenses.forEach(expense => {
 
         let trExpense = document.createElement("tr");
         
-        for (name in expense) {
-            if(name!="_id"){
+        for (att in expense) {
+            if(att!="_id"){
 
                 let td = document.createElement("td");
                 
-                if(name=="date")
-                    expense[name] = clearDateBis(new Date(expense[name]).toLocaleString());//clearDate(expense[name]);
+                if(att=="date")
+                    expense[att] = clearDateBis(new Date(expense[att]).toLocaleString());//clearDate(expense[name]);
 
-                td.innerHTML = expense [name];
+                td.innerHTML = expense [att];
 
                 trExpense.appendChild(td);
             }
 
         }
 
-        table.appendChild(trExpense);
+        tbody.appendChild(trExpense);
         
     });
 
+    table.appendChild(tbody);
+
     return table;
 }
-
 
 //update the table when new expense is added
 function updateExpensesTable(expense, table){
@@ -255,15 +234,15 @@ function updateExpensesTable(expense, table){
     //create the tr
     var trExpense = document.createElement("tr");
 
-    for (name in expense) {
-        if(name!="_id"){
+    for (att in expense) {
+        if(att!="_id"){
 
             let td = document.createElement("td");
             
-            if(name=="date")
-                expense[name] = clearDateBis(new Date(expense[name]).toLocaleString());//clearDate(expense[name]);
+            if(att=="date")
+                expense[att] = clearDateBis(new Date(expense[att]).toLocaleString());//clearDate(expense[name]);
 
-            td.innerHTML = expense [name];
+            td.innerHTML = expense [att];
 
             trExpense.appendChild(td);
         }
@@ -280,8 +259,10 @@ function clearDate(date){
     //split in two the string and return the first half
     return date.split('T')[0];
 }
+
 */
 
+//return a readable date
 function clearDateBis(date){
     //split in two the string and return the first half
     return date.split(',')[0];
