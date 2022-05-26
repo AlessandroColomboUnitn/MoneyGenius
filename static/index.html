@@ -41,23 +41,40 @@ td {
 
         <!-- nav for navigating the authentication -->
         <nav id="navAuthentication">
-            <button type="button" id="setLogin" onclick="displayLogin()">accedi</button>
-            <button type="button" id="setSignup" onclick="displaySignup()">registrati</button>
+            <button type="button" class="btn btn-outline-secondary" id="setLogin" onclick="displayLogin()">Accedi</button>
+            <button type="button" class="btn btn-outline-secondary" id="setSignup" onclick="displaySignup()">Registrati</button>
         </nav>
 
         <!-- div containing the form for signup and login -->
         <div id="divAuthentication" hidden="true">
             <form action="api/v1/users" method="post" name="authform" id="authform">
-                <nav>
-                    <input type="text" name="email" placeholder="mario.rossi@unitn.com" id="authEmail" required="true"/>
-                    <input type="password" name="pasword" placeholder="123" id="authPassword" required="true"/>
-                    <input type="text" name="username" placeholder="mario" id="authName" required="true" hidden="true"/>
-                </nav>
-                <nav>
-                    <button type="button" id="Login" onclick="login()" hidden="true">conferma</button> 
-                    <button type="button" id="Signup" onclick="signup()" hidden="true">conferma</button>
-                    <button type="button" id="back" onclick="resetForm()">indietro</button>
-                </nav>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="text" name="email" class="form-control" placeholder="mario.rossi@unitn.com" id="authEmail" required="true"/>
+                </div>
+                <div class="form-group">
+                    <label for="pasword">Password:</label>
+                    <input type="password" name="pasword" class="form-control" placeholder="123" id="authPassword" required="true"/>
+                </div>                            
+                <div class="form-group" hidden="true" id="authName">
+                    <label for="username">Username:</label>
+                    <input type="text" name="username" class="form-control" placeholder="mario" required="true"/>
+                </div>    
+                <br>
+                <div class="container">
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <button type="button" class="btn btn-outline-primary" id="Login" onclick="login()" hidden="true">Accedi</button> 
+                        <button type="button" class="btn btn-outline-primary" id="Signup" onclick="signup()" hidden="true">Registrati</button>    
+                      </div>
+                      <div class="col-sm-4">
+                      </div>
+                      <div class="col-sm-4">
+                        <button type="button" class="btn btn-outline-warning" id="back" onclick="resetForm()">Indietro</button>
+                      </div>
+                    </div>
+                  </div>
+
             </form>
         </div>
 

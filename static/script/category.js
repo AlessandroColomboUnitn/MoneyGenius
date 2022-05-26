@@ -22,7 +22,7 @@ function addCategory(){
         assert(data.success, data.message);
         
 
-        document.getElementById("spanCategory").click();
+        document.getElementById("btnCloseCategoryModal").click();
         let tableCat = document.getElementById('tableCat');
 
         if(!tableCat){ //we have to create table cat

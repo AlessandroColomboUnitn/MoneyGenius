@@ -49,10 +49,9 @@ function addExpense(){
             }
 
             //get close modal icon
-            let span = document.getElementById("spanCloseExpenseForm");
-
+            //let span = document.getElementById("spanCloseExpenseForm");
             //close the modal
-            span.dispatchEvent(new MouseEvent('click'));
+            document.getElementById("btnCloseExpenseModal").click();
 
             //reset form
             document.getElementById('expenseForm').reset();
@@ -62,7 +61,6 @@ function addExpense(){
 
             //update categories
             showRecapCategories();
-
 
             /*
             //update budget and budget_spent
