@@ -50,7 +50,10 @@ function viewBudget(){
 function afterSetBudget(){
     viewBudget();
     document.getElementById("budgetRimanente").hidden = false;
-    document.getElementById("budgetform").hidden = true;
+    document.getElementById("labelBudRim").hidden = false;
+    document.getElementById("budget").value = "";
+
+    //document.getElementById("budgetform").hidden = true;
        //set user's default category
     
     fetch('../api/v1/users/'+loggedUser.id+'/categories/default', {
