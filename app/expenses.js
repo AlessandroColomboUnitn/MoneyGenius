@@ -23,7 +23,7 @@ router.post('', async function(req, res){
         let id = req.params.id;
 
         //retrieve the user instance
-        let user = await User.findOne({_id: id}).exec();
+        let user = await User.findById(id).exec();
         assert(user, "Creazione fallita, utente non riconosciuto.");
 
         //retrieve the category
@@ -72,7 +72,6 @@ router.post('', async function(req, res){
     }
 });
 
-
 //API for retrieving all the expenses of a user
 //API endpoint: api/v1/users/:id/expenses
 router.get('', async function(req, res) {
@@ -115,6 +114,89 @@ router.get('', async function(req, res) {
     }
 });
 
+//API for retrieving a specific expense of a user
+//API endpoint: api/v1/users/:id/expenses/:idExpense
+router.get('/:idExpense', async function(req, res) {
+    
+    //get the user id from the request url
+    var user_id = req.params.id;
+    var expense_id = req.params.idExpense;
+
+    try{
+        //retrieve the user instance
+        var user = await User.findById(user_id).exec();
+
+        assert(user, 'Utente non riconosciuto');
+
+        var expense = user.expenses.find(exp => exp._id == expense_id);
+        expense.categoryId = user.categories.find(cat => cat.id == expense.categoryId).name;
+
+        //send back the response
+        res.status(200).json({
+            success: true,
+            message: 'Ecco la spesa.',
+            expense: expense
+        });
+
+    }
+    catch(error){
+        res.status(400).json({ success: false, message: error.message });
+        console.log(error);
+    }
+});
+
+//API for retrieving a specific expense of a user
+//API endpoint: api/v1/users/:id/expenses/:idExpense
+router.delete('/:idExpense', async function(req, res) {
+    
+    //get the user id from the request url
+    var user_id = req.params.id;
+    var expense_id = req.params.idExpense;
+
+    try{
+        let user = await User.findById(user_id);
+        
+        assert(user, "Utente non esistente"); //should not throw since user token is checked beforehand
+        assert(expense_id, "Cancellazione fallita, inserire id della spesa da eliminare");
+        assert(user.expenses, "Cancellazione fallita, spesa non esistente."); //check that the expenses array is not empty
+                
+        /*let index = user.expenses.findIndex((exp) => {
+            let a = JSON.stringify(exp._id);
+            let b = JSON.stringify(expense_id);
+            return a==b;
+        }); //return -1 if no expense match
+        */
+        let index = user.expenses.findIndex(exp => JSON.stringify(exp._id) == JSON.stringify(expense_id)); //return -1 if no expense match
+        
+        assert(index !== -1, "Cancellazione fallita, spesa non esistente.");
+        let expense = user.expenses[index];
+
+        let category = user.categories.find(cat => cat.id == expense.categoryId); //retrieve the category of the expense to delete
+
+        assert(category, "Cancellazione fallita, categoria della spesa da eliminare non esistente.");
+
+        //update budget spent
+        user.budget_spent -= expense.amount;
+
+        //update budget spent x catgory
+        category.cat_spent -= expense.amount;
+
+        //remove the expense from the expenses array
+        user.expenses.splice(index,1);
+
+        user = await user.save();
+        
+        res.status(204).json({
+            success: true,
+            message: "Cancellazione avvenuta con successo"
+        });
+
+    }
+    catch(error){
+        res.status(400).json({ success: false, message: error.message });
+        console.log(error);
+    }
+});
 
 function validateInputs(name, amount, categoryId, date){
     return +

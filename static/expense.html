@@ -7,10 +7,10 @@
     </div>
 
     <!-- Button to Open the Modal -->
-    <button id="btnOpenExpenseForm" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mdlExpense">Aggiungi Spesa</button>
+    <button id="btnOpenExpenseForm" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mdlExpenseForm">Aggiungi Spesa</button>
 
     <!-- The Modal -->
-    <div id="mdlExpense" class="modal">
+    <div id="mdlExpenseForm" class="modal">
         <!-- Modal dialog -->
         <div class="modal-dialog">
             <!-- Modal content -->
@@ -42,13 +42,75 @@
                                 <label for="date">Data:</label>
                                 <input type="date" name="date" class="form-control"  id="date" required>
                             </div>
-                            <br>
-                            <input type="button" class="btn btn-primary" value="Conferma" id="btnAddExpense" onclick="addExpense();">
+                        </form>
                     </div>
 
                     <!-- Modal footer -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="btnCloseExpenseModal">Close</button>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-4 text-start">
+                                    <button type="button" class="btn btn-primary" id="btnAddExpense" onclick="addExpense();">Conferma</button>
+                                </div>
+                                <div class="col-sm-4">
+                                </div>
+                                <div class="col-sm-4 text-end">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseExpenseFormModal">Chiudi</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>     
+
+            </div>
+        </div>
+
+    </div>
+
+    <button id="btnOpenExpense" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mdlExpense" hidden="true">Aggiungi Spesa</button>
+    <!-- The Modal -->
+    <div id="mdlExpense" class="modal">
+        <!-- Modal dialog -->
+        <div class="modal-dialog">
+            <!-- Modal content -->
+            <div class="modal-content">
+                
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Info Spesa</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <dl class="row">
+                            <dt class="col-sm-3">Nome:</dt>
+                            <dd id ="veName" class="col-sm-9"></dd>
+                          
+                            <dt class="col-sm-3">Totale:</dt>
+                            <dd id ="veAmount" class="col-sm-9"></dd>
+                          
+                            <dt class="col-sm-3">Categoria:</dt>
+                            <dd id ="veCategory"class="col-sm-9"></dd>
+
+                            <dt class="col-sm-3">Data:</dt>
+                            <dd id ="veDate" class="col-sm-9"></dd>
+                        </dl>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-4 text-start">
+                                    <button type="button" class="btn btn-danger" id="btnDeleteExpense">Elimina</button>
+                                </div>
+                                <div class="col-sm-4">
+                                </div>
+                                <div class="col-sm-4 text-end">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseExpenseModal">Chiudi</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>     
 
             </div>
