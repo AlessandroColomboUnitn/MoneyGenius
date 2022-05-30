@@ -111,6 +111,11 @@ async function afterAuth(){
     document.getElementById("budgetRimanente").hidden = false;
     document.getElementById("labelBudRim").hidden = false;
     document.getElementById("budget").value = "";
+
+    /*if(user.budget){
+        document.getElementById("budgetform").hidden = true;
+        document.getElementById("modifybudgetform").hidden = false;
+    }*/
 }
 
 
