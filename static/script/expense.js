@@ -118,7 +118,7 @@ function viewExpense(expenseId){
             let expense = data.expense;
             //console.log(expense);
             document.getElementById('veName').innerHTML = expense.name;
-            document.getElementById('veAmount').innerHTML = expense.amount;
+            document.getElementById('veAmount').innerHTML = expense.amount + "€";
             document.getElementById('veCategory').innerHTML = expense.categoryId;
             document.getElementById('veDate').innerHTML = clearDateBis(new Date(expense.date).toLocaleString());
             document.getElementById('btnDeleteExpense').onclick = () => {
@@ -260,6 +260,9 @@ function fillExpensesTable(userExpenses, table){
                 
                 if(att=="date")
                     expense[att] = clearDateBis(new Date(expense[att]).toLocaleString());//clearDate(expense[name]);
+
+                if(att=="amount")
+                    expense[att] = expense[att] + "€";
 
                 td.innerHTML = expense [att];
 

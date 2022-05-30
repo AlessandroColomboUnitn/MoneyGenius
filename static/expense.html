@@ -49,12 +49,10 @@
                     <div class="modal-footer">
                         <div class="container">
                             <div class="row">
-                                <div class="col-sm-4 text-start">
+                                <div class="col-6 text-start">
                                     <button type="button" class="btn btn-primary" id="btnAddExpense" onclick="addExpense();">Conferma</button>
                                 </div>
-                                <div class="col-sm-4">
-                                </div>
-                                <div class="col-sm-4 text-end">
+                                <div class="col-6 text-end">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseExpenseFormModal">Chiudi</button>
                                 </div>
                             </div>
@@ -66,7 +64,9 @@
 
     </div>
 
+    <!-- Button to Open the Modal -->
     <button id="btnOpenExpense" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mdlExpense" hidden="true">Aggiungi Spesa</button>
+    
     <!-- The Modal -->
     <div id="mdlExpense" class="modal">
         <!-- Modal dialog -->
@@ -101,12 +101,10 @@
                     <div class="modal-footer">
                         <div class="container">
                             <div class="row">
-                                <div class="col-sm-4 text-start">
+                                <div class="col-6 text-start">
                                     <button type="button" class="btn btn-danger" id="btnDeleteExpense">Elimina</button>
                                 </div>
-                                <div class="col-sm-4">
-                                </div>
-                                <div class="col-sm-4 text-end">
+                                <div class="col-6 text-end">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseExpenseModal">Chiudi</button>
                                 </div>
                             </div>
@@ -117,6 +115,5 @@
         </div>
 
     </div>
-
     <hr>
 </html>
