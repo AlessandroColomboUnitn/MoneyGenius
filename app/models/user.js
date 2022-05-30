@@ -6,6 +6,7 @@ module.exports = mongoose.model('user', new Schema({
     password: String,
     name: String,
     budget: Number,
+    group_id: String,
     pending_invite: String,
     budget_spent: {type: Number, default: 0},
     allocated_budget: {type: Number, default: 0},

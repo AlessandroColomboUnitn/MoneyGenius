@@ -13,9 +13,9 @@ router.post('', async function(req, res){
     try{
         assert(user_id && group_name, "Errore, paramatri mancanti");
         let group_exists = await Group.exists({name: group_name}).exec();
-        let user_exists = await User.exists({_id: user_id}).exec();
+        let user = await User.findOne({_id: user_id}).exec();
         assert(!group_exists, "Errore, gruppo già esistente");
-        assert(user_exists, "Errore, utente non esistente");
+        assert(user, "Errore, utente non esistente");
         group = new Group({
             name: group_name,
             partecipants: [user_id],
@@ -23,6 +23,10 @@ router.post('', async function(req, res){
         
         group.save();
 
+        user.group_id = group._id;
+        
+        user.save();
+        
         //create a token
         var payload = {
             group_name: group.name,
