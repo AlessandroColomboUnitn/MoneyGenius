@@ -33,7 +33,7 @@ app.use('/api/v1/authentications', authentication);
  * 
  */
 
-//app.use(tokenChecker);
+app.use(tokenChecker);
 
 app.use('/api/v1/users', users);
 
