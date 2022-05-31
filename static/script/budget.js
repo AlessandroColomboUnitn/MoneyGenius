@@ -13,14 +13,13 @@ function setBudget(){
         if(data.success){
             //window.alert("budget impostato con successo");
             afterSetBudget();
-            viewBudget();
+            //viewBudget();
         }
         else {
             throw data.message;
         }
     })
     .catch(function(error){
-
         window.alert("le cateorie superano il budget che vuoi impostare");
     })
 }
@@ -51,13 +50,9 @@ function viewBudget(){
 function afterSetBudget(){
     viewBudget();
     document.getElementById("budgetRimanente").hidden = false;
-    document.getElementById("labelBudRim").hidden = false;
     document.getElementById("budget").value = "";
-    
-    //document.getElementById("budgetform").hidden = true;
-    //document.getElementById("modifybudgetform").hidden = false;
-    //document.getElementById("budget").value = "";
-    //set user's default category
+    //git restordocument.getElementById("budgetform").hidden = true;
+       //set user's default category
     
     fetch('../api/v1/users/'+loggedUser.id+'/categories/default', {
         method: 'POST',
@@ -73,32 +68,4 @@ function afterSetBudget(){
     .catch(function(error){
         window.alert(error);
     });
-}
-
-function modifyBudget(){
-    var budget = document.getElementById("budget").value;
-    fetch('../api/v1/users/'+loggedUser.id+'/budget', {
-        method: 'PUT',
-        headers: {'Content-type': 'application/json'},
-        body: JSON.stringify({
-            email: loggedUser.email, 
-            token: loggedUser.token,
-            budget: budget} )
-    })
-    .then((resp) => resp.json())
-    .then(function(data){ 
-        console.log(data);
-        if(data.success){
-            //window.alert("budget impostato con successo");
-            afterSetBudget();
-            //viewBudget();
-        }
-        else {
-            throw data.message;
-        }
-    })
-    .catch(function(error){
-        console.log(data);
-        window.alert(error);
-    })
 }

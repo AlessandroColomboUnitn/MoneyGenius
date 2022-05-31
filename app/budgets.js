@@ -3,6 +3,7 @@ const user = require('./models/user.js');
 const router = express.Router({ mergeParams: true });
 const assert =  require('assert');
 const User = require('./models/user.js');
+const defaultCategory = "altro";
 
 //const expenses = require('./models/addExpense');
 
@@ -48,7 +49,9 @@ router.post('', async (req,res) => {
         }
         else {
             user.budget = budget;
-            
+            let free_budget = user.budget - allocatedB;
+            let default_index = user.categories.findIndex((obj) => obj.name === defaultCategory);
+            user.categories[default_index].budget = free_budget;
             await user.save();
             res.status(201).json({success: true});
         }
