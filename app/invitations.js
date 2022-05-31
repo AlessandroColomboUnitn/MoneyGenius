@@ -3,16 +3,13 @@ const router = express.Router({ mergeParams: true });
 const Group = require('./models/group'); //get our group model
 const User = require('./models/user'); 
 const jwt = require('jsonwebtoken');
-const app = express();
 const assert = require('assert');
 const groupTokenChecker = require('./groupTokenChecker');
 
 /*
 * Post an invitation for a certain user to join the group
 */
-router.post('', async function(req,res){
-    
-    //app.use(groupTokenChecker);
+router.use(groupTokenChecker).post('', async function(req,res){
     
     let user_id = req.body.id;
     let invitation_mail = req.body.mail; //mail associated with the user we want to invite
