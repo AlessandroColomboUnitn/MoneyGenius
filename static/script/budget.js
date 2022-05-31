@@ -62,7 +62,7 @@ function afterSetBudget(){
     .then(function(data){
         assert(data.success, data.message);
         loadCategoriesOptions();
-        //showRecapCategories();
+        showRecapCategories();
     })
     .catch(function(error){
         window.alert(error);
