@@ -63,7 +63,7 @@ async function deleteCategory(category_name){
         })
     });
     try{
-        console.log(resp.ok);
+        //console.log(resp.ok);
         assert(resp.ok);
         showRecapCategories();
         loadCategoriesOptions();

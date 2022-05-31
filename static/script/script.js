@@ -85,7 +85,7 @@ async function afterAuth(){
     budget = await budget.text();
     let divBudget = document.getElementById("divBudget");
     divBudget.innerHTML = budget;
-    document.getElementById("budgetRimanente").hidden = false;
+    //document.getElementById("budgetRimanente").hidden = false;
     
     let category = await fetch('./category.html');
     category = await category.text();
@@ -108,8 +108,16 @@ async function afterAuth(){
 
     showRecapCategories();
 
-    //loads the expenses
+    //view the budget
     viewBudget();
+    document.getElementById("budgetRimanente").hidden = false;
+    document.getElementById("labelBudRim").hidden = false;
+    document.getElementById("budget").value = "";
+
+    /*if(user.budget){
+        document.getElementById("budgetform").hidden = true;
+        document.getElementById("modifybudgetform").hidden = false;
+    }*/
 }
 
 
