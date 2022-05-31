@@ -1,7 +1,7 @@
 //called when 'Aggiungi' button of the expense form is clicked
 function addExpense(){
 
-    let url = new URL('api/v1/users/' + loggedUser.id + '/expenses', base);
+    let url = new URL('api/v2/users/' + loggedUser.id + '/expenses', base);
 
     var name = document.getElementById("name").value;
     var amount = document.getElementById("amount").value;
@@ -19,11 +19,31 @@ function addExpense(){
             date: date
         })
     })
-    .then((resp) => resp.json())
-    .then(function(data){
+    .then((resp) => {
+        //console.log(resp);
 
-        if(data.success){
-            
+        //load the table
+        loadExpensesList();
+
+        //close the modal
+        document.getElementById("btnCloseExpenseFormModal").click();
+
+        //reset expense form
+        document.getElementById('expenseForm').reset();
+
+        //update budget
+        viewBudget();
+
+        //update categories
+        showRecapCategories();
+
+        return;
+    })
+    .catch( error => console.error(error) ); // If there is any error you will catch them here
+    /*
+    //.then((resp) => resp.json())// non riceve un body quindi da errore
+    .then(function(data){ 
+        //if(data.success){      
             //window.alert("Nuova spesa registrata");
                         
             let table = document.getElementById('expensesTable');
@@ -48,44 +68,108 @@ function addExpense(){
                 updateExpensesTable(expense, table);
             }
 
-            //get close modal icon
-            let span = document.getElementById("spanCloseExpenseForm");
+            //reload the expenses list
+            loadExpensesList();
 
+            //get close modal icon
+            //let span = document.getElementById("spanCloseExpenseForm");
             //close the modal
-            span.dispatchEvent(new MouseEvent('click'));
+            document.getElementById("btnCloseExpenseFormModal").click();
 
             //reset form
             document.getElementById('expenseForm').reset();
 
-            //update budget UI
+            //update budget
             viewBudget();
 
             //update categories
             showRecapCategories();
 
-
-            /*
             //update budget and budget_spent
             document.getElementById("budgetSpentView").innerHTML = budget_spent;
             
             if(!isNaN(budget))
                 document.getElementById("budget2View").innerHTML = budget;
-            */
-        }
+
+        //}
         else {
+                throw data.message;
+            }
+    })
+    .catch(function(error){
+        window.alert(error);
+    });
+    });
+    */
+}
+
+function viewExpense(expenseId){
+    let url = new URL('api/v2/users/' + loggedUser.id + '/expenses/' + expenseId, base);
+    let params = {token:loggedUser.token};
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+    
+    fetch(url)
+    .then((resp) => resp.json())
+    .then(function(data){
+        if(!data.success){
+            console.log(data);
             throw data.message;
+        }else{
+            let expense = data.expense;
+            //console.log(expense);
+            document.getElementById('veName').innerHTML = expense.name;
+            document.getElementById('veAmount').innerHTML = expense.amount + "€";
+            document.getElementById('veCategory').innerHTML = expense.categoryId;
+            document.getElementById('veDate').innerHTML = clearDateBis(new Date(expense.date).toLocaleString());
+            document.getElementById('btnDeleteExpense').onclick = () => {
+                deleteExpense(expense._id);
+            }
         }
     })
     .catch(function(error){
         window.alert(error);
     });
+
+    //open the modal
+    document.getElementById("btnOpenExpense").click();
+}
+
+async function deleteExpense(expenseId){
+    let url = new URL('api/v2/users/' + loggedUser.id + '/expenses/' + expenseId, base);
+
+    const resp = await fetch(url, {
+        method: 'DELETE',
+        headers: {'Content-type': 'application/json'},
+        body: JSON.stringify({
+            token: loggedUser.token
+        })
+    });
+    try{
+        console.log(resp.ok);
+        assert(resp.ok);
+        //close the modal
+        document.getElementById("btnCloseExpenseModal").click();
+
+        //update budget
+        viewBudget();
+
+        //update categories
+        showRecapCategories();
+        
+        //update table
+        loadExpensesList();
+    }
+    catch{
+        resp_json = await resp.json();
+        window.alert(resp_json.message);
+    };
 }
 
 //send an asynchronous request to the api to retrieve the list of epenses
 //if there arent any expenses do not show the table...
 function loadExpensesList(){
 
-    let url = new URL('api/v1/users/' + loggedUser.id + '/expenses', base);
+    let url = new URL('api/v2/users/' + loggedUser.id + '/expenses', base);
     let params = {token:loggedUser.token};
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
     
@@ -98,24 +182,30 @@ function loadExpensesList(){
         }else{
 
             let expensesList = document.getElementById("expensesList");
+            let table = document.getElementById("expensesTable");
             let userExpenses = data.expenses;
-
+            
+            //clear the table
+            if(table)
+                table.remove();
+            
             //if i have any expense
             if(userExpenses.length>0){
-                let table = document.getElementById("expensesTable");
-                if(table)
-                    table.remove();
-    
+                //if its the first expense
+                let alertNoExpense = document.getElementById("alertNoExpense");
+                if(alertNoExpense)
+                    expensesList.removeChild(alertNoExpense);
+
                 table = createExpensesTable();
                 table = fillExpensesTable(userExpenses, table);       
                 expensesList.appendChild(table);
             }else{
-                let span = document.createElement("span");
-                span.innerHTML="Nessuna spesa registrata"; 
-                expensesList.appendChild(span);
+                let alertNoExpense = document.createElement("div");
+                alertNoExpense.id ="alertNoExpense";
+                alertNoExpense.classList.add("alert", "alert-info");
+                alertNoExpense.innerHTML="  <strong>Info!</strong> Nessuna spesa registrata."; 
+                expensesList.appendChild(alertNoExpense);
             }
-
-            return;
         }
     })
     .catch( 
@@ -124,46 +214,6 @@ function loadExpensesList(){
             console.error(error);
         }
     ); // If there is any error you will catch them here
-}
-
-//load dynamically the category in the select input of the expense form
-function loadCategoriesOptions(){
-    let url = new URL('api/v1/users/' + loggedUser.id + '/categories', base);
-    let params = {token:loggedUser.token};
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
- 
-
-    fetch(url)
-    .then((resp) => resp.json()) // Transform the data into json
-    .then(function(data){
-        if(!data.success){
-            console.log(data);
-            throw data.message;
-        }else{
-
-            let categoriesSel = document.getElementById("categoryId");
-            
-            var child = categoriesSel.lastElementChild; 
-            while (child) { //clear all children
-                categoriesSel.removeChild(child);
-                child = categoriesSel.lastElementChild;
-            }
-
-            let userCategories = data.categories;
-            userCategories.forEach(category => {
-                categoriesSel.options[categoriesSel.options.length] = new Option( category.name, category._id,);
-            })
-
-            return;
-        }
-    })
-    .catch( 
-        (error) => {
-            window.alert(error);
-            console.error(error);
-        }
-    );
-
 }
 
 //create the table
@@ -211,11 +261,20 @@ function fillExpensesTable(userExpenses, table){
                 if(att=="date")
                     expense[att] = clearDateBis(new Date(expense[att]).toLocaleString());//clearDate(expense[name]);
 
+                if(att=="amount")
+                    expense[att] = expense[att] + "€";
+
                 td.innerHTML = expense [att];
 
                 trExpense.appendChild(td);
+            }else{
+                trExpense.id = expense[att];
             }
 
+        }
+
+        trExpense.onclick = () => {
+            viewExpense(trExpense.id);
         }
 
         tbody.appendChild(trExpense);
@@ -227,6 +286,47 @@ function fillExpensesTable(userExpenses, table){
     return table;
 }
 
+//load dynamically the category in the select input of the expense form
+function loadCategoriesOptions(){
+    let url = new URL('api/v1/users/' + loggedUser.id + '/categories', base);
+    let params = {token:loggedUser.token};
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+ 
+
+    fetch(url)
+    .then((resp) => resp.json()) // Transform the data into json
+    .then(function(data){
+        if(!data.success){
+            console.log(data);
+            throw data.message;
+        }else{
+
+            let categoriesSel = document.getElementById("categoryId");
+            
+            var child = categoriesSel.lastElementChild; 
+            while (child) { //clear all children
+                categoriesSel.removeChild(child);
+                child = categoriesSel.lastElementChild;
+            }
+
+            let userCategories = data.categories;
+            userCategories.forEach(category => {
+                categoriesSel.options[categoriesSel.options.length] = new Option( category.name, category._id,);
+            })
+
+            return;
+        }
+    })
+    .catch( 
+        (error) => {
+            window.alert(error);
+            console.error(error);
+        }
+    );
+
+}
+
+/*
 //update the table when new expense is added
 function updateExpensesTable(expense, table){
     //get the first row
@@ -245,13 +345,20 @@ function updateExpensesTable(expense, table){
             td.innerHTML = expense [att];
 
             trExpense.appendChild(td);
+        }else{
+            trExpense.id = expense[att];
         }
 
+    }
+
+    trExpense.onclick = () => {
+        viewExpense(trExpense.id);
     }
 
     //put the new tr in the first row
     table.insertBefore(trExpense, trFirst);
 }
+*/
 
 /*
 //return a readable date

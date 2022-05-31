@@ -10,6 +10,7 @@ function assert(condition, message){
     if (!condition) throw message || "assertion failed";
 }
 
+/*
 //code for the modal, code taken from w3schools.com
 function loadModals(){
     // Get the modals
@@ -46,6 +47,7 @@ function loadModals(){
         if (event.target == mdlCategory) mdlCategory.style.display = "none";
     }
 }
+*/
 
 //displays login form after login selection
 function displayLogin(){
@@ -99,8 +101,8 @@ async function afterAuth(){
     loadExpensesList();
     
     //load the expense modal
-    loadModals();
-        
+    //loadModals();
+    
     //load the category drop down list 
     loadCategoriesOptions();
 

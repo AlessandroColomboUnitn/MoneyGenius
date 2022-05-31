@@ -1,50 +1,55 @@
 <!DOCTYPE html>
 <html>
     
+    <h2>Le tue categorie:</h2>
     <!-- div containing a list of all the expenses of the current month  -->
     <div id="categoriesList">
     </div>
 
-    <!-- button that when clicked opens the expense form-->
-    <button id="btnOpenFormCategory"class="btn btn-primary">Aggiungi Categoria</button>
+    <br>
 
-    <!-- HTML, css and js for the modal taken from w3schools -->
+    <!-- Button to Open the Modal -->
+    <button id="btnOpenFormCategory" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mdlCategory">Aggiungi Categoria</button>
+
     <!-- The Modal -->
     <div id="mdlCategory" class="modal">
-
-        <!-- Modal content -->
-        <div class="modal-content">
-            
-            <!-- icon for closing the modal-->
-            <span class="close" id="spanCategory">&times;</span>
-            
-            <h3>Registra una nuova categoria:</h3>
-
-            <form method="post" name="categoryForm" id="categoryForm">                    
+        <!-- Modal dialog -->
+        <div class="modal-dialog">
+            <!-- Modal content -->
+            <div class="modal-content">
                 
-                <table>
-                    <tr>
-                        <td>Nome:</td>
-                        <td><input type="text" name="name" id="categoryName" required></td>
-                    </tr>            
-                    <tr>
-                        <td>Color:</td>
-                        <td><input type="color" name="color" id="categoryColor" required></td>
-                    </tr>
-                    <!-- category here is as an input text but it should be a droplist with values taken from the apis -->                      
-                    <tr>
-                        <td>Budget:</td>
-                        <td><input type="number" name="budget" id="categoryBudget" required></td>
-                    </tr>                      
-                    <tr>
-                        <td><input type="button" value="Conferma" id="btnAddCategory" onclick="addCategory();"></td>
-                    </tr>
-                </table>     
-            
-            </form>       
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Registra Categoria</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
 
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <form method="post" name="categoryForm" id="categoryForm"> 
+                            <div class="form-group">
+                                <label for="categoryName">Nome:</label>
+                                <input type="text" name="categoryName" class="form-control"  id="categoryName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="categoryColor">Colore:</label>
+                                <input type="color" name="categoryColor" class="form-control form-control-color"  id="categoryColor" required>
+                            </div>   
+                            <div class="form-group">
+                                <label for="categoryBudget">Budget:</label>
+                                <input type="number" name="categoryBudget" class="form-control"  id="categoryBudget" required>
+                            </div>                            
+                            <br>
+                            <input type="button" class="btn btn-primary" value="Conferma" id="btnAddCategory" onclick="addCategory();">
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="btnCloseCategoryModal">Close</button>
+                    </div>     
+
+            </div>
         </div>
-
     </div>
 
     <hr>
