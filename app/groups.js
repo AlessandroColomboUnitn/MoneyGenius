@@ -1,36 +1,41 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 const Group = require('./models/group'); //get our group model
 const User = require('./models/user'); 
 const jwt = require('jsonwebtoken');
 const assert = require('assert');
-
+const groupTokenChecker = require('./groupTokenChecker');
+/*
+* Create a new group. The group creator auutomatically joins the new group.
+*/
 router.post('', async function(req, res){
-
+    
     let user_id = req.body.id;
     let group_name = req.body.name;
 
     try{
+        
         assert(user_id && group_name, "Errore, paramatri mancanti");
-        let group_exists = await Group.exists({name: group_name}).exec();
-        let user = await User.findOne({_id: user_id}).exec();
+        
+        let group_exists = await Group.exists({name: group_name}).exec(); //check that the specified group exists
+        let user = await User.findOne({_id: user_id}).exec(); // check that the input user exists
         assert(!group_exists, "Errore, gruppo già esistente");
         assert(user, "Errore, utente non esistente");
-        assert(!user.group_id, "Errore, impossibile partecipare a più di un gruppo");
-        group = new Group({
+        assert(!user.group_id, "Errore, impossibile partecipare a più di un gruppo"); //check that the user is not already associated with another group
+        
+        //create the new group
+        group = new Group({ 
             name: group_name,
             partecipants: [user_id],
         });
-        
-        group.save();
+        await group.save();
 
+        //assign the user to the new group
         user.group_id = group._id;
-        
         user.save();
 
-        //create a token
+        //create the group's token
         var payload = {
-            group_name: group.name,
             user_id: user_id,
             group_id: group._id
         }      
@@ -45,7 +50,7 @@ router.post('', async function(req, res){
             success: true,
             message: "Gruppo creato con successo",
             token: token
-        })
+        });
 
     }catch(err){
         res.status(400).json({
