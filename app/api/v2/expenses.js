@@ -2,7 +2,7 @@ const assert = require('assert');
 const express = require('express');
 const router = express.Router({ mergeParams: true }); //{ mergeParams: true } to access params in the route of app.js
 
-const User = require('./models/user'); // get our mongoose model
+const User = require('../../models/user'); // get our mongoose model
 
 
 //API for recording an expense
@@ -20,10 +20,10 @@ router.post('', async function(req, res){
         assert(validateInputs(name, amount, categoryId, date), "Creazione fallita, input non validi.");
         
         //get the id from the request url
-        let id = req.params.id;
+        let user_id = req.params.id;
 
         //retrieve the user instance
-        let user = await User.findById(id).exec();
+        let user = await User.findById(user_id);
         assert(user, "Creazione fallita, utente non riconosciuto.");
 
         //retrieve the category
@@ -39,7 +39,7 @@ router.post('', async function(req, res){
         };
 
         //push on the expenses array
-        await user.expenses.push(expense);
+        let index = user.expenses.push(expense);
 
         //update budget left
         //user.allocated_budget += expense.amount;
@@ -50,18 +50,20 @@ router.post('', async function(req, res){
         //update budget spent x catgory
         category.cat_spent += expense.amount;
 
-        user = await user.save(); 
+        user = await user.save();
+
+        //get the istance of the new expense
+        expense = user.expenses[--index];
+        console.log(expense);
 
         //modify expense to send the category name
-        expense.categoryId = category.name;
+        //expense.categoryId = category.name;
     
-        res.status(201).json({
-            success: true,
-            message: "Nuova spesa registrata.",
-            expense: expense,
-            //budget: user.budget,
-            //budget_spent: user.budget_spent
-        });
+        /**
+         * Link to the newly created resource is returned in the Location header
+         * https://www.restapitutorial.com/lessons/httpmethods.html
+         */
+        res.location("/api/v2/users/" + user_id + "/expenses/" + expense._id).status(201).send();
 
     }catch(error){ //if one of the above assertions fails, we return the respective error message
         console.log(error);
@@ -99,7 +101,6 @@ router.get('', async function(req, res) {
             expense.categoryId = cat.name;
         });
     
-
         //send back the response
         res.status(200).json({
             success: true,
@@ -186,10 +187,11 @@ router.delete('/:idExpense', async function(req, res) {
 
         user = await user.save();
         
-        res.status(204).json({
+        res.status(204).send(); //204 returns no content
+        /*res.status(204).json({
             success: true,
             message: "Cancellazione avvenuta con successo"
-        });
+        });*/
 
     }
     catch(error){
