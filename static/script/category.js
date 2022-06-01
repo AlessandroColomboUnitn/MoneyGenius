@@ -76,7 +76,7 @@ async function deleteCategory(category_name){
 }
 
 function createCategoriesTable(){
-    var tableCat = document.createElement("tableCat");
+    var tableCat = document.createElement("table");
     var thead = document.createElement("thead");
     var trHeadersCat = document.createElement("tr");
 
