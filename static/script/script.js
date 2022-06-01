@@ -1,7 +1,17 @@
 /**
- * This variable stores the logged in user
+ * This variable stores the logged user
  */
-var loggedUser = {};
+var loggedUser = localStorage.getItem("loggedUser");
+
+if(!loggedUser){ //user not authenticated
+    loggedUser = {};
+}
+
+else{ //user already authenticated
+    loggedUser = JSON.parse(loggedUser);
+    afterAuth();
+}
+
 //base URL of the server
 var base="http://localhost:8080";
 
@@ -60,7 +70,7 @@ function displayLogin(){
 function displaySignup(){
     document.getElementById("navAuthentication").hidden=true;
     document.getElementById("divAuthentication").hidden=false;
-    document.getElementById("authName").hidden=false;
+    document.getElementById("divAuthName").hidden=false;
     document.getElementById("Signup").hidden=false;
 }
 
@@ -149,6 +159,7 @@ function login()
             loggedUser.name = data.name;
             loggedUser.id = data.id;
             loggedUser.self = data.self;
+            localStorage.setItem("loggedUser", JSON.stringify(loggedUser)); //set local user variable inside session storage
             // loggedUser.id = loggedUser.self.substring(loggedUser.self.lastIndexOf('/') + 1);
             resetForm();
             afterAuth();
@@ -186,7 +197,8 @@ function signup(){
         loggedUser.email = data.email;
         loggedUser.name = data.name;
         loggedUser.id = data.id;
-        loggedUser.self = data.self;        
+        loggedUser.self = data.self;
+        localStorage.setItem("loggedUser", JSON.stringify(loggedUser)); //set local user variable inside session storage        
         resetForm();
         afterAuth();
         return;
