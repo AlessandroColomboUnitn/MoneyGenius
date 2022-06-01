@@ -17,9 +17,9 @@ router.post('', async function(req, res){
         
         assert(user_id && group_name, "Errore, paramatri mancanti");
         
-        let group_exists = await Group.exists({name: group_name}).exec(); //check that the specified group exists
+        //let group_exists = await Group.exists({name: group_name}).exec(); //check that the specified group exists
         let user = await User.findOne({_id: user_id}).exec(); // check that the input user exists
-        assert(!group_exists, "Errore, gruppo già esistente");
+        //assert(!group_exists, "Errore, gruppo già esistente");
         assert(user, "Errore, utente non esistente");
         assert(!user.group_id, "Errore, impossibile partecipare a più di un gruppo"); //check that the user is not already associated with another group
         
@@ -49,7 +49,8 @@ router.post('', async function(req, res){
         res.status(201).json({
             success: true,
             message: "Gruppo creato con successo",
-            token: token
+            group_token: token,
+            group_id: group._id
         });
 
     }catch(err){
@@ -58,6 +59,34 @@ router.post('', async function(req, res){
             message: err.message
         });
     }
+});
+
+/*
+* Get the data relative to the group.
+*/
+router.use(groupTokenChecker).get('/:id', async function(req, res){
+    
+    try{
+        //check that the group requested (in the params) is the same of the user's group (in the token)
+        let token_group_id = req.group_id;
+        let request_group_id = req.params.id;    
+        assert(token_group_id == request_group_id, "Errore, autorizzazione group token fallita.");
+        
+        //get the group entry and send it to the user
+        let group = await Group.findById(request_group_id);
+        res.status(200).json({
+            success:true,
+            group: group
+        });
+
+    }catch(err){
+        res.status(403).json({
+            success: false,
+            message: err.message
+        });
+    }
+
+
 });
 
 /**

@@ -1,0 +1,46 @@
+ <!-- Button to Open the Modal -->
+ <button id="btnOpenGroupForm" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mdlGroupForm">Crea Gruppo</button>
+
+ <!-- The Modal -->
+ <div id="mdlGroupForm" class="modal">
+     <!-- Modal dialog -->
+     <div class="modal-dialog">
+         <!-- Modal content -->
+         <div class="modal-content">
+             
+                 <!-- Modal Header -->
+                 <div class="modal-header">
+                     <h4 class="modal-title">Crea Gruppo</h4>
+                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                 </div>
+
+                 <!-- Modal body -->
+                 <div class="modal-body">
+                     <form method="post" name="groupForm" id="groupForm">
+                         <div class="form-group">
+                             <label for="groupName">Nome gruppo:</label>
+                             <input type="text" name="groupName" class="form-control"  id="groupName" required>
+                         </div>
+                     </form>
+                 </div>
+
+                 <!-- Modal footer -->
+                 <div class="modal-footer">
+                     <div class="container">
+                         <div class="row">
+                             <div class="col-6 text-start">
+                                 <button type="button" class="btn btn-primary" id="btnAddGroup" onclick="addGroup();">Conferma</button>
+                             </div>
+                             <div class="col-6 text-end">
+                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseGroupFormModal">Chiudi</button>
+                             </div>
+                         </div>
+                     </div>
+                 </div>     
+
+         </div>
+     </div>
+
+ </div>
+
+</html>
