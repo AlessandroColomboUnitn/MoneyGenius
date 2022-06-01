@@ -34,11 +34,26 @@ td {
 -->
 
 <body>
-    <div class="jumbotron text-center">
-        <h1>MoneyGenius</h1>
-    </div>
     
     <div class="container">
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">MoneyGenius</a>
+                <button id ="btnCloseNav" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav">
+                        <a class="nav-link active" aria-current="page" href="#userPage" onclick="displayUserPage();">Home</a>
+                        <a class="nav-link" href="#groupPage" onclick="displayGroupPage();">Gruppo</a>
+                    </div>
+            </div>
+        </nav>
+
+        <div class="jumbotron text-center">
+            <h1>MoneyGenius</h1>
+        </div>
 
         <!-- nav for navigating the authentication -->
         <nav id="navAuthentication">
@@ -78,31 +93,33 @@ td {
 
         <hr>
 
-    <div id = "userPage">
-        <!-- div containing the form for the budget -->
-        <div id="divBudget" class="container pt-4">
+        <div id = "userPage">
+            <!-- div containing the form for the budget -->
+            <div id="divBudget" class="container pt-4">
+            </div>
+
+            <hr>
+
+            <!-- div containing the list of expenses and the modal for adding expenses -->
+            <div id="divExpense" class="container pt-4">
+            </div>
+
+            <hr>
+
+            <!-- div containing the list of categories and the modal for adding categories -->
+            <div id="divCategory" class="container pt-4">
+            </div>
+
+            <hr>
+            
+            <div id="divGroup" class="container pt-2">
+            </div>
+
         </div>
 
-        <hr>
+        <div id="groupPage" hidden="true">   
 
-        <!-- div containing the list of expenses and the modal for adding expenses -->
-        <div id="divExpense" class="container pt-4">
         </div>
-
-        <hr>
-
-        <!-- div containing the list of categories and the modal for adding categories -->
-        <div id="divCategory" class="container pt-4">
-        </div>
-
-        <hr>
-        
-        <div id="divGroup" class="container pt-2">
-        </div>
-
-    </div>
-
-    <div id="groupPage" hidden="true">   
 
     </div>
 
