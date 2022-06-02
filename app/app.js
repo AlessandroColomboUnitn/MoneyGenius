@@ -31,9 +31,6 @@ app.use('/', express.static('static'));
 * Authentication routing and middleware
 */
 app.use('/api/v1/authentications', authentication);
-/**
- * 
- */
 
 app.use(tokenChecker);
 
@@ -54,7 +51,6 @@ app.use('/api/v2/groups/:id/invitations', invitations);
 app.use((req, res) =>{
     res.status(404).json({error: 'Page not found'});
 });
-
 
 
 module.exports = app;
