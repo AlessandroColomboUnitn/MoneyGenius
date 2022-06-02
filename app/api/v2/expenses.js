@@ -14,7 +14,7 @@ router.post('', async function(req, res){
     let amount = + req.body.amount; //cast to number
     let categoryId = req.body.categoryId;
     let date = new Date(req.body.date);
-    
+    console.log(req.body.date);
     try{
         //check the inputs
         assert(validateInputs(name, amount, categoryId, date), "Creazione fallita, input non validi.");
@@ -83,7 +83,7 @@ router.get('', async function(req, res) {
 
     try{
         //retrieve the user instance
-        var user = await User.findById(id).exec();
+        var user = await User.findById(id)/*.exec()*/;
 
         assert(user, 'Utente non riconosciuto');
 
@@ -125,7 +125,7 @@ router.get('/:idExpense', async function(req, res) {
 
     try{
         //retrieve the user instance
-        var user = await User.findById(user_id).exec();
+        var user = await User.findById(user_id)/*.exec()*/;
 
         assert(user, 'Utente non riconosciuto');
 
@@ -201,10 +201,11 @@ router.delete('/:idExpense', async function(req, res) {
 });
 
 function validateInputs(name, amount, categoryId, date){
+    if(! (date instanceof Date && !isNaN(date.valueOf()))) console.log(date);
     return +
     (
-        name!="" &&
-        (!isNaN(amount) && amount >= 0) &&
+        name && name!="" &&
+        (amount && !isNaN(amount) && amount >= 0) &&
         categoryId !="" &&
         date instanceof Date && !isNaN(date.valueOf())
     );
