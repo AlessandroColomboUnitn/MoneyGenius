@@ -1,35 +1,38 @@
+//close navbar
+document.getElementById("navbarNavAltMarkup").onclick = () => document.getElementById("btnCloseNav").click();
+
 function displayUserPage(){
     document.getElementById("userPage").hidden = false;
     document.getElementById("groupPage").hidden = true;
-    document.getElementById("btnCloseNav").click();
 }
 
 async function displayGroupPage(){
     document.getElementById("userPage").hidden = true;
     document.getElementById("groupPage").hidden = false;
-    document.getElementById("btnCloseNav").click();
 
-    let gruppo = null;//chiamata a fun che cerca utente tra gruppi
     let groupPage;
-    if(gruppo){
+
+    if(loggedUser.group_id && loggedUser.group_token){//if the user already has a group
         groupPage = await fetch('./group.html');
         groupPage = await groupPage.text();
 
         loadGroupInfo();
-        loadGroupExpensesList();
+        //loadGroupExpensesList(); tabella per spese di gruppo
     }else{
-        groupPage = await fetch('./groupForm.html');
+        groupPage = await fetch('./createGroup.html');
         groupPage = await groupPage.text();
     }
 
     document.getElementById("groupPage").innerHTML = groupPage;
 }
 
-/*
 async function addGroup(){
     let url = new URL('api/v2/groups/', base);
 
-    var name = document.getElementById("groupName").value;
+    var name = document.getElementById("createGroupName").value;
+
+    console.log(name);
+
     var resp = await fetch(url, {
         method: 'POST',
         headers: {'Content-type': 'application/json'},
@@ -45,13 +48,63 @@ async function addGroup(){
         loggedUser.group_token = resp.group_token;
         loggedUser.group_id = resp.group_id;
         sessionStorage.setItem("loggedUser", JSON.stringify(loggedUser));
-        loadGroup();
-        displayGroup();
+       
+        document.getElementById("btnCloseCreateGroupModal").click();
+        displayGroupPage();
+
     }catch(message){
         window.alert(message);
     }
 }
 
+function loadGroupInfo(){
+
+    let url = new URL('api/v2/groups/' + loggedUser.group_id, base);
+    let params = {token:loggedUser.token, group_token:loggedUser.group_token};
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+    
+    fetch(url)
+    .then((resp) => resp.json())
+    .then(function(data){
+        if(!data.success){
+            console.log(data);
+            throw data.message;
+        }else{
+            let group = data.group;
+            document.getElementById("gi_name").innerHTML = group.name;
+        }
+    })
+    .catch(function(error){
+        window.alert(error);
+    });
+}
+
+async function inviteParticipant(){
+    let url = new URL('/api/v2/groups/' + loggedUser.group_id + '/invitations/', base);
+
+    var mail = document.getElementById("inviteMail").value;
+
+    var resp = await fetch(url, {
+        method: 'POST',
+        headers: {'Content-type': 'application/json'},
+        body: JSON.stringify({
+            id: loggedUser.id,
+            mail: mail,
+            token: loggedUser.token,
+            group_token: loggedUser.group_token
+        })
+    });
+    try{
+        resp = await resp.json();
+        assert(resp.success, resp.message);
+        window.alert("Richiesta inviata");
+        document.getElementById("btnCloseInviteModal").click();
+    }catch(message){
+        window.alert(message);
+    }
+}
+
+/*
 //send an asynchronous request to the api to retrieve the list of epenses
 //if there arent any expenses do not show the table...
 function loadGroupExpensesList(){

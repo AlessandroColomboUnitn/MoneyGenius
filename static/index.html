@@ -39,14 +39,14 @@ td {
 
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">MoneyGenius</a>
+                <a class="navbar-brand" href="#" onclick="displayUserPage();">MoneyGenius</a>
                 <button id ="btnCloseNav" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                     <div class="navbar-nav">
-                        <a class="nav-link active" aria-current="page" href="#userPage" onclick="displayUserPage();">Home</a>
-                        <a class="nav-link" href="#groupPage" onclick="displayGroupPage();">Gruppo</a>
+                        <a class="nav-link active" aria-current="page" href="#" onclick="displayUserPage();">Home</a>
+                        <a class="nav-link" href="#" onclick="displayGroupPage();">Gruppo</a>
                     </div>
             </div>
         </nav>
@@ -93,7 +93,7 @@ td {
 
         <hr>
 
-        <div id = "userPage">
+        <div id ="userPage">
             <!-- div containing the form for the budget -->
             <div id="divBudget" class="container pt-4">
             </div>
@@ -117,8 +117,7 @@ td {
 
         </div>
 
-        <div id="groupPage" hidden="true">   
-
+        <div id="groupPage">
         </div>
 
     </div>
