@@ -13,6 +13,11 @@
   },
   "scripts": {
     "start": "node index.js",
-    "start_local": "node -r dotenv/config index.js"
+    "start_local": "node -r dotenv/config index.js",
+    "test": "jest --setupFiles dotenv/config"
+  },
+  "devDependencies": {
+    "jest": "^28.1.0",
+    "supertest": "^6.2.3"
   }
 }
