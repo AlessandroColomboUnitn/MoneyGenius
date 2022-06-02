@@ -160,6 +160,8 @@ function login()
             loggedUser.email = data.email;
             loggedUser.name = data.name;
             loggedUser.id = data.id;
+            loggedUser.group_id = data.group_id;
+            loggedUser.group_token = data.group_token;
             loggedUser.self = data.self;
             sessionStorage.setItem("loggedUser", JSON.stringify(loggedUser)); //set local user variable inside session storage
             // loggedUser.id = loggedUser.self.substring(loggedUser.self.lastIndexOf('/') + 1);
