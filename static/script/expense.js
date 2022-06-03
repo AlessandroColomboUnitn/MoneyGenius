@@ -288,7 +288,7 @@ function fillExpensesTable(userExpenses, table){
 
 //load dynamically the category in the select input of the expense form
 function loadCategoriesOptions(){
-    let url = new URL('api/v1/users/' + loggedUser.id + '/categories', base);
+    let url = new URL('api/v2/users/' + loggedUser.id + '/categories', base);
     let params = {token:loggedUser.token};
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
  

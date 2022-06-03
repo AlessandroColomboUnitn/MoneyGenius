@@ -9,7 +9,7 @@ const groupTokenChecker = function(req, res, next) {
 	if (!token) {
 		return res.status(401).send({ 
 			success: false,
-			message: 'No token provided.'
+			message: 'No group token provided.'
 		});
 	}
 
@@ -18,7 +18,7 @@ const groupTokenChecker = function(req, res, next) {
         if (err) {
 			return res.status(403).send({
 				success: false,
-				message: 'Failed to authenticate token.'
+				message: 'Failed to authenticate group token.'
 			});		
 		} else {
 

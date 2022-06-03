@@ -1,7 +1,7 @@
 /**
  * This variable stores the logged user
  */
-var loggedUser = localStorage.getItem("loggedUser");
+var loggedUser = sessionStorage.getItem("loggedUser");
 
 if(!loggedUser){ //user not authenticated
     loggedUser = {};
@@ -78,7 +78,7 @@ function displaySignup(){
 function resetForm(){
     document.getElementById("navAuthentication").hidden=false;
     document.getElementById("divAuthentication").hidden=true;
-    document.getElementById("authName").hidden=true;
+    document.getElementById("divAuthName").hidden=true;
     document.getElementById("Login").hidden=true;
     document.getElementById("Signup").hidden=true;
     document.getElementById("authform").reset();
@@ -106,6 +106,16 @@ async function afterAuth(){
     expense = await expense.text();
     let divExpense = document.getElementById("divExpense");
     divExpense.innerHTML = expense;
+
+    let groupForm = await fetch('./groupForm.html');
+    groupForm = await groupForm.text();
+    let divGroup = document.getElementById("divGroup");
+    divGroup.innerHTML = groupForm;
+
+    let group = await fetch('./group.html');
+    group = await group.text();
+    let groupPage = document.getElementById("groupPage");
+    groupPage.innerHTML = group;
 
     //load the expenses
     loadExpensesList();
@@ -145,7 +155,7 @@ function login()
     var password = document.getElementById("authPassword").value;
     // console.log(email);
 
-    fetch('../api/v1/authentications/login', {
+    fetch('../api/v2/authentications/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify( { email: email, password: password } ),
@@ -159,7 +169,7 @@ function login()
             loggedUser.name = data.name;
             loggedUser.id = data.id;
             loggedUser.self = data.self;
-            localStorage.setItem("loggedUser", JSON.stringify(loggedUser)); //set local user variable inside session storage
+            sessionStorage.setItem("loggedUser", JSON.stringify(loggedUser)); //set local user variable inside session storage
             // loggedUser.id = loggedUser.self.substring(loggedUser.self.lastIndexOf('/') + 1);
             resetForm();
             afterAuth();
@@ -185,7 +195,7 @@ function signup(){
     var email = document.getElementById("authEmail").value;
     var password = document.getElementById("authPassword").value;
     var name = document.getElementById("authName").value;
-    fetch('../api/v1/authentications/signup',{
+    fetch('../api/v2/authentications/signup',{
         method: 'POST',
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify({email: email, password: password, name: name} )
@@ -198,7 +208,7 @@ function signup(){
         loggedUser.name = data.name;
         loggedUser.id = data.id;
         loggedUser.self = data.self;
-        localStorage.setItem("loggedUser", JSON.stringify(loggedUser)); //set local user variable inside session storage        
+        sessionStorage.setItem("loggedUser", JSON.stringify(loggedUser)); //set local user variable inside session storage        
         resetForm();
         afterAuth();
         return;
