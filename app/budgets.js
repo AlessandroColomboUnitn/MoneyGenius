@@ -17,7 +17,7 @@ router.get('', async(req, res) => {
 
     var user = await User.findById(id);
     
-    assert(user, "utente non identificato");
+    assert(user, "Utente non identificato.");
 
     let total_spent = user.budget_spent;
     let budget = user.budget - total_spent;
@@ -42,23 +42,33 @@ router.post('', async (req,res) => {
         let user = await User.findOne({email: email});
         
         let allocatedB = user.allocated_budget;
-        //console.log("le cat sono");
-        //console.log(allocatedB);
-        if (budget < allocatedB) {
-            res.status(400).json({success: false, message: "PUT1: input non valido"});
-        }
-        else {
+        //console.log(allocateB);
+
+        if (user.budget == null){
             user.budget = budget;
-            let free_budget = user.budget - allocatedB;
-            let default_index = user.categories.findIndex((obj) => obj.name === defaultCategory);
-            user.categories[default_index].budget = free_budget;
             await user.save();
             res.status(201).json({success: true});
+        }
+        else {
+            
+            if (budget < allocatedB) {
+                res.status(400).json({success: false, message: "Il budget allocato alle cateorie supera il budget che vuoi impostare."});
+            }
+            else {
+                user.budget = budget;
+                let free_budget = user.budget - allocatedB;
+                //console.log(free_budget);
+                let default_index = user.categories.findIndex((obj) => obj.name === defaultCategory);
+                user.categories[default_index].budget = free_budget;
+                
+                await user.save();
+                res.status(201).json({success: true});
+            }
         }
     }
 
     else {
-        res.status(400).json({success: false, message: "POST: input non valido"});
+        res.status(400).json({success: false, message: "Il valore inserito non è valido."});
     }
 } );
 

@@ -10,6 +10,7 @@ function setBudget(){
     })
     .then((resp) => resp.json())
     .then(function(data){ 
+        //console.log(data);
         if(data.success){
             //window.alert("budget impostato con successo");
             afterSetBudget();
@@ -20,7 +21,7 @@ function setBudget(){
         }
     })
     .catch(function(error){
-        window.alert("le cateorie superano il budget che vuoi impostare");
+        window.alert(error);
     })
 }
 
@@ -34,8 +35,8 @@ function viewBudget(){
     .then((resp) => resp.json())
     .then(function(data){ 
         if(data.success){
-            document.getElementById("budgetSpentView").innerHTML = data.total_spent;
-            document.getElementById("budget2View").innerHTML = data.budget;
+            document.getElementById("budgetSpentView").innerHTML = data.total_spent + "€";
+            document.getElementById("budget2View").innerHTML = data.budget + "€";
         }
         else {
             throw data.message;
@@ -50,6 +51,7 @@ function viewBudget(){
 function afterSetBudget(){
     viewBudget();
     document.getElementById("budgetRimanente").hidden = false;
+    document.getElementById("labelBudRim").hidden = false;
     document.getElementById("budget").value = "";
     //git restordocument.getElementById("budgetform").hidden = true;
        //set user's default category
