@@ -38,10 +38,10 @@ app.use('/', express.static('static'));
 */
 app.use('/api/v2/authentications', authentication);
 
-app.use(tokenChecker);
+//app.use(tokenChecker);
 
 app.use('/api/v1/users', old_users);
-app.use('api/v2/users', users);
+app.use('/api/v2/users', users);
 
 
 app.use('/api/v1/users/:id/categories', old_categories);
