@@ -2,18 +2,17 @@
 <html>
 
     <div class="alert alert-info text-center">
-        <strong>Info!</strong>
-        <br>
-        Non sei ancora parte di alcun gruppo.
-        <br>
-        Clicca sul puslante sotto per crearne uno.
+        <strong>Info!</strong> Non fai ancora parte di nessun gruppo.
     </div>
 
-    <!-- Button to Open the Modal -->
-    <button id="btnOpenCreateGroup" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mdlCreateGroup">Crea Gruppo</button>
+    <div class="row">
+        <div class="col-6">
+            Clicca qui per creare un gruppo
+            <!-- Button to Open the Modal -->
+            <button id="btnOpenCreateGroup" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mdlCreateGroup">Crea Gruppo</button>
     
-    <!-- The Modal -->
-    <div id="mdlCreateGroup" class="modal">
+            <!-- The Modal -->
+            <div id="mdlCreateGroup" class="modal">
         <!-- Modal dialog -->
         <div class="modal-dialog">
             <!-- Modal content -->
@@ -52,6 +51,14 @@
             </div>
         </div>
 
+            </div>
+        </div>
+        <div class="col-6">
+            Lista di richieste pendenti
+            <table id="requestsTable" >
+
+            </div>
+        </div>
     </div>
 
 </html>

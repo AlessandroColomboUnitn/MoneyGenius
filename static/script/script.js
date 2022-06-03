@@ -74,6 +74,38 @@ function displaySignup(){
     document.getElementById("Signup").hidden=false;
 }
 
+//close navbar
+document.getElementById("navbarNavAltMarkup").onclick = () => document.getElementById("btnCloseNav").click();
+
+function displayUserPage(){
+    document.getElementById("authenticationPage").hidden = true;
+    document.getElementById("navApplication").hidden = false;
+    document.getElementById("userPage").hidden = false;
+    document.getElementById("groupPage").hidden = true;
+}
+
+async function displayGroupPage(){
+    document.getElementById("authenticationPage").hidden = true;
+    document.getElementById("navApplication").hidden = false;
+    document.getElementById("userPage").hidden = true;
+    document.getElementById("groupPage").hidden = false;
+
+    let groupPage;
+
+    if(loggedUser.group_id && loggedUser.group_token){//if the user already has a group
+        groupPage = await fetch('./group.html');
+        groupPage = await groupPage.text();
+
+        loadGroupInfo();
+        //loadGroupExpensesList(); tabella per spese di gruppo
+    }else{
+        groupPage = await fetch('./createGroup.html');
+        groupPage = await groupPage.text();
+    }
+
+    document.getElementById("groupPage").innerHTML = groupPage;
+}
+
 //resets page and form
 function resetForm(){
     document.getElementById("navAuthentication").hidden=false;
@@ -87,9 +119,7 @@ function resetForm(){
 //hide the authentication section and show the user homepage
 async function afterAuth(){
 
-    //document.getElementById("loggedUser").innerHTML = loggedUser.name;
-    document.getElementById("navAuthentication").hidden = true;
-    document.getElementById("divAuthentication").hidden = true;
+    displayUserPage();
     
     let budget = await fetch('./budget.html');
     budget = await budget.text();
@@ -107,6 +137,7 @@ async function afterAuth(){
     let divExpense = document.getElementById("divExpense");
     divExpense.innerHTML = expense;
 
+    /*
     let groupForm = await fetch('./groupForm.html');
     groupForm = await groupForm.text();
     let divGroup = document.getElementById("divGroup");
@@ -115,7 +146,7 @@ async function afterAuth(){
     let group = await fetch('./group.html');
     group = await group.text();
     let groupPage = document.getElementById("groupPage");
-    groupPage.innerHTML = group;
+    groupPage.innerHTML = group;*/
 
     //load the expenses
     loadExpensesList();
