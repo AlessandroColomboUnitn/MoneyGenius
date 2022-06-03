@@ -65,7 +65,7 @@ router.post('', async function(req, res){
 /*
 * Get the data relative to the group.
 */
-router.use(groupTokenChecker).get('/:id', async function(req, res){
+router.get('/:id', groupTokenChecker, async function(req, res){
     
     try{
         //check that the group requested (in the params) is the same of the user's group (in the token)
