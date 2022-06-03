@@ -2,12 +2,8 @@ const express = require('express');
 const user = require('../../models/user.js');
 const router = express.Router({ mergeParams: true });
 const assert =  require('assert');
-<<<<<<< HEAD:app/budgets.js
 const User = require('./models/user.js');
 const defaultCategory = "altro";
-=======
-const User = require('../../models/user.js');
->>>>>>> 2735bf3a05d6a34b87fa10905a950d97a3d50598:app/api/v1/budgets.js
 
 //const expenses = require('./models/addExpense');
 
