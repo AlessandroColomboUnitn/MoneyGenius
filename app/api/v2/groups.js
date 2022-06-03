@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router({ mergeParams: true });
 const Group = require('../../models/group'); //get our group model
 const User = require('../../models/user'); 
+const { isValidObjectId } = require('mongoose');
 const jwt = require('jsonwebtoken');
 const assert = require('assert');
 const groupTokenChecker = require('./groupTokenChecker');
@@ -16,7 +17,7 @@ router.post('', async function(req, res){
     try{
         
         assert(user_id && group_name, "Errore, paramatri mancanti");
-        
+        assert(isValidObjectId(user_id), "Errore, l'id specificato non è valido");
         //let group_exists = await Group.exists({name: group_name}).exec(); //check that the specified group exists
         let user = await User.findOne({_id: user_id}).exec(); // check that the input user exists
         //assert(!group_exists, "Errore, gruppo già esistente");

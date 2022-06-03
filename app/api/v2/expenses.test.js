@@ -327,7 +327,6 @@ test('POST /api/v2/users/<testUser.id>/expenses/ set a valid expense', async () 
         let response = await request(app)
           .delete(`/api/v2/users/${id}/expenses/${exp_id}?token=${token}`)
           .set('Accept', 'application/json')
-        
         user = await User.findById(id);
         expect (response.statusCode).toBe(204); //success
         expect (user.expenses.length).toBe(0); //delete the only expense 

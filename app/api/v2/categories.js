@@ -3,6 +3,7 @@ const router = express.Router({ mergeParams: true });
 const User = require('../../models/user');
 const assert = require('assert');
 const user = require('../../models/user');
+const { isValidObjectId } = require('mongoose');
 const defaultCategory = "altro";
 const defaultColor = "#919191";
 
@@ -10,9 +11,10 @@ const defaultColor = "#919191";
  * If not present, create default category
 */
 router.post('/default', async function(req, res){
-    let id = req.body.id;
-    let user = await User.findById(id);
     try{
+        let id = req.body.id;
+        assert(isValidObjectId(id), "Errore, l'id specificato non è valido");
+        let user = await User.findById(id);
         console.log();
         assert(user, "Utente non esistente");
         if(user.categories.length === 0){
@@ -45,11 +47,12 @@ router.post('', async function(req, res){
     //console.log(name+" "+color+" "+budget);
 
     try{
-
+        //input check
         assert(name && color && budget, "Creazione fallita, parametri mancanti."); //check that no parameters are missing
-        
+        assert(isValidObjectId(id), "Errore, l'id specificato non è valido");
+
         let user = await User.findById(id);
-  
+        
         assert(user, "Utente non esistente"); //should not throw since user token is checked beforehand
         assert(user.budget, "Creazione fallita, per poter creare una categoria devi avere un budget mensile.") 
         assert(!user.categories.find( x => x.name === name), "Creazione fallita, categoria già esistente."); //check that the category does not exists already
@@ -92,7 +95,7 @@ router.delete('', async function (req, res){
     let name = req.body.name; //category's name
 
     try{
-        
+        assert(isValidObjectId(id), "Errore, l'id specificato non è valido");
         let user = await User.findById(id);
         
         assert(user, "Utente non esistente"); //should not throw since user token is checked beforehand
@@ -150,7 +153,7 @@ router.get('', async(req, res) => {
 
     try{
         let id = req.params.id;
-
+        assert(isValidObjectId(id), "Errore, l'id specificato non è valido");
         var user = await User.findById(id);
         
         assert(user, "utente non identificato");
