@@ -2,7 +2,7 @@ const express = require('express');
 const user = require('../../models/user.js');
 const router = express.Router({ mergeParams: true });
 const assert =  require('assert');
-const User = require('./models/user.js');
+const User = require('../../models/user.js');
 const defaultCategory = "altro";
 
 //const expenses = require('./models/addExpense');
