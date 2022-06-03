@@ -3,6 +3,7 @@ const router = express.Router({ mergeParams: true });
 const Group = require('../../models/group'); //get our group model
 const User = require('../../models/user'); 
 const jwt = require('jsonwebtoken');
+const { isValidObjectId } = require('mongoose');
 const assert = require('assert');
 const groupTokenChecker = require('./groupTokenChecker');
 
@@ -14,12 +15,13 @@ router.use(groupTokenChecker).post('', async function(req,res){
     let user_id = req.body.id;
     let invitation_mail = req.body.mail; //mail associated with the user we want to invite
     let group_id = req.params.id;
-
-    let user = await User.findById(user_id);
-    let invitedUser = await User.findOne({email: invitation_mail});
-    let group = await Group.findById(group_id);
-    
+   
     try{
+
+        assert(isValidObjectId(user_id), "Errore, l'id specificato non è valido");
+        let user = await User.findById(user_id);
+        let invitedUser = await User.findOne({email: invitation_mail});
+        let group = await Group.findById(group_id);
         
         //check validity of the input parameters
         assert(user, "Errore, utente non esistente.");
@@ -63,9 +65,11 @@ router.put('', async function(req, res){
 
     let user_id = req.body.id;
     let group_id = req.params.id;
-    let user = await User.findById(user_id);
     try{
 
+        assert(isValidObjectId(user_id), "Errore, l'id specificato non è valido");
+        let user = await User.findById(user_id);
+        
         //check validity of the input parameters
         assert(user, "Errore, utente non eisistente.");
         assert(group_id, "Errore, necessario specificare il gruppo a cui unirsi.");
