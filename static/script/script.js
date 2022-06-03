@@ -147,7 +147,7 @@ function login()
     var password = document.getElementById("authPassword").value;
     // console.log(email);
 
-    fetch('../api/v1/authentications/login', {
+    fetch('../api/v2/authentications/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify( { email: email, password: password } ),
@@ -187,7 +187,7 @@ function signup(){
     var email = document.getElementById("authEmail").value;
     var password = document.getElementById("authPassword").value;
     var name = document.getElementById("authName").value;
-    fetch('../api/v1/authentications/signup',{
+    fetch('../api/v2/authentications/signup',{
         method: 'POST',
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify({email: email, password: password, name: name} )

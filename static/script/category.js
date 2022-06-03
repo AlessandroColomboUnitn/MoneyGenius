@@ -6,7 +6,7 @@ function addCategory(){
     var newCategory = [{name: name,  budget: budget, cat_spent: 0}];
     //console.log(color);
 
-    fetch('api/v1/users/'+loggedUser.id+'/categories/', {
+    fetch('api/v2/users/'+loggedUser.id+'/categories/', {
         method: 'POST',
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify({
@@ -53,7 +53,7 @@ function addCategory(){
 async function deleteCategory(category_name){
     //console.log("name:"+category_name);
     
-    const resp = await fetch('api/v1/users/'+loggedUser.id+'/categories/', {
+    const resp = await fetch('api/v2/users/'+loggedUser.id+'/categories/', {
         method: 'DELETE',
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify({
@@ -106,7 +106,7 @@ function createCategoriesTable(){
 
 function showRecapCategories(){
     
-    var url = new URL("api/v1/users/" + loggedUser.id + "/categories", base);
+    var url = new URL("api/v2/users/" + loggedUser.id + "/categories", base);
     let params = {token:loggedUser.token};
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
     

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
-const Group = require('./models/group'); //get our group model
-const User = require('./models/user'); 
+const Group = require('../../models/group'); //get our group model
+const User = require('../../models/user'); 
 const jwt = require('jsonwebtoken');
 const assert = require('assert');
 const groupTokenChecker = require('./groupTokenChecker');

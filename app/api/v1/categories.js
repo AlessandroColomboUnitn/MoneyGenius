@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
-const User = require('./models/user');
+const User = require('../../models/user');
 const assert = require('assert');
-const user = require('./models/user');
+const user = require('../../models/user');
 const defaultCategory = "altro";
 const defaultColor = "#919191";
 

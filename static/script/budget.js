@@ -1,6 +1,6 @@
 function setBudget(){
     var budget = document.getElementById("budget").value;
-    fetch('../api/v1/users/'+loggedUser.id+'/budget', {
+    fetch('../api/v2/users/'+loggedUser.id+'/budget', {
         method: 'POST',
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify({
@@ -53,7 +53,7 @@ function afterSetBudget(){
     document.getElementById("budgetform").hidden = true;
        //set user's default category
     
-    fetch('../api/v1/users/'+loggedUser.id+'/categories/default', {
+    fetch('../api/v2/users/'+loggedUser.id+'/categories/default', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify( { id: loggedUser.id, token: loggedUser.token, email:loggedUser.email } ),
