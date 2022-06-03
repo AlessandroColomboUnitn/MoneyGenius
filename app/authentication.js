@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const User = require('./models/user'); // get our mongoose model
 const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
-//const user = require('./models/user'); // a cosa serve, non è doppia?
 
 // ---------------------------------------------------------
 // Based on source: https://github.com/unitn-software-engineering/EasyLib/blob/master/app/authentications
@@ -32,14 +31,28 @@ router.post('/login', async function(req, res) {
 	}
 	var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
 
+	//check if a user has a group sends back group_id and group_token
+	let group_id = user.group_id;
+	let group_token;
+	if(group_id){
+		let group_payload = {
+            user_id: user._id,
+            group_id: group_id
+		}
+		group_token = jwt.sign(group_payload, process.env.SUPER_SECRET, options);
+	}
+
+
 	res.status(200).json({
 		success: true,
 		message: 'Enjoy your token!',
 		token: token,
 		email: user.email,
 		name: user.name,
+		group_id : group_id,
+		group_token: group_token,
 		id: user._id,
-		self: "api/v1/" + user._id
+		self: "api/v2/users/" + user._id
 	});
 
 });
@@ -88,7 +101,7 @@ router.post('/signup', async function(req, res) {
 		        email: user.email,
 		        id: user._id,
 				name: user.name,
-		        self: "api/v1/" + user._id
+		        self: "api/v2/users/" + user._id
            });
         
         } else res.status(400).json({success: false, message: 'Registrazione fallita: e-mail già assegnata ad un altro utente'});
