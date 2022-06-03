@@ -43,7 +43,16 @@ function loadGroupInfo(){
             throw data.message;
         }else{
             let group = data.group;
+            let participants = group.partecipants;
+            console.log(participants);
+
             document.getElementById("gi_name").innerHTML = group.name;
+            let ulParticipants = document.getElementById("ulParticipants");
+            participants.forEach(participant => {
+                let li = document.createElement("li");
+                li.innerHTML = participant;
+                ulParticipants.appendChild(li);
+            });
         }
     })
     .catch(function(error){
@@ -80,22 +89,124 @@ async function inviteParticipant(){
 //if there arent any expenses do not show the table...
 function loadPendingRequest(){
 
-    let url = new URL('api/v2/users/' + loggedUser.id, base);
+    let url = new URL('api/v2/users/' + loggedUser.id + "/invitations", base);
     let params = {token:loggedUser.token};
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
     
     fetch(url)
     .then((resp) => resp.json()) // Transform the data into json
     .then(function(data){
+            let requestsList = document.getElementById("requestsList"); 
             let table = document.getElementById("requestsTable");
-            let userExpenses = data.user;
+            let pending_invites = data.pending_invites;
             
-            //if i have any expense
-            if(userExpenses.length>0){
-                //table = createExpensesTable();
-                //table = fillExpensesTable(userExpenses, table);       
-                //expensesList.appendChild(table);
-            }else{
+            //clear the table
+            if(table)
+                table.remove();
+            
+            //if i have any requests
+            if(pending_invites.length>0){
+                table = createRequestsTable();
+                table = fillRequestsTable(pending_invites, table);  
+                requestsList.appendChild(table);
             }
     });
+}
+
+//create the table
+function createRequestsTable(){
+    var table = document.createElement("table");
+    var thead = document.createElement("thead");
+    var trHeaders = document.createElement("tr");
+
+    table.id = 'requestsTable';
+    /*table.classList.add("table");
+    table.classList.add("table-hover");
+    table.classList.add("text-center");*/
+    table.classList.add("card-table");
+    table.classList.add("table");
+                
+    //setup the th row
+    let thatt = ['Nome', 'Accetta', 'Rifiuta'];
+    
+    for (i in thatt) {
+        let th = document.createElement("th");
+
+        th.innerHTML = thatt[i];
+
+        trHeaders.appendChild(th);
+    }
+    
+    thead.appendChild(trHeaders);
+    table.appendChild(thead);
+
+    return table;
+}
+
+//fill the table
+function fillRequestsTable(pending_invites, table){
+
+    var tbody = document.createElement("tbody");
+
+    pending_invites.forEach(invite => {
+
+        let trInvite = document.createElement("tr");
+        trInvite.id = invite['_id'];
+        
+        let td = document.createElement("td");
+        td.innerHTML = invite['name'];
+        trInvite.appendChild(td);
+
+        let tdAccept = document.createElement("td");
+        let btnAccept = document.createElement("button");
+        btnAccept.innerHTML= "Ok";
+        btnAccept.classList.add("btn", "btn-success");
+        btnAccept.onclick = () => {
+            acceptInvite(trInvite.id);
+        }
+        tdAccept.appendChild(btnAccept);
+        trInvite.appendChild(tdAccept);
+
+        let tdReject = document.createElement("td");
+        let btnReject = document.createElement("button");
+        btnReject.innerHTML= "X";
+        btnReject.classList.add("btn", "btn-danger");
+        btnReject.onclick = () => {
+            rejectInvite(trInvite.id);
+        }
+        tdReject.appendChild(btnReject);
+        trInvite.appendChild(tdReject);
+
+        tbody.appendChild(trInvite);
+        
+    });
+
+    table.appendChild(tbody);
+
+    return table;
+}
+
+async function acceptInvite(group_id){
+    let url = new URL('/api/v2/groups/' + group_id + '/invitations/', base);
+
+    var resp = await fetch(url, {
+        method: 'PUT',
+        headers: {'Content-type': 'application/json'},
+        body: JSON.stringify({
+            id: loggedUser.id,
+            token: loggedUser.token,
+        })
+    });
+    try{
+        resp = await resp.json();
+        assert(resp.success, resp.message);
+        window.alert("Richiesta accettata");
+        displayGroupPage();
+    }catch(message){
+        window.alert(message);
+    }
+}
+
+function rejectInvite(group_id){
+    window.alert("Rifiuta disponibile in v3 :)");
 }

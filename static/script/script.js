@@ -66,6 +66,10 @@ function displayLogin(){
     document.getElementById("Login").hidden=false;
 }
 
+function closeNav(){
+    document.getElementById("btnCloseNav").click();
+}
+
 //displays signup form after signup selection
 function displaySignup(){
     document.getElementById("navAuthentication").hidden=true;
@@ -74,14 +78,13 @@ function displaySignup(){
     document.getElementById("Signup").hidden=false;
 }
 
-//close navbar
-document.getElementById("navbarNavAltMarkup").onclick = () => document.getElementById("btnCloseNav").click();
-
 function displayUserPage(){
     document.getElementById("authenticationPage").hidden = true;
     document.getElementById("navApplication").hidden = false;
     document.getElementById("userPage").hidden = false;
     document.getElementById("groupPage").hidden = true;
+    document.getElementsByClassName("nav-link")[0].classList.add("active");
+    document.getElementsByClassName("nav-link")[1].classList.remove("active");
 }
 
 async function displayGroupPage(){
@@ -89,6 +92,8 @@ async function displayGroupPage(){
     document.getElementById("navApplication").hidden = false;
     document.getElementById("userPage").hidden = true;
     document.getElementById("groupPage").hidden = false;
+    document.getElementsByClassName("nav-link")[0].classList.remove("active");
+    document.getElementsByClassName("nav-link")[1].classList.add("active");
 
     let groupPage;
 
@@ -99,8 +104,9 @@ async function displayGroupPage(){
         loadGroupInfo();
         //loadGroupExpensesList(); tabella per spese di gruppo
     }else{
-        groupPage = await fetch('./createGroup.html');
+        groupPage = await fetch('./joinGroup.html');
         groupPage = await groupPage.text();
+        loadPendingRequest();
     }
 
     document.getElementById("groupPage").innerHTML = groupPage;
