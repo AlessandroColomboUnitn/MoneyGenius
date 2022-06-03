@@ -10,7 +10,7 @@ const groupTokenChecker = require('./groupTokenChecker');
 /*
 * Post an invitation for a certain user to join the group
 */
-router.use(groupTokenChecker).post('', async function(req,res){
+router.post('', groupTokenChecker, async function(req,res){
     
     let user_id = req.body.id;
     let invitation_mail = req.body.mail; //mail associated with the user we want to invite
