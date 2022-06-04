@@ -39,10 +39,10 @@ router.post('/default', async function(req, res){
 */
 router.post('', async function(req, res){
     
-    let id = req.body.id; //user's id
+    let id = req.params.id; //user's id
     let name = req.body.name; //category's name
     let color = req.body.color; //category's color
-    let budget = parseInt(req.body.budget); //category's budget
+    let budget =req.body.budget; //category's budget
     
     //console.log(name+" "+color+" "+budget);
 
@@ -51,6 +51,7 @@ router.post('', async function(req, res){
         assert(name && color && budget, "Creazione fallita, parametri mancanti."); //check that no parameters are missing
         assert(isValidObjectId(id), "Errore, l'id specificato non è valido");
 
+        budget = parseInt(budget);
         let user = await User.findById(id);
         
         assert(user, "Utente non esistente"); //should not throw since user token is checked beforehand
@@ -70,6 +71,8 @@ router.post('', async function(req, res){
 
         let default_index = user.categories.findIndex((obj) => obj.name === defaultCategory); //find default category index 
         
+        assert(default_index !== -1, "Categoria di default non esistente");
+
         user.categories[default_index].budget = free_budget; //decrease default categoty budget
         
         user = await user.save(); 
@@ -91,7 +94,7 @@ router.post('', async function(req, res){
 
 router.delete('', async function (req, res){
     
-    let id = req.body.id; //user's id
+    let id = req.params.id; //user's id
     let name = req.body.name; //category's name
 
     try{
