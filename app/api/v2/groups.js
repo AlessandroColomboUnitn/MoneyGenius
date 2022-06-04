@@ -74,9 +74,13 @@ router.get('/:id', groupTokenChecker, async function(req, res){
         assert(token_group_id == request_group_id, "Errore, autorizzazione group token fallita.");
         
         //get the group entry and send it to the user
-        let group = await Group.findById(request_group_id);
+        let group = await Group.
+        findById(request_group_id).
+        populate({ path: 'partecipants',  select: ['email','name']}).
+        exec();
+
         res.status(200).json({
-            success:true,
+            success: true,
             group: group
         });
 

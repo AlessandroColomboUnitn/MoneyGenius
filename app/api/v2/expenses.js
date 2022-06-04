@@ -171,7 +171,7 @@ router.delete('/:idExpense', async function(req, res) {
             return a==b;
         }); //return -1 if no expense match
         */
-        let index = user.expenses.findIndex(exp => JSON.stringify(exp._id) == JSON.stringify(expense_id)); //return -1 if no expense match
+        let index = user.expenses.findIndex(exp => exp._id.equals(expense_id)); //return -1 if no expense match
         
         assert(index !== -1, "Cancellazione fallita, spesa non esistente.");
         let expense = user.expenses[index];
