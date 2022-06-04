@@ -265,6 +265,7 @@ var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
         });
     
         afterAll(async () => {
+            user = User.findById(id);
             await user.remove(); //clear test user from DB
             mongoose.connection.close(); //close connection
             console.log("Database connection closed");
