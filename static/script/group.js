@@ -50,7 +50,8 @@ function loadGroupInfo(){
             let ulParticipants = document.getElementById("ulParticipants");
             participants.forEach(participant => {
                 let li = document.createElement("li");
-                li.innerHTML = participant;
+                li.classList.add("list-group-item");
+                li.innerHTML = participant.name + ' - ' + participant.email;
                 ulParticipants.appendChild(li);
             });
         }
@@ -121,10 +122,10 @@ function createRequestsTable(){
 
     table.id = 'requestsTable';
     /*table.classList.add("table");
-    table.classList.add("table-hover");
     table.classList.add("text-center");*/
     table.classList.add("card-table");
     table.classList.add("table");
+    table.classList.add("table-hover");
                 
     //setup the th row
     let thatt = ['Nome', 'Accetta', 'Rifiuta'];
@@ -201,6 +202,8 @@ async function acceptInvite(group_id){
         resp = await resp.json();
         assert(resp.success, resp.message);
         window.alert("Richiesta accettata");
+        loggedUser.group_id = resp.group_id;
+        loggedUser.group_token = resp.group_token;
         displayGroupPage();
     }catch(message){
         window.alert(message);

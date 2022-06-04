@@ -27,9 +27,9 @@ router.post('', groupTokenChecker, async function(req,res){
         assert(user, "Errore, utente non esistente.");
         assert(invitedUser, "Errore, la mail di invito non è associata a nessun utente.");
         assert(group, "Errore, il gruppo specificato è inesistente.");
-        
+
         //check that the user has the permission to invite another user (is a member of the group)
-        let isMember = await group.partecipants.find((id) => id == user._id);
+        let isMember = await group.partecipants.find((id) => id.equals(user_id));
         assert(isMember, "Errore, per invitare un utente devi partecipare al gruppo.");
 
         //check that the invited has not alreadyt joined another group
@@ -103,13 +103,13 @@ router.put('', async function(req, res){
             expiresIn: 86400 // expires in 24 hours
         }
         
-        var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
-
+        var group_token = jwt.sign(payload, process.env.SUPER_SECRET, options);
 
         res.status(200).json({
             success: true,
             message: "Ti sei unito al gruppo con successo.",
-            token: token
+            group_id: group._id,
+            group_token: group_token
         });
 
     }catch(err){

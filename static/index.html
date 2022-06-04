@@ -37,19 +37,19 @@ td {
     
     <div class="container">
 
-        <div id="authenticationPage">
+        <div id="authenticationPage" class="container p-2">
             <div class="text-center">
                 <h1>MoneyGenius</h1>
             </div>
 
             <!-- nav for navigating the authentication -->
-            <nav id="navAuthentication">
+            <nav id="navAuthentication" class="container p-4">
                 <button type="button" class="btn btn-outline-secondary" id="setLogin" onclick="displayLogin()">Accedi</button>
                 <button type="button" class="btn btn-outline-secondary" id="setSignup" onclick="displaySignup()">Registrati</button>
             </nav>
 
             <!-- div containing the form for signup and login -->
-            <div id="divAuthentication" class="container pt-4" hidden="true">
+            <div id="divAuthentication" class="container p-4 border" hidden="true">
                 <form action="api/v1/users" method="post" name="authform" id="authform">
                     <div class="form-group">
                         <label for="email">Email:</label>
@@ -63,8 +63,8 @@ td {
                         <label for="username">Username:</label>
                         <input type="text" name="username" class="form-control" placeholder="mario" id="authName" required="true"/>
                     </div>    
-                    <br>
-                    <div class="container">
+
+                    <div class="container pt-4">
                         <div class="row">
                         <div class="col-6 text-start">
                             <button type="button" class="btn btn-outline-primary" id="Login" onclick="login()" hidden="true">Accedi</button> 
@@ -77,8 +77,6 @@ td {
                     </div>
                 </form>
             </div>
-
-            <hr>
 
         </div>
         
@@ -97,29 +95,23 @@ td {
             </div>
         </nav>
 
-        <div id ="userPage" hidden>
+        <div id ="userPage" class="container p-4" hidden>
 
             <!-- div containing the form for the budget -->
-            <div id="divBudget" class="container pt-4">
+            <div id="divBudget" class="container p-4 mb-3 border">
             </div>
-
-            <hr>
 
             <!-- div containing the list of expenses and the modal for adding expenses -->
-            <div id="divExpense" class="container pt-4">
+            <div id="divExpense" class="container p-4 mb-3 border">
             </div>
-
-            <hr>
 
             <!-- div containing the list of categories and the modal for adding categories -->
-            <div id="divCategory" class="container pt-4">
+            <div id="divCategory" class="container p-4 mb-3 border">
             </div>
-
-            <hr>
 
         </div>
 
-        <div id="groupPage" hidden>
+        <div id="groupPage"  class="container p-4" hidden>
         </div>
 
     </div>
