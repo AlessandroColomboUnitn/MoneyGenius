@@ -294,7 +294,6 @@ test('POST /api/v2/users/<testUser.id>/expenses/ set a valid expense', async () 
     user.expenses[0].categoryId = user.categories[0]._id;
     exp_id = user.expenses[0].id;
     await user.save();
-    console.log('Database connected!');
     
   });
 
