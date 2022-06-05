@@ -63,7 +63,7 @@ async function deleteCategory(category_name){
         })
     });
     try{
-        console.log(resp.ok);
+        //console.log(resp.ok);
         assert(resp.ok);
         showRecapCategories();
         loadCategoriesOptions();
@@ -84,9 +84,9 @@ function createCategoriesTable(){
     tableCat.classList.add("table");
     tableCat.classList.add("table-hover");
     tableCat.classList.add("text-center");
+    //tableCat.classList.add("table-bordered");
 
-
-    const thNames = ["Nome", "Budget", "di cui Speso", ""];
+    const thNames = ["Nome", "Budget", "di cui Speso", "Elimina"];
                 
     //setup the th row
     for (let i = 0; i<thNames.length; i++) {
@@ -144,6 +144,7 @@ function showRecapCategories(){
 function fillCategoriesTable(userCategories, tableCat){
     
     var tbody = document.createElement("tbody");
+    tableCat.classList.add("table-bordered");
 
     userCategories.forEach(elementCategory => {
 
@@ -164,7 +165,8 @@ function fillCategoriesTable(userCategories, tableCat){
         button.onclick = ()  => deleteCategory(category_name);
         td.appendChild(button);
         trCategory.appendChild(td);
-
+        trCategory.style.borderColor = elementCategory.color;
+        trCategory.style.borderWidth = '4px';
         tbody.appendChild(trCategory);
         
     });

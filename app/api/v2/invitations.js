@@ -15,8 +15,11 @@ router.post('', groupTokenChecker, async function(req,res){
     let user_id = req.body.id;
     let invitation_mail = req.body.mail; //mail associated with the user we want to invite
     let group_id = req.params.id;
-   
+    let token_group_id = req.group_id
     try{
+        
+        //check that the group id in the user's group token is the same of the group specified in the path
+        assert(group_id == token_group_id, "Errore, per invitare un utente devi partecipare al gruppo");
 
         assert(isValidObjectId(user_id), "Errore, l'id specificato non è valido");
         let user = await User.findById(user_id);
@@ -28,9 +31,9 @@ router.post('', groupTokenChecker, async function(req,res){
         assert(invitedUser, "Errore, la mail di invito non è associata a nessun utente.");
         assert(group, "Errore, il gruppo specificato è inesistente.");
 
-        //check that the user has the permission to invite another user (is a member of the group)
+        /*//check that the user has the permission to invite another user (is a member of the group)
         let isMember = await group.partecipants.find((id) => id.equals(user_id));
-        assert(isMember, "Errore, per invitare un utente devi partecipare al gruppo.");
+        assert(isMember, "Errore, per invitare un utente devi partecipare al gruppo.");*/
 
         //check that the invited has not alreadyt joined another group
         let alreadyInGroup = invitedUser.group_id;
@@ -43,8 +46,8 @@ router.post('', groupTokenChecker, async function(req,res){
         //insert invitation (group id) inside the invited user's pending invites
         invitedUser.pending_invites.push(group_id);
         invitedUser.save();
-        
-        res.status(200).json({
+           
+        res.status(201).json({
             success: true,
             message: "Utente invitato con successo."
         });
@@ -120,5 +123,12 @@ router.put('', async function(req, res){
     }
 
 });
+
+router.all("", (req, res) => {
+    res.status(405).json({
+        success: false,
+        message: "Method not allowed"
+    });
+})
 
 module.exports = router;
