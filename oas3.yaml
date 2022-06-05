@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: '1.0'
+  version: '2.0'
   title: "MoneyGenius OpenAPI 3.0"
   description: API for managing personal finance and sharing common expenses.
   license:
@@ -459,31 +459,20 @@ paths:
                   type: string
                   description: Category's id of the new expense
                   example: "628a20fe6b7d93a608dc0fdc"
-                categoryId:
+                date:
                   type: string
                   description: Date of the new expense
                   example: "2022-05-19"
 
       responses:
         '201':
-          description: Creation successful, location in the URL of the request 
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    description: Result of the operation
-                    example: true
-                  message:
-                    type: string
-                    description: A message for the user
-                    example: Nuova spesa registrata.
-                  self: 
-                    type: string
-                    description: Reference to the new expense
-                    example: users/628a43bccba4586929357ae2/expenses/628ab8d7f10846b3fa633a46
+          description: Expense created. Link in the Location header.
+          headers:
+            location:
+              type: string
+                
+            
+              
         '400':
           description: Invalid parameters passed
           content:
@@ -500,7 +489,6 @@ paths:
                     description: Error message
                     example: "Creazione fallita, input non validi."
 
-  /users/{id}/expenses:
     get:
       summary: List of expenses
       description: Show the list of existing expenses.
@@ -547,7 +535,388 @@ paths:
                     type: string
                     description: Error message
                     example: "Categoria non esistente."
-                      
+                  
+  /users/{id}/expenses/{id}:
+    get:
+      summary: Show an expense
+      description:  Use the route parameters to show an existent expense of a user.
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema: 
+            type: string
+          description: User's authentication token
+      responses:
+        '200':
+          description: 'The expense is shown correctly.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the operation
+                    example: true
+                  message:
+                    type: string
+                    description: A message for the user
+                    example: 'Ecco la spesa.'
+                  expense:
+                    type: object
+                    description: The expense object
+                    example:
+                      $ref: '#/components/schemas/Expense'
+        
+        '400':
+          description: Invalid parameters passed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the operation
+                    example: false
+                  message:
+                    type: string
+                    description: Error message
+                    example: "Utente non riconosciuto."
+                
+
+    delete:
+      summary: Delete an expense
+      description: Use the route parameters to delete an existent expense of a user.    
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                    type: string
+                    description: User's authentication token
+                    example: "eyJzdwIiOiIxMiMONTY30DkwIiwibmFtZSI6IkDvaG4"
+      responses:
+        '204':
+          description: The resource was deleted successfully.
+        '400':
+          description: Invalid parameters passed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the operation
+                    example: false
+                  message:
+                    type: string
+                    description: Error message
+                    example: "Cancellazione fallita, spesa non esistente."
+  /groups:
+    post:
+      summary: Create a group of users
+      description: Create a group where it is possible to invite other users willing to share their common expenses.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                    type: string
+                    description: User's authentication token
+                    example: "eyJzdwIiOiIxMiMONTY30DkwIiwibmFtZSI6IkDvaG4"
+                id: 
+                    type: string
+                    description: User id
+                    example: "628a2d2415fde6981acaf117"
+                    
+                name:
+                  type: string
+                  description: Group's name
+                  example: "Appartamento"
+      responses:
+        '201':
+          description: Group succesfully created
+          headers:
+            Location:
+              schema:
+                type: string
+                example: group/62925047c9878bc1d8c1ea3e
+                description: Link to the newly created expense.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the operation
+                    example: true
+                  message:
+                    type: string
+                    description: Success message
+                    example: "Gruppo creato con successo."
+                  group_token:
+                    type: string
+                    description: Authorization token associated with the newly created group
+                    example: "eyJzdwIiOiIxMiMONTY30DkwIiwibmFtZSI6IkDvaG4"
+                  group_id:
+                    type: string
+                    description: id associated with the new group
+                    example: ""
+        '400':
+          description: A generic error message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the operation
+                    example: false
+                  message:
+                    type: string
+                    description: Error message
+                    example: "Errore, parametri mancanti."
+                
+              
+  /groups/{id}:      
+    get:
+      summary: Get a specific group
+      description: Show all the information of the specified group.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Id of the specific group
+        - in: query
+          name: token
+          required: true
+          schema: 
+            type: string
+            example: "eyJzdwIiOiIxMiMONTY30DkwIiwibmFtZSI6IkDvaG4"
+          description: User's authentication token
+        - in: query
+          name: group_token
+          required: true
+          schema: 
+            type: string
+            example: "eyJzdwIiOiIxMiMONTY30DkwIiwibmFtZSI6IkDvaG4"
+          description: Access token of the specific group
+      responses:
+        '200':
+          description: The group is successfully returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the operation
+                    example: true
+                  group:
+                    type: object
+                    description: object representing the group
+                    items:
+                      $ref: '#/components/schemas/Group'
+        '403':
+          description: User is not authorized to access the group.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the operation
+                    example: true
+                  message:
+                    type: string
+                    description: Error message
+                    example: "Errore, autorizzazione group token fallita."
+                    
+  /groups/{id}/invitations:
+    post:
+      summary: Invite new partecipants
+      description: Invite new partecipants to the group specified in the request
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: 
+            type: string
+          description: Id of the specific group
+        - in: query
+          name: token
+          required: true
+          schema: 
+            type: string
+            example: "eyJzdwIiOiIxMiMONTY30DkwIiwibmFtZSI6IkDvaG4"
+          description: User's authentication token
+        - in: query 
+          name: group_token
+          required: true
+          schema: 
+            type: string
+            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+          description: Access token of the specific group
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id: 
+                    type: string
+                    description: User id
+                    example: "628a2d2415fde6981acaf117"
+                    
+                invitedUser:
+                  type: string
+                  description: Mail of the new partecipant
+                  example: "mario.rossi@gmail.com"
+      responses:
+        '201':
+          description: User succesfully invited
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the operation
+                    example: true
+                  message:
+                    type: string
+                    description: Success message
+                    example: "Utente invitato con successo."
+        
+        '401':
+          description: No token provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the operation
+                    example: false
+                  message:
+                    type: string
+                    description: Error message
+                    example: "No group token provided."
+
+        
+        '403':
+          description: Cannot authenticate token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the operation
+                    example: false
+                  message:
+                    type: string
+                    description: Error message
+                    example: "Failed to authenticate group token."
+
+        
+        '400':
+          description: A generic error message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the operation
+                    example: false
+                  message:
+                    type: string
+                    description: Error message
+                    example: "Errore, l'utente invitato fa già parte di un gruppo."
+
+    
+    put:
+      summary: Accept the invitation
+      description: Accept the invitation to join a specific group
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: 
+            type: string
+          description: Id of the specific group
+        - in: query
+          name: token
+          required: true
+          schema: 
+            type: string
+            example: "eyJzdwIiOiIxMiMONTY30DkwIiwibmFtZSI6IkDvaG4"
+          description: User's authentication token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id: 
+                    type: string
+                    description: User id
+                    example: "628a2d2415fde6981acaf117"
+                    
+      responses:
+        '200':
+          description: Invite accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the operation
+                    example: true
+                  message:
+                    type: string
+                    description: Success message
+                    example: "Ti sei unito al gruppo con successo."
+                  group_token:
+                    type: string
+                    description: authorization token for accessing the joined group
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+                    
+        '400':
+          description: A generic error message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Result of the operation
+                    example: false
+                  message:
+                    type: string
+                    description: Success message
+                    example: "Errore, impossibile partecipare a più di un gruppo."
 components:
   schemas:
     Category:
@@ -579,7 +948,7 @@ components:
           type: number
           description: how much the user already spent in that category
           example: 100
-          
+  
     Expense:
       type: object
       required:
@@ -609,3 +978,29 @@ components:
           type: string
           description: date of the expense
           example: "2022-05-18T00:00:00.000+00:00"
+    
+    Group:
+      type: object
+      required:
+        - _id
+        - name
+        - partecipants
+      properties:
+        _id:
+          type: string
+          description: id of the Group
+          example: "628ab8d7f10846b3fa633a46"
+        name:
+          type: string
+          description: name of the group
+          example: "Appartamento"
+        partecipants:
+          type: array
+          description: ids of the users partecipating to the group
+          example: ["6299f530d982e9fc2251e47c", "6299f576d982e9fc2251e48f"]
+        credits: 
+          type: array
+          description: list of all the debitors of a common expense
+        debits:
+          type: array
+          description: List of all the creditors of a common expense
