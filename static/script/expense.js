@@ -1,5 +1,5 @@
 //called when 'Aggiungi' button of the expense form is clicked
-function addExpense(){
+async function addExpense(){
 
     let url = new URL('api/v2/users/' + loggedUser.id + '/expenses', base);
 
@@ -8,7 +8,7 @@ function addExpense(){
     var categoryId = document.getElementById("categoryId").value;
     var date = document.getElementById("date").value;
 
-    fetch(url, {
+    const resp = await fetch(url, {
         method: 'POST',
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify({
@@ -18,10 +18,10 @@ function addExpense(){
             categoryId: categoryId,
             date: date
         })
-    })
-    .then((resp) => {
-        //console.log(resp);
-
+    });
+    
+    try{
+        assert(resp.ok);
         //load the table
         loadExpensesList();
 
@@ -36,10 +36,12 @@ function addExpense(){
 
         //update categories
         showRecapCategories();
-
-        return;
-    })
-    .catch( error => console.error(error) ); // If there is any error you will catch them here
+    }
+    catch{
+        resp_json = await resp.json();
+        window.alert(resp_json.message);
+    };
+// If there is any error you will catch them here
     /*
     //.then((resp) => resp.json())// non riceve un body quindi da errore
     .then(function(data){ 
@@ -145,7 +147,6 @@ async function deleteExpense(expenseId){
         })
     });
     try{
-        console.log(resp.ok);
         assert(resp.ok);
         //close the modal
         document.getElementById("btnCloseExpenseModal").click();
@@ -183,6 +184,7 @@ function loadExpensesList(){
 
             let expensesList = document.getElementById("expensesList");
             let table = document.getElementById("expensesTable");
+            let alertNoExpense = document.getElementById("alertNoExpense");
             let userExpenses = data.expenses;
             
             //clear the table
@@ -192,7 +194,6 @@ function loadExpensesList(){
             //if i have any expense
             if(userExpenses.length>0){
                 //if its the first expense
-                let alertNoExpense = document.getElementById("alertNoExpense");
                 if(alertNoExpense)
                     expensesList.removeChild(alertNoExpense);
 
@@ -200,11 +201,13 @@ function loadExpensesList(){
                 table = fillExpensesTable(userExpenses, table);       
                 expensesList.appendChild(table);
             }else{
-                let alertNoExpense = document.createElement("div");
-                alertNoExpense.id ="alertNoExpense";
-                alertNoExpense.classList.add("alert", "alert-info");
-                alertNoExpense.innerHTML="  <strong>Info!</strong> Nessuna spesa registrata."; 
-                expensesList.appendChild(alertNoExpense);
+                if(!alertNoExpense){
+                    alertNoExpense = document.createElement("div");
+                    alertNoExpense.id ="alertNoExpense";
+                    alertNoExpense.classList.add("alert", "alert-info");
+                    alertNoExpense.innerHTML="  <strong>Info!</strong> Nessuna spesa registrata."; 
+                    expensesList.appendChild(alertNoExpense);
+                }
             }
         }
     })
