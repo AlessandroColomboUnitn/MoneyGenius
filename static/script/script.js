@@ -13,7 +13,7 @@ else{ //user already authenticated
 }
 
 //base URL of the server
-var base="http://localhost:8080";
+var base="https://moneygenius.herokuapp.com";
 
 
 function assert(condition, message){
