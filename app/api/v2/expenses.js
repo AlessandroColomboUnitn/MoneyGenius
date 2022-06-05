@@ -204,6 +204,13 @@ router.delete('/:idExpense', async function(req, res) {
     }
 });
 
+router.all("", (req, res) => {
+    res.status(405).json({
+        success: false,
+        message: "Method not allowed"
+    });
+})
+
 function validateInputs(name, amount, categoryId, date){
     if(! (date instanceof Date && !isNaN(date.valueOf()))) console.log(date);
     return +
