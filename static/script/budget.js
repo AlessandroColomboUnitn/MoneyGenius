@@ -27,7 +27,7 @@ function setBudget(){
 
 function viewBudget(){
     
-    var url = new URL("api/v1/users/" + loggedUser.id + "/budget"),
+    var url = new URL("api/v1/users/" + loggedUser.id + "/budget", base),
         params = {token:loggedUser.token}
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
     
