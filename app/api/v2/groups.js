@@ -46,8 +46,7 @@ router.post('', async function(req, res){
         }
         
         var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
-
-        res.status(201).json({
+        res.location("/api/v2/groups/" + group._id ).status(201).json({
             success: true,
             message: "Gruppo creato con successo",
             group_token: token,
@@ -93,6 +92,13 @@ router.get('/:id', groupTokenChecker, async function(req, res){
 
 
 });
+
+router.all("", (req, res) => {
+    res.status(405).json({
+        success: false,
+        message: "Method not allowed"
+    });
+})
 
 /**
  * Parse a jwt token into a json object
