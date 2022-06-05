@@ -88,6 +88,12 @@ router.get('/:id/invitations', async (req, res) => {
     }
 });
 
+router.all("", (req, res) => {
+    res.status(405).json({
+        success: false,
+        message: "Method not allowed"
+    });
+})
 
 // https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
 function checkIfEmailInString(text) {
