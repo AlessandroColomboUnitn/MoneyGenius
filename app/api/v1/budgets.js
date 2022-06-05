@@ -40,35 +40,13 @@ router.post('', async (req,res) => {
     if (!isNaN(budget) && budget > 0) {
         let email = req.body.email;
         let user = await User.findOne({email: email});
-        
-        let allocatedB = user.allocated_budget;
-        //console.log(allocateB);
-
-        if (user.budget == null){
-            user.budget = budget;
-            await user.save();
-            res.status(201).json({success: true});
-        }
-        else {
-            
-            if (budget < allocatedB) {
-                res.status(400).json({success: false, message: "Il budget allocato alle cateorie supera il budget che vuoi impostare."});
-            }
-            else {
-                user.budget = budget;
-                let free_budget = user.budget - allocatedB;
-                //console.log(free_budget);
-                let default_index = user.categories.findIndex((obj) => obj.name === defaultCategory);
-                user.categories[default_index].budget = free_budget;
-                
-                await user.save();
-                res.status(201).json({success: true});
-            }
-        }
+        user.budget = budget;
+        await user.save();
+        res.status(201).json({success: true});
     }
 
     else {
-        res.status(400).json({success: false, message: "Il valore inserito non è valido."});
+        res.status(400).json({success: false, message: "input non valido"});
     }
 } );
 
