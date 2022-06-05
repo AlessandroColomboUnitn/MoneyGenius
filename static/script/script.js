@@ -66,12 +66,50 @@ function displayLogin(){
     document.getElementById("Login").hidden=false;
 }
 
+function closeNav(){
+    document.getElementById("btnCloseNav").click();
+}
+
 //displays signup form after signup selection
 function displaySignup(){
     document.getElementById("navAuthentication").hidden=true;
     document.getElementById("divAuthentication").hidden=false;
     document.getElementById("divAuthName").hidden=false;
     document.getElementById("Signup").hidden=false;
+}
+
+function displayUserPage(){
+    document.getElementById("authenticationPage").hidden = true;
+    document.getElementById("navApplication").hidden = false;
+    document.getElementById("userPage").hidden = false;
+    document.getElementById("groupPage").hidden = true;
+    document.getElementsByClassName("nav-link")[0].classList.add("active");
+    document.getElementsByClassName("nav-link")[1].classList.remove("active");
+}
+
+async function displayGroupPage(){
+    document.getElementById("authenticationPage").hidden = true;
+    document.getElementById("navApplication").hidden = false;
+    document.getElementById("userPage").hidden = true;
+    document.getElementById("groupPage").hidden = false;
+    document.getElementsByClassName("nav-link")[0].classList.remove("active");
+    document.getElementsByClassName("nav-link")[1].classList.add("active");
+
+    let groupPage;
+
+    if(loggedUser.group_id && loggedUser.group_token){//if the user already has a group
+        groupPage = await fetch('./group.html');
+        groupPage = await groupPage.text();
+
+        loadGroupInfo();
+        //loadGroupExpensesList(); tabella per spese di gruppo
+    }else{
+        groupPage = await fetch('./joinGroup.html');
+        groupPage = await groupPage.text();
+        loadPendingRequest();
+    }
+
+    document.getElementById("groupPage").innerHTML = groupPage;
 }
 
 //resets page and form
@@ -87,9 +125,7 @@ function resetForm(){
 //hide the authentication section and show the user homepage
 async function afterAuth(){
 
-    //document.getElementById("loggedUser").innerHTML = loggedUser.name;
-    document.getElementById("navAuthentication").hidden = true;
-    document.getElementById("divAuthentication").hidden = true;
+    displayUserPage();
     
     let budget = await fetch('./budget.html');
     budget = await budget.text();
@@ -107,6 +143,7 @@ async function afterAuth(){
     let divExpense = document.getElementById("divExpense");
     divExpense.innerHTML = expense;
 
+    /*
     let groupForm = await fetch('./groupForm.html');
     groupForm = await groupForm.text();
     let divGroup = document.getElementById("divGroup");
@@ -115,7 +152,7 @@ async function afterAuth(){
     let group = await fetch('./group.html');
     group = await group.text();
     let groupPage = document.getElementById("groupPage");
-    groupPage.innerHTML = group;
+    groupPage.innerHTML = group;*/
 
     //load the expenses
     loadExpensesList();
@@ -168,6 +205,8 @@ function login()
             loggedUser.email = data.email;
             loggedUser.name = data.name;
             loggedUser.id = data.id;
+            loggedUser.group_id = data.group_id;
+            loggedUser.group_token = data.group_token;
             loggedUser.self = data.self;
             sessionStorage.setItem("loggedUser", JSON.stringify(loggedUser)); //set local user variable inside session storage
             // loggedUser.id = loggedUser.self.substring(loggedUser.self.lastIndexOf('/') + 1);

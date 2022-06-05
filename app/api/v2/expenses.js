@@ -1,5 +1,6 @@
 const assert = require('assert');
 const express = require('express');
+const { isValidObjectId } = require('mongoose');
 const router = express.Router({ mergeParams: true }); //{ mergeParams: true } to access params in the route of app.js
 
 const User = require('../../models/user'); // get our mongoose model
@@ -21,7 +22,7 @@ router.post('', async function(req, res){
         
         //get the id from the request url
         let user_id = req.params.id;
-
+        assert(isValidObjectId(user_id), "Errore, l'id specificato non è valido");
         //retrieve the user instance
         let user = await User.findById(user_id);
         assert(user, "Creazione fallita, utente non riconosciuto.");
@@ -82,6 +83,7 @@ router.get('', async function(req, res) {
     let id = req.params.id;
 
     try{
+        assert(isValidObjectId(id), "Errore, l'id specificato non è valido");
         //retrieve the user instance
         var user = await User.findById(id)/*.exec()*/;
 
@@ -124,6 +126,7 @@ router.get('/:idExpense', async function(req, res) {
     var expense_id = req.params.idExpense;
 
     try{
+        assert(isValidObjectId(user_id), "Errore, l'id specificato non è valido");
         //retrieve the user instance
         var user = await User.findById(user_id)/*.exec()*/;
 
@@ -155,6 +158,7 @@ router.delete('/:idExpense', async function(req, res) {
     var expense_id = req.params.idExpense;
 
     try{
+        assert(isValidObjectId(user_id), "Errore, l'id specificato non è valido");
         let user = await User.findById(user_id);
         
         assert(user, "Utente non esistente"); //should not throw since user token is checked beforehand
@@ -167,7 +171,7 @@ router.delete('/:idExpense', async function(req, res) {
             return a==b;
         }); //return -1 if no expense match
         */
-        let index = user.expenses.findIndex(exp => JSON.stringify(exp._id) == JSON.stringify(expense_id)); //return -1 if no expense match
+        let index = user.expenses.findIndex(exp => exp._id.equals(expense_id)); //return -1 if no expense match
         
         assert(index !== -1, "Cancellazione fallita, spesa non esistente.");
         let expense = user.expenses[index];
@@ -199,6 +203,13 @@ router.delete('/:idExpense', async function(req, res) {
         console.log(error);
     }
 });
+
+router.all("", (req, res) => {
+    res.status(405).json({
+        success: false,
+        message: "Method not allowed"
+    });
+})
 
 function validateInputs(name, amount, categoryId, date){
     if(! (date instanceof Date && !isNaN(date.valueOf()))) console.log(date);

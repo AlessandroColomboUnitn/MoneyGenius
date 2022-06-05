@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router({ mergeParams: true });
 const Group = require('../../models/group'); //get our group model
 const User = require('../../models/user'); 
+const { isValidObjectId } = require('mongoose');
 const jwt = require('jsonwebtoken');
 const assert = require('assert');
 const groupTokenChecker = require('./groupTokenChecker');
@@ -16,7 +17,7 @@ router.post('', async function(req, res){
     try{
         
         assert(user_id && group_name, "Errore, paramatri mancanti");
-        
+        assert(isValidObjectId(user_id), "Errore, l'id specificato non è valido");
         //let group_exists = await Group.exists({name: group_name}).exec(); //check that the specified group exists
         let user = await User.findOne({_id: user_id}).exec(); // check that the input user exists
         //assert(!group_exists, "Errore, gruppo già esistente");
@@ -45,8 +46,7 @@ router.post('', async function(req, res){
         }
         
         var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
-
-        res.status(201).json({
+        res.location("/api/v2/groups/" + group._id ).status(201).json({
             success: true,
             message: "Gruppo creato con successo",
             group_token: token,
@@ -64,7 +64,7 @@ router.post('', async function(req, res){
 /*
 * Get the data relative to the group.
 */
-router.use(groupTokenChecker).get('/:id', async function(req, res){
+router.get('/:id', groupTokenChecker, async function(req, res){
     
     try{
         //check that the group requested (in the params) is the same of the user's group (in the token)
@@ -73,9 +73,13 @@ router.use(groupTokenChecker).get('/:id', async function(req, res){
         assert(token_group_id == request_group_id, "Errore, autorizzazione group token fallita.");
         
         //get the group entry and send it to the user
-        let group = await Group.findById(request_group_id);
+        let group = await Group.
+        findById(request_group_id).
+        populate({ path: 'partecipants',  select: ['email','name']}).
+        exec();
+
         res.status(200).json({
-            success:true,
+            success: true,
             group: group
         });
 
@@ -88,6 +92,14 @@ router.use(groupTokenChecker).get('/:id', async function(req, res){
 
 
 });
+
+
+router.all("", (req, res) => {
+    res.status(405).json({
+        success: false,
+        message: "Method not allowed"
+    });
+})
 
 /**
  * Parse a jwt token into a json object
