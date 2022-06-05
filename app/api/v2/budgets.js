@@ -50,4 +50,12 @@ router.post('', async (req,res) => {
     }
 } );
 
+
+router.all("", (req, res) => {
+    res.status(405).json({
+        success: false,
+        message: "Method not allowed"
+    });
+})
+
 module.exports = router;
