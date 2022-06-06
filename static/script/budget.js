@@ -35,8 +35,8 @@ function viewBudget(){
     .then((resp) => resp.json())
     .then(function(data){ 
         if(data.success){
-            document.getElementById("budgetSpentView").innerHTML = (!data.total_spent) ? 0 : data.total_spent + "€";
-            document.getElementById("budget2View").innerHTML = (!data.budget) ? 0 : data.budget + "€";
+            document.getElementById("budgetSpentView").innerHTML = ((!data.total_spent) ? 0 : data.total_spent) + "€";
+            document.getElementById("budget2View").innerHTML = ((!data.budget) ? 0 : data.budget) + "€";
         }
         else {
             throw data.message;
