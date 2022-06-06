@@ -29,9 +29,10 @@ router.get('', async(req, res) => {
 });
 
 router.post('', async (req,res) => {
-    
+    console.log("aaaaa");
     let budget = req.body.budget; 
     let id = req.params.id;
+    console.log("bbbbb");
     /* 
      * take from the form the value of budget
      * check if the budget has a correct value
@@ -44,8 +45,8 @@ router.post('', async (req,res) => {
         let user = await User.findById(id);
         assert(user, "Errore, l'utente specificato non esiste");
         let allocatedB = user.allocated_budget;
-        
-        if (user.budget == null){
+        console.log(user.id);
+        if (!user.budget){
             user.budget = budget;
             await user.save();
             res.status(201).json({success: true});
