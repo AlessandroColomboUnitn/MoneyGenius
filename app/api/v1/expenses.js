@@ -2,7 +2,7 @@ const assert = require('assert');
 const express = require('express');
 const router = express.Router({ mergeParams: true }); //{ mergeParams: true } to access params in the route of app.js
 
-const User = require('./models/user'); // get our mongoose model
+const User = require('../../models/user'); // get our mongoose model
 
 
 //API for recording an expense

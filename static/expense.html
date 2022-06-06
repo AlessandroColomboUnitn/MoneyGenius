@@ -1,60 +1,119 @@
 <!DOCTYPE html>
 <html>
+    <h3 class="pb-3">Le tue spese</h3>
 
     <!-- div containing a list of all the expenses of the current month  -->
     <div id="expensesList">
     </div>
 
-    <br>
+    <!-- Button to Open the Modal -->
+    <button id="btnOpenExpenseForm" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mdlExpenseForm">Aggiungi Spesa</button>
 
-    <!-- button that when clicked opens the expense form-->
-    <button id="btnOpenExpenseForm">Aggiungi Spesa</button>
-
-    <!-- HTML, css and js for the modal taken from w3schools -->
     <!-- The Modal -->
-    <div id="mdlExpense" class="modal">
-
-        <!-- Modal content -->
-        <div class="modal-content">
-            
-            <!-- icon for closing the modal-->
-            <span class="close" id="spanCloseExpenseForm">&times;</span>
-            
-            <h3>Registra spesa:</h3>
-
-            <form method="post" name="expenseForm" id="expenseForm">                    
+    <div id="mdlExpenseForm" class="modal">
+        <!-- Modal dialog -->
+        <div class="modal-dialog">
+            <!-- Modal content -->
+            <div class="modal-content">
                 
-                <table>
-                    <tr>
-                        <td>Nome:</td>
-                        <td><input type="text" name="name" id="name" required></td>
-                    </tr>            
-                    <tr>
-                        <td>Totale:</td>
-                        <td><input type="number" name="amount" id="amount" required></td>
-                    </tr>
-                    <tr>
-                        <td>Categoria:</td>
-                        <td>
-                            <select name="categoryId" id="categoryId">
-                            </select>                   
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Data:</td>
-                        <td><input type="date" name="date" id="date" required></td>
-                    </tr>                        
-                    <tr>
-                        <td><input type="button" value="Conferma" id="btnAddExpense" onclick="addExpense();"></td>
-                    </tr>
-                </table>     
-            
-            </form>       
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Registra Spesa</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
 
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <form method="post" name="expenseForm" id="expenseForm">
+                            <div class="form-group">
+                                <label for="name">Nome:</label>
+                                <input type="text" name="name" class="form-control"  id="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="amount">Totale:</label>
+                                <input type="number" name="amount" class="form-control"  id="amount" required>
+                            </div>                            
+                            <div class="form-group">
+                                <label for="categoryId">Categoria:</label>
+                                <select name="categoryId" class="form-select" id="categoryId" required>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="date">Data:</label>
+                                <input type="date" name="date" class="form-control"  id="date" required>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-6 text-start">
+                                    <button type="button" class="btn btn-primary" id="btnAddExpense" onclick="addExpense();">Conferma</button>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseExpenseFormModal">Chiudi</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>     
+
+            </div>
         </div>
 
     </div>
 
-    <hr>
+    <!-- Button to Open the Modal -->
+    <button id="btnOpenExpense" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mdlExpense" hidden="true">Aggiungi Spesa</button>
     
+    <!-- The Modal -->
+    <div id="mdlExpense" class="modal">
+        <!-- Modal dialog -->
+        <div class="modal-dialog">
+            <!-- Modal content -->
+            <div class="modal-content">
+                
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Info Spesa</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <dl class="row">
+                            <dt class="col-sm-3">Nome:</dt>
+                            <dd id ="veName" class="col-sm-9"></dd>
+                          
+                            <dt class="col-sm-3">Totale:</dt>
+                            <dd id ="veAmount" class="col-sm-9"></dd>
+                          
+                            <dt class="col-sm-3">Categoria:</dt>
+                            <dd id ="veCategory"class="col-sm-9"></dd>
+
+                            <dt class="col-sm-3">Data:</dt>
+                            <dd id ="veDate" class="col-sm-9"></dd>
+                        </dl>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-6 text-start">
+                                    <button type="button" class="btn btn-danger" id="btnDeleteExpense">Elimina</button>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseExpenseModal">Chiudi</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>     
+
+            </div>
+        </div>
+
+    </div>
+
 </html>

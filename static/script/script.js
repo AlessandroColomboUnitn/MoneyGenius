@@ -1,15 +1,26 @@
 /**
- * This variable stores the logged in user
+ * This variable stores the logged user
  */
-var loggedUser = {};
+var loggedUser = sessionStorage.getItem("loggedUser");
+
+if(!loggedUser){ //user not authenticated
+    loggedUser = {};
+}
+
+else{ //user already authenticated
+    loggedUser = JSON.parse(loggedUser);
+    afterAuth();
+}
+
 //base URL of the server
-var base="http://localhost:8080";
+var base="https://moneygenius.herokuapp.com";
 
 
 function assert(condition, message){
     if (!condition) throw message || "assertion failed";
 }
 
+/*
 //code for the modal, code taken from w3schools.com
 function loadModals(){
     // Get the modals
@@ -46,6 +57,7 @@ function loadModals(){
         if (event.target == mdlCategory) mdlCategory.style.display = "none";
     }
 }
+*/
 
 //displays login form after login selection
 function displayLogin(){
@@ -54,19 +66,57 @@ function displayLogin(){
     document.getElementById("Login").hidden=false;
 }
 
+function closeNav(){
+    document.getElementById("btnCloseNav").click();
+}
+
 //displays signup form after signup selection
 function displaySignup(){
     document.getElementById("navAuthentication").hidden=true;
     document.getElementById("divAuthentication").hidden=false;
-    document.getElementById("authName").hidden=false;
+    document.getElementById("divAuthName").hidden=false;
     document.getElementById("Signup").hidden=false;
+}
+
+function displayUserPage(){
+    document.getElementById("authenticationPage").hidden = true;
+    document.getElementById("navApplication").hidden = false;
+    document.getElementById("userPage").hidden = false;
+    document.getElementById("groupPage").hidden = true;
+    document.getElementsByClassName("nav-link")[0].classList.add("active");
+    document.getElementsByClassName("nav-link")[1].classList.remove("active");
+}
+
+async function displayGroupPage(){
+    document.getElementById("authenticationPage").hidden = true;
+    document.getElementById("navApplication").hidden = false;
+    document.getElementById("userPage").hidden = true;
+    document.getElementById("groupPage").hidden = false;
+    document.getElementsByClassName("nav-link")[0].classList.remove("active");
+    document.getElementsByClassName("nav-link")[1].classList.add("active");
+
+    let groupPage;
+
+    if(loggedUser.group_id && loggedUser.group_token){//if the user already has a group
+        groupPage = await fetch('./group.html');
+        groupPage = await groupPage.text();
+
+        loadGroupInfo();
+        //loadGroupExpensesList(); tabella per spese di gruppo
+    }else{
+        groupPage = await fetch('./joinGroup.html');
+        groupPage = await groupPage.text();
+        loadPendingRequest();
+    }
+
+    document.getElementById("groupPage").innerHTML = groupPage;
 }
 
 //resets page and form
 function resetForm(){
     document.getElementById("navAuthentication").hidden=false;
     document.getElementById("divAuthentication").hidden=true;
-    document.getElementById("authName").hidden=true;
+    document.getElementById("divAuthName").hidden=true;
     document.getElementById("Login").hidden=true;
     document.getElementById("Signup").hidden=true;
     document.getElementById("authform").reset();
@@ -75,18 +125,13 @@ function resetForm(){
 //hide the authentication section and show the user homepage
 async function afterAuth(){
 
-    //document.getElementById("loggedUser").innerHTML = loggedUser.name;
-    document.getElementById("navAuthentication").hidden = true;
-    document.getElementById("divAuthentication").hidden = true;
-    
-    document.getElementById("viewBudgetLabel").hidden = false;
-    document.getElementById("budgetRimanente").hidden = false;
-    
+    displayUserPage();
     
     let budget = await fetch('./budget.html');
     budget = await budget.text();
     let divBudget = document.getElementById("divBudget");
     divBudget.innerHTML = budget;
+    //document.getElementById("budgetRimanente").hidden = false;
     
     let category = await fetch('./category.html');
     category = await category.text();
@@ -98,19 +143,38 @@ async function afterAuth(){
     let divExpense = document.getElementById("divExpense");
     divExpense.innerHTML = expense;
 
+    /*
+    let groupForm = await fetch('./groupForm.html');
+    groupForm = await groupForm.text();
+    let divGroup = document.getElementById("divGroup");
+    divGroup.innerHTML = groupForm;
+
+    let group = await fetch('./group.html');
+    group = await group.text();
+    let groupPage = document.getElementById("groupPage");
+    groupPage.innerHTML = group;*/
+
     //load the expenses
     loadExpensesList();
     
     //load the expense modal
-    loadModals();
-        
+    //loadModals();
+    
     //load the category drop down list 
     loadCategoriesOptions();
 
     showRecapCategories();
 
-    //loads the expenses
+    //view the budget
     viewBudget();
+    document.getElementById("budgetRimanente").hidden = false;
+    document.getElementById("labelBudRim").hidden = false;
+    document.getElementById("budget").value = "";
+
+    /*if(user.budget){
+        document.getElementById("budgetform").hidden = true;
+        document.getElementById("modifybudgetform").hidden = false;
+    }*/
 }
 
 
@@ -128,7 +192,7 @@ function login()
     var password = document.getElementById("authPassword").value;
     // console.log(email);
 
-    fetch('../api/v1/authentications/login', {
+    fetch('../api/v2/authentications/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify( { email: email, password: password } ),
@@ -141,7 +205,10 @@ function login()
             loggedUser.email = data.email;
             loggedUser.name = data.name;
             loggedUser.id = data.id;
+            loggedUser.group_id = data.group_id;
+            loggedUser.group_token = data.group_token;
             loggedUser.self = data.self;
+            sessionStorage.setItem("loggedUser", JSON.stringify(loggedUser)); //set local user variable inside session storage
             // loggedUser.id = loggedUser.self.substring(loggedUser.self.lastIndexOf('/') + 1);
             resetForm();
             afterAuth();
@@ -167,7 +234,7 @@ function signup(){
     var email = document.getElementById("authEmail").value;
     var password = document.getElementById("authPassword").value;
     var name = document.getElementById("authName").value;
-    fetch('../api/v1/authentications/signup',{
+    fetch('../api/v2/authentications/signup',{
         method: 'POST',
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify({email: email, password: password, name: name} )
@@ -179,7 +246,8 @@ function signup(){
         loggedUser.email = data.email;
         loggedUser.name = data.name;
         loggedUser.id = data.id;
-        loggedUser.self = data.self;        
+        loggedUser.self = data.self;
+        sessionStorage.setItem("loggedUser", JSON.stringify(loggedUser)); //set local user variable inside session storage        
         resetForm();
         afterAuth();
         return;

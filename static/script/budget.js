@@ -1,6 +1,6 @@
 function setBudget(){
     var budget = document.getElementById("budget").value;
-    fetch('../api/v1/users/'+loggedUser.id+'/budget', {
+    fetch('../api/v2/users/'+loggedUser.id+'/budget', {
         method: 'POST',
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify({
@@ -10,23 +10,24 @@ function setBudget(){
     })
     .then((resp) => resp.json())
     .then(function(data){ 
+        //console.log(data);
         if(data.success){
             //window.alert("budget impostato con successo");
             afterSetBudget();
-            viewBudget();
+            //viewBudget();
         }
         else {
             throw data.message;
         }
     })
     .catch(function(error){
-        window.alert(error.message);
+        window.alert(error);
     })
 }
 
 function viewBudget(){
     
-    var url = new URL("http://localhost:8080/api/v1/users/" + loggedUser.id + "/budget"),
+    var url = new URL("api/v1/users/" + loggedUser.id + "/budget", base),
         params = {token:loggedUser.token}
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
     
@@ -34,8 +35,8 @@ function viewBudget(){
     .then((resp) => resp.json())
     .then(function(data){ 
         if(data.success){
-            document.getElementById("budgetSpentView").innerHTML = data.total_spent;
-            document.getElementById("budget2View").innerHTML = data.budget;
+            document.getElementById("budgetSpentView").innerHTML = data.total_spent + "€";
+            document.getElementById("budget2View").innerHTML = data.budget + "€";
         }
         else {
             throw data.message;
@@ -50,10 +51,12 @@ function viewBudget(){
 function afterSetBudget(){
     viewBudget();
     document.getElementById("budgetRimanente").hidden = false;
-    document.getElementById("budgetform").hidden = true;
+    document.getElementById("labelBudRim").hidden = false;
+    document.getElementById("budget").value = "";
+    //git restordocument.getElementById("budgetform").hidden = true;
        //set user's default category
     
-    fetch('../api/v1/users/'+loggedUser.id+'/categories/default', {
+    fetch('../api/v2/users/'+loggedUser.id+'/categories/default', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify( { id: loggedUser.id, token: loggedUser.token, email:loggedUser.email } ),
@@ -62,7 +65,7 @@ function afterSetBudget(){
     .then(function(data){
         assert(data.success, data.message);
         loadCategoriesOptions();
-        //showRecapCategories();
+        showRecapCategories();
     })
     .catch(function(error){
         window.alert(error);

@@ -2,7 +2,7 @@
 const app = require("./app/app.js")
 const mongose = require('mongoose');
 
-const port = process.env.port || 8080;
+const port = process.env.PORT || 8080;
 
 app.locals.db = mongose.connect(process.env.DB_URL, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(() => {

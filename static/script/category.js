@@ -6,7 +6,7 @@ function addCategory(){
     var newCategory = [{name: name,  budget: budget, cat_spent: 0}];
     //console.log(color);
 
-    fetch('api/v1/users/'+loggedUser.id+'/categories/', {
+    fetch('api/v2/users/'+loggedUser.id+'/categories/', {
         method: 'POST',
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify({
@@ -22,7 +22,7 @@ function addCategory(){
         assert(data.success, data.message);
         
 
-        document.getElementById("spanCategory").click();
+        document.getElementById("btnCloseCategoryModal").click();
         let tableCat = document.getElementById('tableCat');
 
         if(!tableCat){ //we have to create table cat
@@ -53,7 +53,7 @@ function addCategory(){
 async function deleteCategory(category_name){
     //console.log("name:"+category_name);
     
-    const resp = await fetch('api/v1/users/'+loggedUser.id+'/categories/', {
+    const resp = await fetch('api/v2/users/'+loggedUser.id+'/categories/', {
         method: 'DELETE',
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify({
@@ -63,7 +63,7 @@ async function deleteCategory(category_name){
         })
     });
     try{
-        console.log(resp.ok);
+        //console.log(resp.ok);
         assert(resp.ok);
         showRecapCategories();
         loadCategoriesOptions();
@@ -76,29 +76,37 @@ async function deleteCategory(category_name){
 }
 
 function createCategoriesTable(){
-    var tableCat = document.createElement("tableCat");
-    tableCat.id = 'tableCat';
+    var tableCat = document.createElement("table");
+    var thead = document.createElement("thead");
+    var trHeadersCat = document.createElement("tr");
 
-    const thNames = ["Nome", "Budget", "di cui Speso"];
+    tableCat.id = 'tableCat';
+    tableCat.classList.add("table");
+    tableCat.classList.add("table-hover");
+    tableCat.classList.add("text-center");
+    //tableCat.classList.add("table-bordered");
+
+    const thNames = ["Nome", "Budget", "di cui Speso", "Elimina"];
                 
     //setup the th row
-    let trHeadersCat = document.createElement("tr");
-
     for (let i = 0; i<thNames.length; i++) {
+
             let thCat = document.createElement("th");
 
             thCat.innerHTML = thNames[i];
 
             trHeadersCat.appendChild(thCat);
     }
-    tableCat.appendChild(trHeadersCat);
+
+    thead.appendChild(trHeadersCat);
+    tableCat.appendChild(thead);
 
     return tableCat;
 }
 
 function showRecapCategories(){
     
-    var url = new URL("api/v1/users/" + loggedUser.id + "/categories", base);
+    var url = new URL("api/v2/users/" + loggedUser.id + "/categories", base);
     let params = {token:loggedUser.token};
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
     
@@ -135,6 +143,9 @@ function showRecapCategories(){
 
 function fillCategoriesTable(userCategories, tableCat){
     
+    var tbody = document.createElement("tbody");
+    tableCat.classList.add("table-bordered");
+
     userCategories.forEach(elementCategory => {
 
         let trCategory = document.createElement("tr");
@@ -148,13 +159,19 @@ function fillCategoriesTable(userCategories, tableCat){
             }
         }
         trCategory.id = category_name+" row";
+        let td = document.createElement("td");
         let button = document.createElement("button");
         button.innerHTML = "X";
         button.onclick = ()  => deleteCategory(category_name);
-        trCategory.appendChild(button);
-        tableCat.appendChild(trCategory);
+        td.appendChild(button);
+        trCategory.appendChild(td);
+        trCategory.style.borderColor = elementCategory.color;
+        trCategory.style.borderWidth = '4px';
+        tbody.appendChild(trCategory);
         
     });
+
+    tableCat.appendChild(tbody);
 
     return tableCat;
 }
